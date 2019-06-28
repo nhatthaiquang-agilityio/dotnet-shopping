@@ -1,0 +1,58 @@
+version: '3.4'
+
+services:
+  sql.data:
+    image: microsoft/mssql-server-linux:2017-latest
+    environment:
+      SA_PASSWORD: Your_password123
+      ACCEPT_EULA: Y
+    ports:
+      - "1433:1433"
+    volumes:
+      - database:/var/opt/mssql
+
+  basket.data:
+    image: redis:alpine
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+      - "5671:5671"
+    environment:
+      RABBITMQ_DEFAULT_PASS: password
+      RABBITMQ_DEFAULT_USER: admin
+
+  # identity.api:
+  #   container_name: identity.api
+  #   build:
+  #     context: .
+  #     dockerfile: src/Identity.API/Dockerfile
+  #   depends_on:
+  #     - sql.data
+
+  basket.api:
+    container_name: basket.api
+    build:
+      context: .
+      dockerfile: src/Basket.API/BasketAPI/Dockerfile
+    depends_on:
+      - basket.data
+      # - identity.api
+      - rabbitmq
+    environment:
+      identityUrl: http://identity.api
+      EventBusConnection: rabbitmq
+
+  catalog.api:
+    container_name: catalog.api
+    build:
+      context: .
+      dockerfile: src/Catalog.API/Dockerfile
+    depends_on:
+      - sql.data
+      - rabbitmq
+
+volumes:
+  database:

@@ -1,0 +1,24 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="EventBusRabbitMQ.cs">
+    <Files>
+      <File FileName="DefaultRabbitMQPersistentConnection.cs" Line="21" Column="41" />
+      <File FileName="EventBusRabbitMQ.cs" Line="47" Column="1" />
+      <File FileName="IRabbitMQPersistentConnection.cs" Line="15" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="EventBusRabbitMQ" expanded="True">
+            <Node name="EventBusRabbitMQ" selected="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

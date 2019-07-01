@@ -5,7 +5,6 @@ namespace Catalog.API.IntegrationEvents.EventHandling
     using Infrastructure;
     using global::Catalog.API.IntegrationEvents;
     using IntegrationEvents.Events;
-    using Serilog.Context;
     using Microsoft.Extensions.Logging;
 
     public class OrderStatusChangedToAwaitingValidationIntegrationEventHandler :
@@ -27,15 +26,11 @@ namespace Catalog.API.IntegrationEvents.EventHandling
 
         public async Task Handle(OrderStatusChangedToAwaitingValidationIntegrationEvent @event)
         {
-            using (LogContext.PushProperty("IntegrationEventContext", $"{@event.Id}-{Program.AppName}"))
-            {
-                _logger.LogInformation(
-                    "----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})",
-                    @event.Id, Program.AppName, @event);
+            _logger.LogInformation(
+                "----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})",
+                @event.Id, Program.AppName, @event);
 
-                await _catalogIntegrationEventService.PublishThroughEventBusAsync(null);
-
-            }
+            await _catalogIntegrationEventService.PublishThroughEventBusAsync(null);
         }
     }
 }

@@ -8,6 +8,8 @@ namespace Catalog.API.Infrastructure
     {
         public CatalogContext(DbContextOptions<CatalogContext> options) : base(options)
         {
+            this.Database.EnsureCreated();
+            //this.Database.Migrate();
         }
         public DbSet<CatalogItem> CatalogItems { get; set; }
         public DbSet<CatalogBrand> CatalogBrands { get; set; }

@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Catalog.API.Migrations
 {
     [DbContext(typeof(CatalogContext))]
-    [Migration("20190628082820_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20190701021543_Catalog")]
+    partial class Catalog
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

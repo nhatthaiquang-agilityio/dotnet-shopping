@@ -2,7 +2,6 @@
 using BasketAPI.Model;
 using BuildingBlocks.EventBus.Abstractions;
 using Microsoft.Extensions.Logging;
-using Serilog.Context;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,18 +23,16 @@ namespace BasketAPI.IntegrationEvents.EventHandling
 
         public async Task Handle(ProductPriceChangedIntegrationEvent @event)
         {
-            using (LogContext.PushProperty("IntegrationEventContext", $"{@event.Id}-{Program.AppName}"))
+            _logger.LogInformation("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
+
+            var userIds = _repository.GetUsers();
+            _logger.LogInformation("----- Get Users: {userIds}", userIds);
+
+            foreach (var id in userIds)
             {
-                _logger.LogInformation("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
+                var basket = await _repository.GetBasketAsync(id);
 
-                var userIds = _repository.GetUsers();
-
-                foreach (var id in userIds)
-                {
-                    var basket = await _repository.GetBasketAsync(id);
-
-                    await UpdatePriceInBasketItems(@event.ProductId, @event.NewPrice, @event.OldPrice, basket);
-                }
+                await UpdatePriceInBasketItems(@event.ProductId, @event.NewPrice, @event.OldPrice, basket);
             }
         }
 

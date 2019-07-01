@@ -19,7 +19,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
+using StackExchange.Redis;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -37,14 +39,30 @@ namespace BasketAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-           
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             ConfigureAuthService(services);
 
             services.AddCustomHealthCheck(Configuration);
 
-            //services.Configure<BasketSettings>(Configuration);
+            services.Configure<BasketSettings>(Configuration);
+
+            //By connecting here we are making sure that our service
+            //cannot start until redis is ready. This might slow down startup,
+            //but given that there is a delay on resolving the ip address
+            //and then creating the connection it seems reasonable to move
+            //that cost to startup instead of having the first request pay the
+            //penalty.
+            services.AddSingleton<ConnectionMultiplexer>(sp =>
+            {
+                var settings = sp.GetRequiredService<IOptions<BasketSettings>>().Value;
+                var configuration = ConfigurationOptions.Parse(settings.ConnectionString, true);
+
+                configuration.ResolveDns = true;
+
+                return ConnectionMultiplexer.Connect(configuration);
+            });
 
             services.AddSingleton<IRabbitMQPersistentConnection>(sp =>
             {
@@ -123,7 +141,7 @@ namespace BasketAPI
             app.UseCors("CorsPolicy");
 
             ConfigureAuth(app);
-
+            app.UseMvcWithDefaultRoute();
             app.UseHttpsRedirection();
             app.UseMvc();
 
@@ -176,7 +194,6 @@ namespace BasketAPI
                     rabbitMQPersistentConnection, logger, iLifetimeScope,
                     eventBusSubcriptionsManager, subscriptionClientName, retryCount);
             });
-            //}
 
             services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
             services.AddTransient<ProductPriceChangedIntegrationEventHandler>();
@@ -201,12 +218,12 @@ namespace BasketAPI
 
             hcBuilder.AddCheck("self", () => HealthCheckResult.Healthy());
 
-            //hcBuilder
-            //    .AddRedis(
-            //        configuration["ConnectionString"],
-            //        name: "redis-check",
-            //        tags: new string[] { "redis" });
-           
+            hcBuilder
+                .AddRedis(
+                    configuration["ConnectionString"],
+                    name: "redis-check",
+                    tags: new string[] { "redis" });
+
             hcBuilder
                 .AddRabbitMQ(
                     $"amqp://{configuration["EventBusConnection"]}",

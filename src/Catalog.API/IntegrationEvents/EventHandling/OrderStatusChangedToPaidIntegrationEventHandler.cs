@@ -5,7 +5,6 @@ namespace Catalog.API.IntegrationEvents.EventHandling
     using Infrastructure;
     using Catalog.API.IntegrationEvents.Events;
     using Microsoft.Extensions.Logging;
-    using Serilog.Context;
 
     public class OrderStatusChangedToPaidIntegrationEventHandler :
         IIntegrationEventHandler<OrderStatusChangedToPaidIntegrationEvent>
@@ -23,23 +22,20 @@ namespace Catalog.API.IntegrationEvents.EventHandling
 
         public async Task Handle(OrderStatusChangedToPaidIntegrationEvent @event)
         {
-            using (LogContext.PushProperty("IntegrationEventContext", $"{@event.Id}-{Program.AppName}"))
+            _logger.LogInformation(
+                "----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})",
+                @event.Id, Program.AppName, @event);
+
+            //we're not blocking stock/inventory
+            foreach (var orderStockItem in @event.OrderStockItems)
             {
-                _logger.LogInformation(
-                    "----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})",
-                    @event.Id, Program.AppName, @event);
+                var catalogItem = _catalogContext.CatalogItems.Find(orderStockItem.ProductId);
 
-                //we're not blocking stock/inventory
-                foreach (var orderStockItem in @event.OrderStockItems)
-                {
-                    var catalogItem = _catalogContext.CatalogItems.Find(orderStockItem.ProductId);
-
-                    catalogItem.RemoveStock(orderStockItem.Units);
-                }
-
-                await _catalogContext.SaveChangesAsync();
-
+                catalogItem.RemoveStock(orderStockItem.Units);
             }
+
+            await _catalogContext.SaveChangesAsync();
+
         }
     }
 }

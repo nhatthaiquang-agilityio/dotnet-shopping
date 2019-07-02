@@ -80,8 +80,7 @@ namespace BuildingBlocks.EventBusRabbitMQ
 
                 policy.Execute(() =>
                 {
-                    _connection = _connectionFactory
-                          .CreateConnection();
+                    _connection = _connectionFactory.CreateConnection();
                 });
 
                 if (IsConnected)

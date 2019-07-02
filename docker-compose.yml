@@ -26,19 +26,19 @@ services:
       RABBITMQ_DEFAULT_PASS: password
       RABBITMQ_DEFAULT_USER: admin
 
-  identity.api:
-    container_name: identity.api
-    build:
-      context: .
-      dockerfile: src/Identity.API/Dockerfile
-    depends_on:
-      - sql.data
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://0.0.0.0:80
-      ConnectionString: Server=sql.data;Database=IdentityDb;User Id=sa;Password=Your_password123
-    ports:
-      - "6001:80"
+  # identity.api:
+  #   container_name: identity.api
+  #   build:
+  #     context: .
+  #     dockerfile: src/Identity.API/Dockerfile
+  #   depends_on:
+  #     - sql.data
+  #   environment:
+  #     ASPNETCORE_ENVIRONMENT: Development
+  #     ASPNETCORE_URLS: http://0.0.0.0:80
+  #     ConnectionString: Server=sql.data;Database=IdentityDb;User Id=sa;Password=Your_password123
+  #   ports:
+  #     - "6001:80"
 
   basket.api:
     container_name: basket.api
@@ -76,6 +76,28 @@ services:
       EventBusConnection: rabbitmq
       EventBusUserName: admin
       EventBusPassword: password
+
+  # webmvc:
+  #   container_name: webmvc
+  #   build:
+  #     context: .
+  #     dockerfile: src/WebMVC/Dockerfile
+  #   depends_on:
+  #     - sql.data
+  #     - rabbitmq
+  #   ports:
+  #     - "6004:80"
+  #   environment:
+  #     ASPNETCORE_ENVIRONMENT: Development
+  #     ASPNETCORE_URLS: http://0.0.0.0:80
+  #     IdentityUrl: http://identity.api
+  #     CatalogUrl: http://catalog.api
+  #     BasketUrl: http://basket.api
+  #     CallBackUrl: http://webmvc
+  #     ConnectionString: Server=sql.data;Database=CatalogDb;User Id=sa;Password=Your_password123
+  #     EventBusConnection: rabbitmq
+  #     EventBusUserName: admin
+  #     EventBusPassword: password
 
 volumes:
   data:

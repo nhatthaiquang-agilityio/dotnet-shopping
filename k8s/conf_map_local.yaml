@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: externalcfg
+  labels:
+    app: eshop
+data:
+  basket__ConnectionString: basket-data
+  catalog__ConnectionString: Server=sql-data;Initial Catalog=catalogdb;User Id=sa;Password=Your_password123;
+  all__EventBusConnection: rabbitmq
+  all__EventBusUserName: admin
+  all__EventBusPassword: password
+  all__UseAzureServiceBus: "False"
+  all__ASPNETCORE_ENVIRONMENT: Development

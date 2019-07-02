@@ -223,7 +223,7 @@ namespace BuildingBlocks.EventBusRabbitMQ
             }
 
             // Even on exception we take the message off the queue.
-            // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
+            // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX).
             // For more information see: https://www.rabbitmq.com/dlx.html
             _consumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
         }
@@ -239,14 +239,11 @@ namespace BuildingBlocks.EventBusRabbitMQ
 
             var channel = _persistentConnection.CreateModel();
 
-            channel.ExchangeDeclare(exchange: BROKER_NAME,
-                                    type: "direct");
+            channel.ExchangeDeclare(exchange: BROKER_NAME, type: "direct");
 
-            channel.QueueDeclare(queue: _queueName,
-                                 durable: true,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
+            channel.QueueDeclare(
+                queue: _queueName, durable: true,exclusive: false,
+                autoDelete: false, arguments: null);
 
             channel.CallbackException += (sender, ea) =>
             {

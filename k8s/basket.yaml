@@ -59,6 +59,3 @@ spec:
           value: 'K8S'
         ports:
         - containerPort: 80
-
-      imagePullSecrets:
-      - name: registry-key

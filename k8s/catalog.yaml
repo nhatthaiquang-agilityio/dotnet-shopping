@@ -28,8 +28,10 @@ spec:
         image: nhatthai/dotnet-catalog.api
         imagePullPolicy: Always
         env:
-        - name: PATH_BASE
-          value: /catalog-api
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: ASPNETCORE_URLS
+          value: http://*:80
         - name: ConnectionString
           valueFrom:
             configMapKeyRef:

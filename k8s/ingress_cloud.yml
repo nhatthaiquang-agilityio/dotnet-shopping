@@ -8,21 +8,21 @@ metadata:
   name: eshop-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
   - http:
       paths:
-      - path: /basket-api(/|$)(.*)
-        backend:
+      - backend:
           serviceName: basket
           servicePort: 80
-      - path: /catalog-api/*
-        backend:
-          serviceName: catalog
-          servicePort: 80
+        path: /basket-api(/|$)(.*)
       - backend:
           serviceName: ingress-demo
           servicePort: 80
         path: /hello-world-two(/|$)(.*)
+      - backend:
+          serviceName: catalog
+          servicePort: 80
+        path: /catalog-api(/|$)(.*)

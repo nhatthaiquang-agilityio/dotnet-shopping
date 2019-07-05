@@ -70,6 +70,28 @@ kubectl apply -f [all files].yaml
     ```
     GET localhost/api/v1/basket/{product_id}/
 
+### Using Kubernetes on Azure
+------------------------------
++ Install helm
++ Intall helm rbac
+    ```
+    kubectl apply -f helm-rbac.yaml
+    ```
+
++ Create Load Balancer on Azure
+    ```
+    helm install stable/nginx-ingress \
+        --namespace default
+        --set controller.replicaCount=2 \
+        --set rbac.create=false \
+        --set controller.service.externalTrafficPolicy=Local \
+        --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
+        --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+    ```
+
 Notes:
++ [Create an ingress controller in Azure Kubernetes Server(AKS)](https://docs.microsoft.com/en-us/azure/aks/ingress-basic)
 + Pay attention to Kubernetes Ingress (https://kubernetes.github.io/ingress-nginx/examples/rewrite/)
-    - nginx.ingress.kubernetes.io/rewrite-target: /$2
+    ```
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    ```

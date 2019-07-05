@@ -26,14 +26,22 @@ namespace BasketAPI.IntegrationEvents.EventHandling
             _logger.LogInformation("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
 
             var userIds = _repository.GetUsers();
-            _logger.LogInformation("----- Get Users: {userIds}", userIds);
 
-            foreach (var id in userIds)
+            if (userIds.Count<string>() > 0)
             {
-                var basket = await _repository.GetBasketAsync(id);
+                foreach (var id in userIds)
+                {
+                    var basket = await _repository.GetBasketAsync(id);
 
-                await UpdatePriceInBasketItems(@event.ProductId, @event.NewPrice, @event.OldPrice, basket);
+                    await UpdatePriceInBasketItems(@event.ProductId, @event.NewPrice, @event.OldPrice, basket);
+                }
             }
+            else
+            {
+                _logger.LogInformation("----- SaveEventBasketAsync");
+                await _repository.SaveEventBasketAsync(@event.ProductId, @event.NewPrice, @event.OldPrice);
+            }
+
         }
 
         private async Task UpdatePriceInBasketItems(int productId, decimal newPrice, decimal oldPrice, CustomerBasket basket)
@@ -43,7 +51,9 @@ namespace BasketAPI.IntegrationEvents.EventHandling
 
             if (itemsToUpdate != null)
             {
-                _logger.LogInformation("----- ProductPriceChangedIntegrationEventHandler - Updating items in basket for user: {BuyerId} ({@Items})", basket.BuyerId, itemsToUpdate);
+                _logger.LogInformation(
+                    "----- ProductPriceChangedIntegrationEventHandler - Updating items in basket for user: {BuyerId} ({@Items})",
+                    basket.BuyerId, itemsToUpdate);
 
                 foreach (var item in itemsToUpdate)
                 {
@@ -55,7 +65,7 @@ namespace BasketAPI.IntegrationEvents.EventHandling
                     }
                 }
                 await _repository.UpdateBasketAsync(basket);
-            }
+            } 
         }
     }
 }

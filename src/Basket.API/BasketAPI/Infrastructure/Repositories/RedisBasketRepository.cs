@@ -61,6 +61,23 @@ namespace BasketAPI.Infrastructure.Repositories
             return await GetBasketAsync(basket.BuyerId);
         }
 
+        public async Task<CustomerBasket> SaveEventBasketAsync(int productId, decimal newPrice, decimal oldPrice)
+        {
+            var created = await _database.StringSetAsync(productId.ToString(), JsonConvert.SerializeObject(new {
+                NewPrice = newPrice,
+                OldPrice = oldPrice
+            }));
+
+            if (!created)
+            {
+                _logger.LogInformation("Problem occur persisting the item.");
+                return null;
+            }
+
+            _logger.LogInformation("----- Basket item persisted succesfully.");
+            return null;
+        }
+
         private IServer GetServer()
         {
             var endpoint = _redis.GetEndPoints();

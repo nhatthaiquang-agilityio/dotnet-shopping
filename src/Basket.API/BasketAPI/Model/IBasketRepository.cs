@@ -11,6 +11,8 @@ namespace BasketAPI.Model
 
         Task<CustomerBasket> UpdateBasketAsync(CustomerBasket basket);
 
+        Task<CustomerBasket> SaveEventBasketAsync(int productId, decimal newPrice, decimal oldPrice);
+
         Task<bool> DeleteBasketAsync(string id);
     }
 }

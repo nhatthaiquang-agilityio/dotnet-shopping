@@ -64,7 +64,9 @@ namespace Catalog.API
 
         private static IWebHost BuildWebHost(IConfiguration configuration, string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseKestrel()
                 .CaptureStartupErrors(false)
+                .UseLibuv()
                 .UseStartup<Startup>()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseConfiguration(configuration)

@@ -95,7 +95,9 @@ namespace Catalog.API
             if (orchestratorType?.ToUpper() == "K8S")
             {
                 // Enable K8s telemetry initializer
-                services.AddApplicationInsightsKubernetesEnricher();
+                services.AddApplicationInsightsKubernetesEnricher(option=> {
+                    option.InitializationTimeout = TimeSpan.FromSeconds(20);
+                });
             }
             return services;
         }

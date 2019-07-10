@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-
+using Microsoft.Extensions.Logging;
 
 namespace Catalog.API.Controllers
 {
@@ -23,12 +23,16 @@ namespace Catalog.API.Controllers
         private readonly CatalogContext _catalogContext;
         private readonly CatalogSettings _settings;
         private readonly ICatalogIntegrationEventService _catalogIntegrationEventService;
+        private readonly ILogger<CatalogController> _logger;
 
-        public CatalogController(CatalogContext context, IOptionsSnapshot<CatalogSettings> settings, ICatalogIntegrationEventService catalogIntegrationEventService)
+        public CatalogController(
+            CatalogContext context, IOptionsSnapshot<CatalogSettings> settings,
+            ICatalogIntegrationEventService catalogIntegrationEventService, ILogger<CatalogController> logger)
         {
             _catalogContext = context ?? throw new ArgumentNullException(nameof(context));
             _catalogIntegrationEventService = catalogIntegrationEventService ?? throw new ArgumentNullException(nameof(catalogIntegrationEventService));
             _settings = settings.Value;
+            _logger = logger;
 
             context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
@@ -41,12 +45,15 @@ namespace Catalog.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ItemsAsync([FromQuery]int pageSize = 10, [FromQuery]int pageIndex = 0, string ids = null)
         {
+            _logger.LogInformation("Run : get catalog items");
+
             if (!string.IsNullOrEmpty(ids))
             {
                 var items = await GetItemsByIdsAsync(ids);
 
                 if (!items.Any())
                 {
+                    _logger.LogError("BadRequest: Ids Values Invalid");
                     return BadRequest("ids value invalid. Must be comma-separated list of numbers");
                 }
 
@@ -69,6 +76,8 @@ namespace Catalog.API.Controllers
 
         private async Task<List<CatalogItem>> GetItemsByIdsAsync(string ids)
         {
+            _logger.LogInformation("Run : get catalog item");
+
             var numIds = ids.Split(',').Select(id => (Ok: int.TryParse(id, out int x), Value: x));
 
             if (!numIds.All(nid => nid.Ok))
@@ -134,6 +143,8 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(typeof(PaginatedItemsViewModel<CatalogItem>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<PaginatedItemsViewModel<CatalogItem>>> ItemsByTypeIdAndBrandIdAsync(int catalogTypeId, int? catalogBrandId, [FromQuery]int pageSize = 10, [FromQuery]int pageIndex = 0)
         {
+            _logger.LogInformation("Run : get catalog items by brand");
+
             var root = (IQueryable<CatalogItem>)_catalogContext.CatalogItems;
 
             root = root.Where(ci => ci.CatalogTypeId == catalogTypeId);

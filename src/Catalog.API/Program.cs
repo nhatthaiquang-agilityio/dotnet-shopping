@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.SqlClient;
 using System.IO;
 using Catalog.API.Infrastructure;
 using Microsoft.AspNetCore;
@@ -9,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Polly;
 
 namespace Catalog.API
 {
@@ -32,6 +30,8 @@ namespace Catalog.API
                     var env = services.GetService<IHostingEnvironment>();
                     var settings = services.GetService<IOptions<CatalogSettings>>();
                     var logger = services.GetService<ILogger<CatalogContextSeed>>();
+
+                    logger.LogInformation("Seed Catalog data");
 
                     var optionsBuilder = new DbContextOptionsBuilder<CatalogContext>()
                         .UseSqlServer(configuration["ConnectionString"]);
@@ -66,8 +66,8 @@ namespace Catalog.API
             WebHost.CreateDefaultBuilder(args)
                 .UseKestrel()
                 .CaptureStartupErrors(false)
-                .UseLibuv()
                 .UseStartup<Startup>()
+                .UseApplicationInsights()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseConfiguration(configuration)
                 .Build();

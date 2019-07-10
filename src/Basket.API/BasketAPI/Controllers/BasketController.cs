@@ -37,6 +37,7 @@ namespace BasketAPI.Controllers
         [ProducesResponseType(typeof(CustomerBasket), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<CustomerBasket>> GetBasketByIdAsync(string id)
         {
+            _logger.LogInformation("Get Basket by Id");
             var basket = await _repository.GetBasketAsync(id);
 
             return Ok(basket ?? new CustomerBasket(id));
@@ -46,6 +47,7 @@ namespace BasketAPI.Controllers
         [ProducesResponseType(typeof(CustomerBasket), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<CustomerBasket>> UpdateBasketAsync([FromBody]CustomerBasket value)
         {
+            _logger.LogInformation("Update Basket");
             return Ok(await _repository.UpdateBasketAsync(value));
         }
 

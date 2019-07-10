@@ -242,6 +242,19 @@ namespace BasketAPI
 
     public static class CustomExtensionMethods
     {
+        public static IServiceCollection AddAppInsight(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddApplicationInsightsTelemetry(configuration);
+            var orchestratorType = configuration.GetValue<string>("OrchestratorType");
+
+            if (orchestratorType?.ToUpper() == "K8S")
+            {
+                // Enable K8s telemetry initializer
+                services.AddApplicationInsightsKubernetesEnricher();
+            }
+            return services;
+        }
+
         public static IServiceCollection AddCustomHealthCheck(this IServiceCollection services, IConfiguration configuration)
         {
             var hcBuilder = services.AddHealthChecks();

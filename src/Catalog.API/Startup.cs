@@ -37,7 +37,8 @@ namespace Catalog.API
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddCustomMVC(Configuration)
+            services.AddAppInsight(Configuration)
+                .AddCustomMVC(Configuration)
                 .AddCustomDbContext(Configuration)
                 .AddIntegrationServices(Configuration)
                 .AddEventBus(Configuration)
@@ -46,7 +47,6 @@ namespace Catalog.API
             var container = new ContainerBuilder();
             container.Populate(services);
             return new AutofacServiceProvider(container.Build());
-
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -87,6 +87,19 @@ namespace Catalog.API
 
     public static class CustomExtensionMethods
     {
+        public static IServiceCollection AddAppInsight(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddApplicationInsightsTelemetry(configuration);
+            var orchestratorType = configuration.GetValue<string>("OrchestratorType");
+
+            if (orchestratorType?.ToUpper() == "K8S")
+            {
+                // Enable K8s telemetry initializer
+                services.AddApplicationInsightsKubernetesEnricher();
+            }
+            return services;
+        }
+
         public static IServiceCollection AddCustomMVC(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddMvc()
@@ -167,8 +180,6 @@ namespace Catalog.API
                 services.AddSingleton<IServiceBusPersisterConnection>(sp =>
                 {
                     var logger = sp.GetRequiredService<ILogger<DefaultServiceBusPersisterConnection>>();
-                    Console.WriteLine("Event bus connection");
-                    Console.WriteLine(configuration["EventBusConnection"]);
                     var serviceBusConnection = new ServiceBusConnectionStringBuilder(configuration["EventBusConnection"]);
 
                     return new DefaultServiceBusPersisterConnection(serviceBusConnection, logger);

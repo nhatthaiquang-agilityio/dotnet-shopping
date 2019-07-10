@@ -89,6 +89,13 @@ kubectl apply -f [all files].yaml
         --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
     ```
 
+### Service Bus
++ Create Topic: "eshop_event_bus" (EntityPath: "eshop_event_bus" in Connectionstring)
+    ```
+    "SubscriptionClientName": "Catalog"
+    "SubscriptionClientName": "Basket"
+    ```
+
 Notes:
 + [Create an ingress controller in Azure Kubernetes Server(AKS)](https://docs.microsoft.com/en-us/azure/aks/ingress-basic)
 + Pay attention to Kubernetes Ingress (https://kubernetes.github.io/ingress-nginx/examples/rewrite/)

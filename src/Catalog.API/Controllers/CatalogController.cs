@@ -1,7 +1,6 @@
 ﻿using Catalog.API.IntegrationEvents;
 using Catalog.API.Infrastructure;
 using Catalog.API.IntegrationEvents.Events;
-using Catalog.API.Extensions;
 using Catalog.API.Model;
 using Catalog.API.ViewModel;
 using Microsoft.AspNetCore.Mvc;

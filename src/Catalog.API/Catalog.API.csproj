@@ -16,6 +16,8 @@
     <PackageReference Include="Microsoft.ApplicationInsights.Kubernetes" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.HealthChecks" Version="1.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="2.2.0" />
   </ItemGroup>
 
@@ -23,6 +25,8 @@
     <ProjectReference Include="..\BuildingBlocks\EventBus\EventBus\EventBus.csproj" />
     <ProjectReference Include="..\BuildingBlocks\EventBus\EventBusRabbitMQ\EventBusRabbitMQ.csproj" />
     <ProjectReference Include="..\BuildingBlocks\EventBus\EventBusServiceBus\EventBusServiceBus.csproj" />
+    <ProjectReference Include="..\BuildingBlocks\EventBus\IntegrationEventLogEF\IntegrationEventLogEF.csproj" />
+    <ProjectReference Include="..\BuildingBlocks\WebHostCustomization\WebHost.Customization\WebHost.Customization.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,5 +37,13 @@
     <Folder Include="Setup\" />
     <Folder Include="ViewModel\" />
     <Folder Include="Infrastructure\Exceptions\" />
+    <Folder Include="Infrastructure\IntegrationEventMigrations\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Controllers\PicController.cs" />
+    <Compile Remove="Infrastructure\IntegrationEventMigrations\IntegrationEventLogContextModelSnapshot.cs" />
+    <Compile Remove="Infrastructure\IntegrationEventMigrations\20190711033724_EventLog.cs" />
+    <Compile Remove="Infrastructure\IntegrationEventMigrations\20190711033724_EventLog.Designer.cs" />
+    <Compile Remove="Infrastructure\IntegrationEventLogContextSeed.cs" />
   </ItemGroup>
 </Project>

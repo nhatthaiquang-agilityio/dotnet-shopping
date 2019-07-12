@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -6,6 +7,8 @@ using BuildingBlocks.EventBus;
 using BuildingBlocks.EventBus.Abstractions;
 using BuildingBlocks.EventBusServiceBus;
 using BuildingBlocks.EventBusRabbitMQ;
+using BuildingBlocks.IntegrationEventLogEF;
+using BuildingBlocks.IntegrationEventLogEF.Services;
 using Catalog.API.Infrastructure;
 using Catalog.API.IntegrationEvents;
 using Catalog.API.IntegrationEvents.EventHandling;
@@ -21,8 +24,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
 using Microsoft.Azure.ServiceBus;
+using RabbitMQ.Client;
 
 namespace Catalog.API
 {
@@ -158,7 +161,7 @@ namespace Catalog.API
             //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency
             services.AddDbContext<CatalogContext>(options =>
             {
-                options.UseSqlServer(configuration["ConnectionString"], sqlServerOptionsAction: sqlOptions =>
+                options.UseSqlServer(configuration["ConnectionString"], sqlOptions =>
                     {
                         sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
                         sqlOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(30), null);
@@ -170,11 +173,25 @@ namespace Catalog.API
                 //Check Client vs. Server evaluation: https://docs.microsoft.com/en-us/ef/core/querying/client-eval
             });
 
+            // IntegrationEventLog table
+            services.AddDbContext<IntegrationEventLogContext>(options =>
+            {
+                options.UseSqlServer(configuration["ConnectionString"], sqlOptions =>
+                    {
+                        sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
+                        //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency
+                        sqlOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(30), null);
+                    });
+            });
+
             return services;
         }
 
         public static IServiceCollection AddIntegrationServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddTransient<Func<DbConnection, IIntegrationEventLogService>>(
+                sp => (DbConnection c) => new IntegrationEventLogService(c));
+
             services.AddTransient<ICatalogIntegrationEventService, CatalogIntegrationEventService>();
 
             if (configuration.GetValue<bool>("AzureServiceBusEnabled"))

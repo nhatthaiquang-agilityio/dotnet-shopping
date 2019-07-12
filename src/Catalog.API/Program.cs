@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
+using BuildingBlocks.IntegrationEventLogEF;
 using Catalog.API.Infrastructure;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -24,24 +24,17 @@ namespace Catalog.API
             {
                 var host = BuildWebHost(configuration, args);
 
-                using (var scope = host.Services.CreateScope())
+                host.MigrateDbContext<CatalogContext>((context, services) =>
                 {
-                    var services = scope.ServiceProvider;
                     var env = services.GetService<IHostingEnvironment>();
                     var settings = services.GetService<IOptions<CatalogSettings>>();
                     var logger = services.GetService<ILogger<CatalogContextSeed>>();
 
-                    logger.LogInformation("Seed Catalog data");
-
-                    var optionsBuilder = new DbContextOptionsBuilder<CatalogContext>()
-                        .UseSqlServer(configuration["ConnectionString"]);
-
-                    var context = new CatalogContext(optionsBuilder.Options);
-
                     new CatalogContextSeed()
                         .SeedAsync(context, env, settings, logger)
                         .Wait();
-                }
+                })
+                .MigrateDbContext<IntegrationEventLogContext>((_, __) => { });
 
                 host.Run();
 

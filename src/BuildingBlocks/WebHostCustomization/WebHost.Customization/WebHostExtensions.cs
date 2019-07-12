@@ -35,7 +35,7 @@ namespace Microsoft.AspNetCore.Hosting
 
                     if (underK8s)
                     {
-                        InvokeSeeder(seeder, context, services);
+                        InvokeSeeder(seeder, context, services, logger);
                     }
                     else
                     {
@@ -51,7 +51,7 @@ namespace Microsoft.AspNetCore.Hosting
                         //migration can't fail for network related exception. The retry options for DbContext only
                         //apply to transient exceptions
                         // Note that this is NOT applied when running some orchestrators (let the orchestrator to recreate the failing service)
-                        retry.Execute(() => InvokeSeeder(seeder, context, services));
+                        retry.Execute(() => InvokeSeeder(seeder, context, services, logger));
                     }
 
                     logger.LogInformation("Migrated database associated with context {DbContextName}", typeof(TContext).Name);
@@ -59,26 +59,23 @@ namespace Microsoft.AspNetCore.Hosting
                 catch (Exception ex)
                 {
                     logger.LogError(ex, "An error occurred while migrating the database used on context {DbContextName}", typeof(TContext).Name);
-                    //if (underK8s)
-                    //{
-                    //    throw;          // Rethrow under k8s because we rely on k8s to re-run the pod
-                    //}
                 }
             }
 
             return webHost;
         }
 
-        private static void InvokeSeeder<TContext>(Action<TContext, IServiceProvider> seeder, TContext context, IServiceProvider services)
+        private static void InvokeSeeder<TContext>(Action<TContext, IServiceProvider> seeder, TContext context,
+                IServiceProvider services, ILogger<TContext> logger)
             where TContext : DbContext
         {
             try
             {
                 context.Database.Migrate();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return;
+                logger.LogError("Error Migrate database: {msg}", e);
             }
             seeder(context, services);
         }

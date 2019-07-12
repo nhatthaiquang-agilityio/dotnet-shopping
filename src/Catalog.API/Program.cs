@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Serilog;
 
 namespace Catalog.API
 {
@@ -19,11 +20,12 @@ namespace Catalog.API
         public static int Main(string[] args)
         {
             var configuration = GetConfiguration();
-
+            Log.Logger = CreateSerilogLogger(configuration);
             try
             {
                 var host = BuildWebHost(configuration, args);
 
+                Log.Information("Applying migrations ({ApplicationContext})...", AppName);
                 host.MigrateDbContext<CatalogContext>((context, services) =>
                 {
                     var env = services.GetService<IHostingEnvironment>();
@@ -36,6 +38,7 @@ namespace Catalog.API
                 })
                 .MigrateDbContext<IntegrationEventLogContext>((_, __) => { });
 
+                Log.Information("Starting web host ({ApplicationContext})...", AppName);
                 host.Run();
 
                 return 0;
@@ -63,7 +66,24 @@ namespace Catalog.API
                 .UseApplicationInsights()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseConfiguration(configuration)
+                .UseSerilog()
                 .Build();
 
+        private static Serilog.ILogger CreateSerilogLogger(IConfiguration configuration)
+        {
+            return new LoggerConfiguration()
+                .MinimumLevel.Verbose()
+                .Enrich.WithProperty("ApplicationContext", AppName)
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .WriteTo.File(
+                  $@"D:\home\LogFiles\Application\{AppName}.txt",
+                  fileSizeLimitBytes: 1_000_000,
+                  rollOnFileSizeLimit: true,
+                  shared: true,
+                  flushToDiskInterval: TimeSpan.FromSeconds(1))
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
+        }
     }
 }

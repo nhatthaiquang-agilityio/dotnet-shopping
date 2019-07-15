@@ -76,12 +76,9 @@ namespace Catalog.API
                 .Enrich.WithProperty("ApplicationContext", AppName)
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
-                .WriteTo.File(
-                  $@"D:\home\LogFiles\Application\{AppName}.txt",
-                  fileSizeLimitBytes: 1_000_000,
-                  rollOnFileSizeLimit: true,
-                  shared: true,
-                  flushToDiskInterval: TimeSpan.FromSeconds(1))
+                .WriteTo.AzureBlobStorage(
+                    configuration["AzureBlobStorageConnection"],
+                    Serilog.Events.LogEventLevel.Information, null, "{yyyy}/{MM}/{dd}/log.txt")
                 .ReadFrom.Configuration(configuration)
                 .CreateLogger();
         }

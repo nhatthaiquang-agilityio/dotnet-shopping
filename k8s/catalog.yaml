@@ -57,6 +57,11 @@ spec:
             configMapKeyRef:
               name: externalcfg
               key: all__UseAzureServiceBus
+        - name: AzureBlobStorageConnection
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: all__AzureBlobStorageConnection
         - name: APPINSIGHTS_INSTRUMENTATIONKEY
           valueFrom:
             configMapKeyRef:

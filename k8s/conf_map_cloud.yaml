@@ -11,8 +11,7 @@ data:
 # Catalog.API entries
   catalog__ConnectionString: Server=sql-data;Initial Catalog=catalogdb;User Id=sa;Password=Your_password123;
 # Global entries
-  all__UseAzureServiceBus: "TRUE"
   all__EventBusConnection: Endpoint=sb://[instance-name].servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=[your-access-key];EntityPath=eshop_event_bus
-  all__EventBusUserName: ""
-  all__EventBusPassword: ""
-  all__AppInsightsInstrumentKey: ""
+  all__UseAzureServiceBus: "TRUE"
+  all__AppInsightsInstrumentKey: "[App-Insights-Key]"
+  all__AzureBlobStorageConnection: DefaultEndpointsProtocol=https;AccountName=[storage-name];AccountKey=[KEY];EndpointSuffix=core.windows.net

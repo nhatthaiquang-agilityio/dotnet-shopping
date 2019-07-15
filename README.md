@@ -74,11 +74,19 @@ kubectl apply -f [all files].yaml
 ------------------------------
 + Install helm
 + Intall helm rbac
+    - Error: no available release name found(https://stackoverflow.com/questions/43499971/helm-error-no-available-release-name-found)
+    - Error: could not find tiller
     ```
     kubectl apply -f helm-rbac.yaml
+
+    helm init --service-account tiller
+
+    helm init --wait
+
+    helm update repo
     ```
 
-+ Create Load Balancer on Azure
++ Create Load Balancer on Azureheml
     ```
     helm install stable/nginx-ingress \
         --namespace default

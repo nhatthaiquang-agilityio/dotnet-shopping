@@ -18,7 +18,8 @@ namespace Identity.API.Data
             //callbacks urls from config:
             var clientUrls = new Dictionary<string, string>();
             clientUrls.Add("BasketApi", configuration.GetValue<string>("BasketApiClient"));
-           
+
+            // Clients
             if (!context.Clients.Any())
             {
                 foreach (var client in Config.GetClients(clientUrls))
@@ -27,28 +28,8 @@ namespace Identity.API.Data
                 }
                 await context.SaveChangesAsync();
             }
-            // Checking always for old redirects to fix existing deployments
-            // to use new swagger-ui redirect uri as of v3.0.0
-            // There should be no problem for new ones
-            // ref: https://github.com/dotnet-architecture/eShopOnContainers/issues/586
-            else
-            {
-                List<ClientRedirectUri> oldRedirects = (await context.Clients.Include(c => c.RedirectUris).ToListAsync())
-                    .SelectMany(c => c.RedirectUris)
-                    .Where(ru => ru.RedirectUri.EndsWith("/o2c.html"))
-                    .ToList();
 
-                if (oldRedirects.Any())
-                {
-                    foreach (var ru in oldRedirects)
-                    {
-                        ru.RedirectUri = ru.RedirectUri.Replace("/o2c.html", "/oauth2-redirect.html");
-                        context.Update(ru.Client);
-                    }
-                    await context.SaveChangesAsync();
-                }
-            }
-
+            // Identity Resources
             if (!context.IdentityResources.Any())
             {
                 foreach (var resource in Config.GetResources())
@@ -58,6 +39,7 @@ namespace Identity.API.Data
                 await context.SaveChangesAsync();
             }
 
+            // Api Resources
             if (!context.ApiResources.Any())
             {
                 foreach (var api in Config.GetApis())

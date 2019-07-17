@@ -46,7 +46,7 @@ namespace Identity.API.Configuration
                     AllowAccessTokensViaBrowser = true,
 
                     RedirectUris = { $"{clientsUrl["BasketApi"]}/oauth2-redirect.html" },
-                    PostLogoutRedirectUris = { $"{clientsUrl["BasketApi"]}/swagger/" },
+                    //PostLogoutRedirectUris = { $"{clientsUrl["BasketApi"]}/" },
 
                     AllowedScopes =
                     {

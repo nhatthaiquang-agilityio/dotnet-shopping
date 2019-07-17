@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: eshop
+    component: identity
+  name: identity
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: eshop
+    component: identity
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: identity
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: identity
+    spec:
+      containers:
+      - name: identity
+        image: nhatthai/dotnet-identity.api
+        imagePullPolicy: Always
+        env:
+        - name: PATH_BASE
+          value: /identity
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: ASPNETCORE_URLS
+          value: http://0.0.0.0:80
+        - name: ConnectionString
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: catalog__ConnectionString
+        - name: APPINSIGHTS_INSTRUMENTATIONKEY
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: all__AppInsightsInstrumentKey
+        - name: OrchestratorType
+          value: 'K8S'
+
+        - name: BasketApiClient
+          valueFrom:
+           configMapKeyRef:
+              name: urls
+              key: BasketApiClient
+        ports:
+        - containerPort: 80

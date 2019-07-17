@@ -24,3 +24,7 @@ spec:
         backend:
           serviceName: catalog
           servicePort: 80
+      - path: /identity
+        backend:
+          serviceName: catalog
+          servicePort: 80

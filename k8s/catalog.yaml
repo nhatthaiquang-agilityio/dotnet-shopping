@@ -57,6 +57,11 @@ spec:
             configMapKeyRef:
               name: externalcfg
               key: all__UseAzureServiceBus
+        - name: AzureStorageEnabled
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: all__UseAzureBlogStorage
         - name: AzureBlobStorageConnection
           valueFrom:
             configMapKeyRef:

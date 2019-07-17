@@ -2,6 +2,7 @@
 using System.IO;
 using BuildingBlocks.IntegrationEventLogEF;
 using Catalog.API.Infrastructure;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -71,14 +72,27 @@ namespace Catalog.API
 
         private static Serilog.ILogger CreateSerilogLogger(IConfiguration configuration)
         {
+            // if store logging
+            if (configuration.GetValue<bool>("AzureStorageEnabled") && string.IsNullOrEmpty(configuration["AzureBlobStorageConnection"]))
+            {
+                return new LoggerConfiguration()
+                    .MinimumLevel.Verbose()
+                    .Enrich.WithProperty("ApplicationContext", AppName)
+                    .Enrich.FromLogContext()
+                    .WriteTo.Console()
+                    .WriteTo.ApplicationInsights(TelemetryConfiguration.Active, TelemetryConverter.Traces)
+                    .WriteTo.AzureBlobStorage(
+                        configuration["AzureBlobStorageConnection"],
+                        Serilog.Events.LogEventLevel.Information, null, "{yyyy}/{MM}/{dd}/log.txt")
+                    .ReadFrom.Configuration(configuration)
+                    .CreateLogger();
+            }
+
             return new LoggerConfiguration()
                 .MinimumLevel.Verbose()
                 .Enrich.WithProperty("ApplicationContext", AppName)
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
-                .WriteTo.AzureBlobStorage(
-                    configuration["AzureBlobStorageConnection"],
-                    Serilog.Events.LogEventLevel.Information, null, "{yyyy}/{MM}/{dd}/log.txt")
                 .ReadFrom.Configuration(configuration)
                 .CreateLogger();
         }

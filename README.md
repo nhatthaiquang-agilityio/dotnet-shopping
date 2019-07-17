@@ -86,10 +86,10 @@ kubectl apply -f [all files].yaml
     helm update repo
     ```
 
-+ Create Load Balancer on Azureheml
++ Create Load Balancer on Azure Helm
     ```
     helm install stable/nginx-ingress \
-        --namespace default
+        --namespace default --name frontend
         --set controller.replicaCount=2 \
         --set rbac.create=false \
         --set controller.service.externalTrafficPolicy=Local \

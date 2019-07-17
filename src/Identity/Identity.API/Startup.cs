@@ -3,7 +3,6 @@ using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using HealthChecks.UI.Client;
-using Identity.API.Certificates;
 using Identity.API.Data;
 using Identity.API.Models;
 using Identity.API.Services;
@@ -67,32 +66,41 @@ namespace Identity.API
 
             // Adds IdentityServer
             services.AddIdentityServer(x =>
-            {
-                x.IssuerUri = "null";
-                x.Authentication.CookieLifetime = TimeSpan.FromHours(2);
-            })
-            // .AddSigningCredential(Certificate.Get())
-            .AddDeveloperSigningCredential(false)
-            .AddAspNetIdentity<ApplicationUser>()
-            .AddConfigurationStore(options =>
-            {
-                options.ConfigureDbContext = builder => builder.UseSqlServer(connectionString, sqlOptions =>
-                    {
-                        sqlOptions.MigrationsAssembly(migrationsAssembly);
-                        //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency
-                        sqlOptions.EnableRetryOnFailure(15, TimeSpan.FromSeconds(30), null);
-                    });
-            })
-            .AddOperationalStore(options =>
-            {
-                options.ConfigureDbContext = builder => builder.UseSqlServer(connectionString, sqlOptions =>
-                    {
-                        sqlOptions.MigrationsAssembly(migrationsAssembly);
-                        //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency
-                        sqlOptions.EnableRetryOnFailure(15, TimeSpan.FromSeconds(30), null);
-                    });
-            })
-            .Services.AddTransient<IProfileService, ProfileService>();
+                {
+                    x.IssuerUri = "null";
+                    x.Authentication.CookieLifetime = TimeSpan.FromHours(2);
+                    // https://github.com/aspnet/Identity/issues/1414
+                    x.UserInteraction.LoginUrl = "/identity/account/login";
+                    x.UserInteraction.LogoutUrl = "/identity/account/logout";
+                })
+                // .AddSigningCredential(Certificate.Get())
+                .AddDeveloperSigningCredential(false)
+                .AddAspNetIdentity<ApplicationUser>()
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext = builder => builder.UseSqlServer(connectionString, sqlOptions =>
+                        {
+                            sqlOptions.MigrationsAssembly(migrationsAssembly);
+                            //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency
+                            sqlOptions.EnableRetryOnFailure(15, TimeSpan.FromSeconds(30), null);
+                        });
+                })
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = builder => builder.UseSqlServer(connectionString, sqlOptions =>
+                        {
+                            sqlOptions.MigrationsAssembly(migrationsAssembly);
+                            //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency
+                            sqlOptions.EnableRetryOnFailure(15, TimeSpan.FromSeconds(30), null);
+                        });
+                })
+                .Services.AddTransient<IProfileService, ProfileService>();
+
+            services.ConfigureApplicationCookie(options =>
+                {
+                    options.LoginPath = "/identity/account/login";
+                    options.LogoutPath = "/identity/account/logout";
+                });
 
             var container = new ContainerBuilder();
             container.Populate(services);
@@ -149,6 +157,10 @@ namespace Identity.API
             app.UseHttpsRedirection();
             app.UseMvc(routes =>
             {
+                routes.MapAreaRoute(
+                    name: "Identity",
+                    areaName: "Identity",
+                    template: "Identity/{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
         }

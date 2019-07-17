@@ -28,6 +28,8 @@ spec:
         image: nhatthai/dotnet-basket.api
         imagePullPolicy: Always
         env:
+        - name: PATH_BASE
+          value: /basket-api
         - name: ASPNETCORE_ENVIRONMENT
           value: Development
         - name: ASPNETCORE_URLS
@@ -64,5 +66,18 @@ spec:
               key: all__AppInsightsInstrumentKey
         - name: OrchestratorType
           value: 'K8S'
+        # - name: IdentityUrl
+        #   value: 'http://identity'
+
+        - name: IdentityUrl
+          valueFrom:
+            configMapKeyRef:
+              name: urls
+              key: IdentityUrl
+        - name: IdentityUrlExternal
+          valueFrom:
+            configMapKeyRef:
+              name: urls
+              key: IdentityUrlExternal
         ports:
         - containerPort: 80

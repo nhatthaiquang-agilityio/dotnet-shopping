@@ -26,3 +26,7 @@ spec:
           serviceName: catalog
           servicePort: 80
         path: /catalog-api(/|$)(.*)
+      - backend:
+          serviceName: identity
+          servicePort: 80
+        path: /identity(/|$)(.*)

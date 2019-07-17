@@ -12,3 +12,4 @@ data:
   all__EventBusPassword: password
   all__UseAzureServiceBus: "False"
   all__ASPNETCORE_ENVIRONMENT: Development
+  all__UseAzureBlogStorage: "False"

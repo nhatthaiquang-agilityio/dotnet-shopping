@@ -10,7 +10,6 @@ using BuildingBlocks.EventBus.Abstractions;
 using BuildingBlocks.EventBusRabbitMQ;
 using BuildingBlocks.EventBusServiceBus;
 using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +25,10 @@ using RabbitMQ.Client;
 using StackExchange.Redis;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using Swashbuckle.AspNetCore.Swagger;
+using System.Collections.Generic;
+using Basket.API.Infrastructure.Filters;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace BasketAPI
 {
@@ -110,6 +113,32 @@ namespace BasketAPI
 
             RegisterEventBus(services);
 
+            services.AddSwaggerGen(options =>
+            {
+                options.DescribeAllEnumsAsStrings();
+                options.SwaggerDoc("v1", new Info
+                {
+                    Title = "Basket HTTP API",
+                    Version = "v1",
+                    Description = "The Basket Service HTTP API",
+                    TermsOfService = "Terms Of Service"
+                });
+
+                options.AddSecurityDefinition("oauth2", new OAuth2Scheme
+                {
+                    Type = "oauth2",
+                    Flow = "implicit",
+                    AuthorizationUrl = $"{Configuration.GetValue<string>("IdentityUrlExternal")}/connect/authorize",
+                    TokenUrl = $"{Configuration.GetValue<string>("IdentityUrlExternal")}/connect/token",
+                    Scopes = new Dictionary<string, string>()
+                    {
+                        { "basket", "Basket API" }
+                    }
+                });
+
+                options.OperationFilter<AuthorizeCheckOperationFilter>();
+            });
+
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
@@ -156,10 +185,18 @@ namespace BasketAPI
             app.UseCors("CorsPolicy");
 
             ConfigureAuth(app);
-            app.UseMvcWithDefaultRoute();
-            app.UseHttpsRedirection();
-            app.UseMvc();
 
+            app.UseMvcWithDefaultRoute();
+            //app.UseHttpsRedirection();
+
+            app.UseSwagger().UseSwaggerUI(c =>
+            {
+                c.RoutePrefix = string.Empty;
+                c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/v1/swagger.json", "Basket.API V1");
+                c.OAuthClientId("basketswaggerui");
+                c.OAuthAppName("Basket Swagger UI");
+            });
+            app.UseMvc();
             ConfigureEventBus(app);
         }
 
@@ -174,7 +211,6 @@ namespace BasketAPI
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             var identityUrl = Configuration.GetValue<string>("IdentityUrl");
-
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -186,6 +222,13 @@ namespace BasketAPI
                 options.RequireHttpsMetadata = false;
                 options.Audience = "basket";
             });
+            // services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+            //     .AddIdentityServerAuthentication(options =>
+            //     {
+            //         options.Authority = identityUrl;
+            //         options.ApiName = "basket"; // required audience of access tokens
+            //         options.RequireHttpsMetadata = false; // dev only!
+            //     });
         }
 
         private void RegisterEventBus(IServiceCollection services)

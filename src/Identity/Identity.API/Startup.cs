@@ -8,8 +8,10 @@ using Identity.API.Models;
 using Identity.API.Services;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +19,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 
 namespace Identity.API
 {
@@ -54,6 +57,15 @@ namespace Identity.API
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            if (Configuration.GetValue<string>("IsClusterEnv") == bool.TrueString)
+            {
+                services.AddDataProtection(opts =>
+                {
+                    opts.ApplicationDiscriminator = "eshop.identity";
+                })
+                .PersistKeysToRedis(ConnectionMultiplexer.Connect(Configuration["DPConnectionString"]), "DataProtection-Keys");
+            }
+
             services.AddHealthChecks()
                 .AddCheck("self", () => HealthCheckResult.Healthy())
                 .AddSqlServer(Configuration["ConnectionString"],
@@ -69,9 +81,6 @@ namespace Identity.API
                 {
                     x.IssuerUri = "null";
                     x.Authentication.CookieLifetime = TimeSpan.FromHours(2);
-                    // https://github.com/aspnet/Identity/issues/1414
-                    x.UserInteraction.LoginUrl = "/identity/account/login";
-                    x.UserInteraction.LogoutUrl = "/identity/account/logout";
                 })
                 // .AddSigningCredential(Certificate.Get())
                 .AddDeveloperSigningCredential(false)
@@ -96,12 +105,6 @@ namespace Identity.API
                 })
                 .Services.AddTransient<IProfileService, ProfileService>();
 
-            services.ConfigureApplicationCookie(options =>
-                {
-                    options.LoginPath = "/identity/account/login";
-                    options.LogoutPath = "/identity/account/logout";
-                });
-
             var container = new ContainerBuilder();
             container.Populate(services);
 
@@ -125,6 +128,7 @@ namespace Identity.API
             var pathBase = Configuration["PATH_BASE"];
             if (!string.IsNullOrEmpty(pathBase))
             {
+                Console.WriteLine("using PATH_BASE");
                 loggerFactory.CreateLogger<Startup>().LogDebug("Using PATH BASE '{pathBase}'", pathBase);
                 app.UsePathBase(pathBase);
             }
@@ -147,6 +151,7 @@ namespace Identity.API
             app.Use(async (context, next) =>
             {
                 context.Response.Headers.Add("Content-Security-Policy", "script-src 'unsafe-inline'");
+                context.Request.PathBase = new PathString("/identity");
                 await next();
             });
 
@@ -154,13 +159,9 @@ namespace Identity.API
             // Adds IdentityServer
             app.UseIdentityServer();
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseMvc(routes =>
             {
-                routes.MapAreaRoute(
-                    name: "Identity",
-                    areaName: "Identity",
-                    template: "Identity/{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
         }

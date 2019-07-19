@@ -153,7 +153,6 @@ namespace BasketAPI
             services.AddTransient<IIdentityService, IdentityService>();
 
             services.AddOptions();
-            services.AddOptions();
 
             var container = new ContainerBuilder();
             container.Populate(services);
@@ -222,13 +221,7 @@ namespace BasketAPI
                 options.RequireHttpsMetadata = false;
                 options.Audience = "basket";
             });
-            // services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-            //     .AddIdentityServerAuthentication(options =>
-            //     {
-            //         options.Authority = identityUrl;
-            //         options.ApiName = "basket"; // required audience of access tokens
-            //         options.RequireHttpsMetadata = false; // dev only!
-            //     });
+
         }
 
         private void RegisterEventBus(IServiceCollection services)

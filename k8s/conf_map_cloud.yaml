@@ -10,8 +10,14 @@ data:
   basket__ConnectionString: basket-data
 # Catalog.API entries
   catalog__ConnectionString: Server=sql-data;Initial Catalog=catalogdb;User Id=sa;Password=Your_password123;
+  identity__ConnectionString: Server=sql-data;Initial Catalog=IdentityDb;User Id=sa;Password=Your_password123;
 # Global entries
+  all__UseAzureServiceBus: "True"
   all__EventBusConnection: Endpoint=sb://[instance-name].servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=[your-access-key];EntityPath=eshop_event_bus
-  all__UseAzureServiceBus: "TRUE"
-  all__AppInsightsInstrumentKey: "[App-Insights-Key]"
-  all__AzureBlobStorageConnection: DefaultEndpointsProtocol=https;AccountName=[storage-name];AccountKey=[KEY];EndpointSuffix=core.windows.net
+  # all__EventBusConnection: rabbitmq
+  # all__EventBusUserName: admin
+  # all__EventBusPassword: password
+  all__AppInsightsInstrumentKey: "[your-instrument-key]"
+  all__UseAzureBlogStorage: "True"
+  all__AzureBlobStorageConnection: DefaultEndpointsProtocol=https;AccountName=[your-store-account];AccountKey=[your-key];EndpointSuffix=core.windows.net
+  keystore: [your-instance-redis].redis.cache.windows.net:6380,password=[your-pass-word],ssl=True,abortConnect=False

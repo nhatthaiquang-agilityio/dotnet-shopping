@@ -28,17 +28,30 @@ spec:
         image: nhatthai/dotnet-identity.api
         imagePullPolicy: Always
         env:
-        - name: PATH_BASE
-          value: /identity
+        # - name: PATH_BASE
+        #   value: /identity
         - name: ASPNETCORE_ENVIRONMENT
           value: Development
         - name: ASPNETCORE_URLS
           value: http://0.0.0.0:80
+
         - name: ConnectionString
           valueFrom:
             configMapKeyRef:
               name: externalcfg
-              key: catalog__ConnectionString
+              key: identity__ConnectionString
+        - name: DPConnectionString
+          valueFrom:
+           configMapKeyRef:
+             name: externalcfg
+             key: keystore
+        - name: IsClusterEnv
+          value: 'True'
+        - name: BasketApiClient
+          valueFrom:
+           configMapKeyRef:
+              name: urls
+              key: BasketApiClient
         - name: APPINSIGHTS_INSTRUMENTATIONKEY
           valueFrom:
             configMapKeyRef:
@@ -46,11 +59,5 @@ spec:
               key: all__AppInsightsInstrumentKey
         - name: OrchestratorType
           value: 'K8S'
-
-        - name: BasketApiClient
-          valueFrom:
-           configMapKeyRef:
-              name: urls
-              key: BasketApiClient
         ports:
         - containerPort: 80

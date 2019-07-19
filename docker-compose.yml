@@ -80,6 +80,6 @@ services:
       EventBusConnection: rabbitmq
       EventBusUserName: admin
       EventBusPassword: password
-
+      AzureStorageEnabled: "false"
 volumes:
   datatest:

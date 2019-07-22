@@ -19,6 +19,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Logging;
 using StackExchange.Redis;
 
 namespace Identity.API
@@ -105,6 +106,8 @@ namespace Identity.API
                 })
                 .Services.AddTransient<IProfileService, ProfileService>();
 
+            IdentityModelEventSource.ShowPII = true;
+
             var container = new ContainerBuilder();
             container.Populate(services);
 
@@ -151,7 +154,7 @@ namespace Identity.API
             app.Use(async (context, next) =>
             {
                 context.Response.Headers.Add("Content-Security-Policy", "script-src 'unsafe-inline'");
-                context.Request.PathBase = new PathString("/identity");
+                // context.Request.PathBase = new PathString("/identity");
                 await next();
             });
 

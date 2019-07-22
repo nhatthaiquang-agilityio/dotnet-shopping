@@ -11,14 +11,7 @@ namespace Identity.API.Configuration
         {
             return new List<ApiResource>
             {
-                //new ApiResource("orders", "Orders Service"),
                 new ApiResource("basket", "Basket API Service"),
-                //new ApiResource("marketing", "Marketing Service"),
-                //new ApiResource("locations", "Locations Service"),
-                //new ApiResource("mobileshoppingagg", "Mobile Shopping Aggregator"),
-                //new ApiResource("webshoppingagg", "Web Shopping Aggregator"),
-                //new ApiResource("orders.signalrhub", "Ordering Signalr Hub"),
-                //new ApiResource("webhooks", "Webhooks registration Service"),
             };
         }
 
@@ -52,7 +45,38 @@ namespace Identity.API.Configuration
                     {
                         "basket"
                     }
-                }
+                },
+                new Client
+                {
+                    ClientId = "mvc",
+                    ClientName = "MVC Client",
+                    ClientSecrets = new List<Secret>
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    ClientUri = $"{clientsUrl["Mvc"]}",                             // public uri of the client
+                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    AllowAccessTokensViaBrowser = false,
+                    RequireConsent = false,
+                    AllowOfflineAccess = true,
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    RedirectUris = new List<string>
+                    {
+                        $"{clientsUrl["Mvc"]}/signin-oidc"
+                    },
+                    PostLogoutRedirectUris = new List<string>
+                    {
+                        $"{clientsUrl["Mvc"]}/signout-callback-oidc"
+                    },
+                    AllowedScopes = new List<string>
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OfflineAccess
+                    },
+                    AccessTokenLifetime = 60*60*2, // 2 hours
+                    IdentityTokenLifetime= 60*60*2 // 2 hours
+                },
 
             };
         }

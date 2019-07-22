@@ -18,6 +18,7 @@ namespace Identity.API.Data
             //callbacks urls from config:
             var clientUrls = new Dictionary<string, string>();
             clientUrls.Add("BasketApi", configuration.GetValue<string>("BasketApiClient"));
+            clientUrls.Add("Mvc", configuration.GetValue<string>("MvcClient"));
 
             // Clients
             if (!context.Clients.Any())

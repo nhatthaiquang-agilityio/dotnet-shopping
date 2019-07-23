@@ -12,6 +12,7 @@ namespace Identity.API.Configuration
             return new List<ApiResource>
             {
                 new ApiResource("basket", "Basket API Service"),
+                new ApiResource("webhooks", "Webhooks registration Service"),
             };
         }
 
@@ -46,6 +47,7 @@ namespace Identity.API.Configuration
                         "basket"
                     }
                 },
+                // mapusermvc client
                 new Client
                 {
                     ClientId = "mvc",
@@ -77,7 +79,55 @@ namespace Identity.API.Configuration
                     AccessTokenLifetime = 60*60*2, // 2 hours
                     IdentityTokenLifetime= 60*60*2 // 2 hours
                 },
+                // webhook client
+                new Client
+                {
+                    ClientId = "webhooksclient",
+                    ClientName = "Webhooks Client",
+                    ClientSecrets = new List<Secret>
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    ClientUri = $"{clientsUrl["WebhooksWeb"]}",                             // public uri of the client
+                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    AllowAccessTokensViaBrowser = false,
+                    RequireConsent = false,
+                    AllowOfflineAccess = true,
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    RedirectUris = new List<string>
+                    {
+                        $"{clientsUrl["WebhooksWeb"]}/signin-oidc"
+                    },
+                    PostLogoutRedirectUris = new List<string>
+                    {
+                        $"{clientsUrl["WebhooksWeb"]}/signout-callback-oidc"
+                    },
+                    AllowedScopes = new List<string>
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
+                        "webhooks"
+                    },
+                    AccessTokenLifetime = 60*60*2, // 2 hours
+                    IdentityTokenLifetime= 60*60*2 // 2 hours
+                },
+                // webhooks api
+                new Client
+                {
+                    ClientId = "webhooksswaggerui",
+                    ClientName = "WebHooks Service Swagger UI",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
 
+                    RedirectUris = { $"{clientsUrl["WebhooksApi"]}/swagger/oauth2-redirect.html" },
+                    PostLogoutRedirectUris = { $"{clientsUrl["WebhooksApi"]}/swagger/" },
+
+                    AllowedScopes =
+                    {
+                        "webhooks"
+                    }
+                }
             };
         }
     }

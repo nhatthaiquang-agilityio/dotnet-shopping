@@ -39,6 +39,8 @@ services:
       ConnectionString: Server=sql.data;Database=IdentityDb;User Id=sa;Password=Your_password123
       BasketApiClient: http://localhost:6002
       MvcClient: http://localhost:6004
+      WebhooksWebClient: http://localhost:6005
+      WebhooksApiClient: http://localhost:6006
     ports:
       - "6001:80"
 
@@ -94,6 +96,46 @@ services:
       ASPNETCORE_URLS: http://0.0.0.0:80
       # Using Local Mac
       IdentityUrl: http://docker.for.mac.localhost:6001
+
+  webhook.client:
+    container_name: webhook.client
+    build:
+      context: .
+      dockerfile: src/WebhookClient/Dockerfile
+    ports:
+      - "6005:80"
+    depends_on:
+      - webhooks.api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://0.0.0.0:80
+      IdentityUrl: http://docker.for.mac.localhost:6001
+      IdentityUrlExternal: http://localhost:6001
+      CallBackUrl: http://localhost:6005
+      SelfUrl: http://localhost:6005
+      Token: 6168DB8D-DC58-4094-AF24-483278923590      # Webhooks are registered with this token (any value is valid) but the client won't check it
+      WebhooksUrl: http://webhooks.api
+
+  webhooks.api:
+    container_name: webhooks.api
+    build:
+      context: .
+      dockerfile: src/Webhooks.API/Dockerfile
+    ports:
+      - "6006:80"
+    depends_on:
+      - sql.data
+      - rabbitmq
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://0.0.0.0:80
+      # IdentityUrl: http://docker.for.mac.localhost:6001
+      IdentityUrl: http://identity.api
+      IdentityUrlExternal: http://localhost:6001
+      ConnectionString: Server=sql.data;Database=WebhooksDb;User Id=sa;Password=Your_password123
+      EventBusConnection: rabbitmq
+      EventBusUserName: admin
+      EventBusPassword: password
 
   # webmvc:
   #   container_name: webmvc

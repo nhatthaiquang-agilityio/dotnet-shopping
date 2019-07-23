@@ -46,14 +46,6 @@ namespace MapUserMVC
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
-            .AddIdentityServerAuthentication("sdfsadafsd", options =>
-            {
-                options.Authority = identityUrl;
-                options.ApiName = "api";
-                options.ApiSecret = "secret";
-                //options.SupportedTokens = SupportedTokens.Both;
-                options.RequireHttpsMetadata = false;
-            })
             .AddCookie(setup => setup.ExpireTimeSpan = TimeSpan.FromMinutes(sessionCookieLifetime))
             .AddOpenIdConnect(options =>
             {

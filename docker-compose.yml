@@ -8,8 +8,8 @@ services:
       ACCEPT_EULA: Y
     ports:
       - "1433:1433"
-    volumes:
-      - datatest:/var/opt/mssql
+    # volumes:
+    #   - datatest1:/var/opt/mssql
 
   basket.data:
     image: redis:alpine
@@ -34,11 +34,11 @@ services:
     depends_on:
       - sql.data
     environment:
-      PATH_BASE: /identity
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://0.0.0.0:80
       ConnectionString: Server=sql.data;Database=IdentityDb;User Id=sa;Password=Your_password123
       BasketApiClient: http://localhost:6002
+      MvcClient: http://localhost:6004
     ports:
       - "6001:80"
 
@@ -81,5 +81,39 @@ services:
       EventBusUserName: admin
       EventBusPassword: password
       AzureStorageEnabled: "false"
+
+  mapusermvc:
+    container_name: mapusermvc
+    build:
+      context: .
+      dockerfile: src/MapUserMVC/Dockerfile
+    ports:
+      - "6004:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://0.0.0.0:80
+      # Using Local Mac
+      IdentityUrl: http://docker.for.mac.localhost:6001
+
+  # webmvc:
+  #   container_name: webmvc
+  #   build:
+  #     context: .
+  #     dockerfile: src/WebMVC/Dockerfile
+  #   ports:
+  #     - "6004:80"
+  #   depends_on:
+  #     - basket.data
+  #     - rabbitmq
+  #     - identity.api
+  #   environment:
+  #     useLoadTest: "false"
+  #     ASPNETCORE_ENVIRONMENT: Development
+  #     ASPNETCORE_URLS: http://0.0.0.0:80
+  #     IdentityUrl: http://localhost:6001
+  #     IdentityUrlExternal: http://localhost:6001
+  #     CallBackUrl: http://localhost:6001
+  #     PurchaseUrl: http://localhost:6003
+
 volumes:
-  datatest:
+  datatest1:

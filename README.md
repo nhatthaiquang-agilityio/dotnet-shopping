@@ -10,6 +10,7 @@ The basket.api service will be saved the message on Redis.
 + Docker & Docker Compose
 + Kubernetes
 + Azure
++ Identity Server 4 (OAuth2, OpenId-Connect)
 + SQL Server
 + Redis
 + RabbitMQ on local(Service Bus on Azure)
@@ -18,8 +19,10 @@ The basket.api service will be saved the message on Redis.
     Copy the code from https://github.com/dotnet-architecture/eShopOnContainers
     + src
         - Catalog API
-        - Basket API
+        - Basket API(Swagger using OAuth2)
         - BuildingBlocks(.NetStandard Library for reusing both catalog and basket services)
+        - Identity API(Identity Server 4)
+        - MapUserMVC(WebMVC using OpenId-Connect)
     + k8s:
         - Build service On Minikube
             All files(exclude heml-rbac.yaml, conf_map_cloud.yaml, ingress_cloud.yaml)

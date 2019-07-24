@@ -39,7 +39,8 @@ namespace Identity.API
             var connectionString = Configuration["ConnectionString"];
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
-            RegisterAppInsights(services);
+            if (Configuration.GetValue<string>("IsRegisterAppInsights") == bool.TrueString)
+                RegisterAppInsights(services);
 
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString, sqlOptions =>

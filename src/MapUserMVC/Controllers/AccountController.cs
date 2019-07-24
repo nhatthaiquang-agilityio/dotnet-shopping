@@ -25,7 +25,6 @@ namespace WebMVC.Controllers
         {
             var user = User as ClaimsPrincipal;
             var token = await HttpContext.GetTokenAsync("access_token");
-            Console.WriteLine("User authenticated");
 
             if (token != null)
             {

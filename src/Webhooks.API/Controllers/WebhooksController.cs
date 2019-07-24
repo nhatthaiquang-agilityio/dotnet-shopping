@@ -20,7 +20,9 @@ namespace Webhooks.API.Controllers
         private readonly IIdentityService _identityService;
         private readonly IGrantUrlTesterService _grantUrlTester;
 
-        public WebhooksController(WebhooksContext dbContext, IIdentityService identityService, IGrantUrlTesterService grantUrlTester)
+        public WebhooksController(
+            WebhooksContext dbContext, IIdentityService identityService,
+            IGrantUrlTesterService grantUrlTester)
         {
             _dbContext = dbContext;
             _identityService = identityService;
@@ -44,7 +46,8 @@ namespace Webhooks.API.Controllers
         public async Task<IActionResult> GetByUserAndId(int id)
         {
             var userId = _identityService.GetUserIdentity();
-            var subscription = await _dbContext.Subscriptions.SingleOrDefaultAsync(s => s.Id == id && s.UserId == userId);
+            var subscription = await _dbContext.Subscriptions
+                .SingleOrDefaultAsync(s => s.Id == id && s.UserId == userId);
             if (subscription != null)
             {
                 return Ok(subscription);
@@ -97,7 +100,8 @@ namespace Webhooks.API.Controllers
         public async Task<IActionResult> UnsubscribeWebhook(int id)
         {
             var userId = _identityService.GetUserIdentity();
-            var subscription = await _dbContext.Subscriptions.SingleOrDefaultAsync(s => s.Id == id && s.UserId == userId);
+            var subscription = await _dbContext.Subscriptions
+                .SingleOrDefaultAsync(s => s.Id == id && s.UserId == userId);
 
             if (subscription != null)
             {
@@ -110,6 +114,4 @@ namespace Webhooks.API.Controllers
         }
 
     }
-
-
 }

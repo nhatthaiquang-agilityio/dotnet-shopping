@@ -11,7 +11,6 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using WebhookClient.Services;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace WebhookClient
 {
@@ -74,7 +73,6 @@ namespace WebhookClient
             {
                 capp.Run(async (context) =>
                 {
-                    //Console.WriteLine("Check (before)");
                     var validateToken = bool.TrueString.Equals(Configuration["ValidateToken"], StringComparison.InvariantCultureIgnoreCase);
                     var header = context.Request.Headers[HeaderNames.WebHookCheckHeader];
                     var value = header.FirstOrDefault();
@@ -92,7 +90,6 @@ namespace WebhookClient
                         await context.Response.WriteAsync("Invalid token");
                         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     }
-                    //Console.WriteLine("Check (after)");
                 });
             });
 
@@ -153,8 +150,8 @@ namespace WebhookClient
 
             //add http client services
             services.AddHttpClient("GrantClient")
-                   .SetHandlerLifetime(TimeSpan.FromMinutes(5))
-                   .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+                .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
 
             return services;
         }

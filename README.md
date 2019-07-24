@@ -15,20 +15,21 @@ The basket.api service will be saved the message on Redis.
 + Redis
 + RabbitMQ on local(Service Bus on Azure)
 
-### Structures
-    Copy the code from https://github.com/dotnet-architecture/eShopOnContainers
+### Structures: Copy the code from [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers)
     + src
         - Catalog API
         - Basket API(Swagger using OAuth2)
         - BuildingBlocks(.NetStandard Library for reusing both catalog and basket services)
         - Identity API(Identity Server 4)
         - MapUserMVC(WebMVC using OpenId-Connect)
+        - Webhooks API(Swagger using OAuth2)
+        - Webhook Client(using OpenId Connect, allow to access scope of Webhooks API)
     + k8s:
         - Build service On Minikube
             All files(exclude heml-rbac.yaml, conf_map_cloud.yaml, ingress_cloud.yaml)
         - Build services on Azure Kubernetes Service(AKS)
             All files(exclude conf_map_local.yaml)
-
+    + docker-compose.yml
 
 ### Using docker-compose
 -------------------------

@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: eshop
+    component: webhooksapi
+  name: webhooksapi
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: eshop
+    component: webhooksapi
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: webhooksapi
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: webhooksapi
+    spec:
+      containers:
+      - name: webhooksapi
+        image: nhatthai/dotnet-webhooks.api
+        imagePullPolicy: Always
+        env:
+        - name: PATH_BASE
+          value: /webhooks-api
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: ASPNETCORE_URLS
+          value: http://0.0.0.0:80
+        - name: IsClusterEnv
+          value: 'True'
+        - name: ConnectionString
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: webhooks__ConnectionString
+        - name: EventBusConnection
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: all__EventBusConnection
+        - name: EventBusUserName
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: all__EventBusUserName
+        - name: EventBusPassword
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: all__EventBusPassword
+        - name: AzureServiceBusEnabled
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: all__UseAzureServiceBus
+        - name: IdentityUrl
+          valueFrom:
+            configMapKeyRef:
+              name: urls
+              key: IdentityUrl
+        ports:
+        - containerPort: 80

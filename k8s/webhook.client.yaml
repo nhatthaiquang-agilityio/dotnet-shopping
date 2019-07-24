@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: eshop
+    component: webhookclient
+  name: webhookclient
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: eshop
+    component: webhookclient
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: webhookclient
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: webhookclient
+    spec:
+      containers:
+      - name: webhookclient
+        image: nhatthai/dotnet-webhook.client
+        imagePullPolicy: Always
+        env:
+        - name: PATH_BASE
+          value: /webhooks-client
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: ASPNETCORE_URLS
+          value: http://0.0.0.0:80
+        - name: IsClusterEnv
+          value: 'True'
+        - name: IdentityUrl
+          valueFrom:
+            configMapKeyRef:
+              name: urls
+              key: IdentityUrl
+        - name: IdentityUrlExternal
+          valueFrom:
+            configMapKeyRef:
+              name: urls
+              key: IdentityUrlExternal
+        - name: APPINSIGHTS_INSTRUMENTATIONKEY
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: all__AppInsightsInstrumentKey
+        - name: OrchestratorType
+          value: 'K8S'
+        - name: Token
+          value: '6168DB8D-DC58-4094-AF24-483278923590'
+        - name: WebhooksUrl
+          valueFrom:
+            configMapKeyRef:
+              name: urls
+              key: WebhooksApiClient
+        - name: CallBackUrl
+          valueFrom:
+            configMapKeyRef:
+              name: urls
+              key: WebhooksWebClient
+        - name: SelfUrl
+          valueFrom:
+            configMapKeyRef:
+              name: urls
+              key: WebhooksWebClient
+        ports:
+        - containerPort: 80

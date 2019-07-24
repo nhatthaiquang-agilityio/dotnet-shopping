@@ -28,13 +28,12 @@ spec:
         image: nhatthai/dotnet-identity.api
         imagePullPolicy: Always
         env:
-        # - name: PATH_BASE
-        #   value: /identity
+        - name: PATH_BASE
+          value: /identity
         - name: ASPNETCORE_ENVIRONMENT
           value: Development
         - name: ASPNETCORE_URLS
           value: http://0.0.0.0:80
-
         - name: ConnectionString
           valueFrom:
             configMapKeyRef:
@@ -52,6 +51,26 @@ spec:
            configMapKeyRef:
               name: urls
               key: BasketApiClient
+        - name: MvcClient
+          valueFrom:
+           configMapKeyRef:
+              name: urls
+              key: MvcClient
+        - name: WebhooksWebClient
+          valueFrom:
+           configMapKeyRef:
+              name: urls
+              key: WebhooksWebClient
+        - name: WebhooksApiClient
+          valueFrom:
+           configMapKeyRef:
+              name: urls
+              key: WebhooksApiClient
+        - name: IsRegisterAppInsights
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: all__IsRegisterAppInsights
         - name: APPINSIGHTS_INSTRUMENTATIONKEY
           valueFrom:
             configMapKeyRef:

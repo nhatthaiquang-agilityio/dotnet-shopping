@@ -59,6 +59,39 @@ docker-compose up
 kubectl apply -f [all files].yaml
 ```
 
+#### Minikube
++ Init Config Maps
+    ```
+    export externalDns=192.168.99.100
+    kubectl create configmap urls \
+        "--from-literal=BasketApiClient=http://$externalDns/basket-api" \
+        "--from-literal=MvcClient=http://$externalDns/mapuser-mvc" \
+        "--from-literal=WebhooksWebClient=http://$externalDns/webhooks-client" \
+        "--from-literal=WebhooksApiClient=http://$externalDns/webhooks-api" \
+        "--from-literal=IdentityUrlExternal=http://$externalDns/identity" \
+        "--from-literal=IdentityUrl=http://$externalDns/identity"
+    ```
+
+#### Issues On Minikube
+-------------------------
++ Using Antiforgery in ASP.NET Core and got error - the antiforgery token could not be decrypted
+    https://stackoverflow.com/questions/42103004/using-antiforgery-in-asp-net-core-and-got-error-the-antiforgery-token-could-no
+    - Fixed: Using Data Protection(store key in Redis)
+
++ signin-oidc callback fails with 502 Bad Gateway
+    https://github.com/IdentityServer/IdentityServer4/issues/2101
+    https://github.com/aspnet/Security/issues/1049
+
+    ```
+    kubectl get configmap -n kube-system
+    ```
+    - Nginx Controller: using nginx-load-balancer-conf config map
+    - Get logging: 43#43: *5928 upstream sent too big header while reading response header from upstream, client: 192.168.99.1, server: _, request: "POST /mapuser-mvc/signin-oidc HTTP/1.1", upstream: "http://172.17.0.9:80/mapuser-mvc/signin-oidc", host: "192.168.99.100"
+    - Fixed: add `proxy-buffer-size: "128k"` (https://medium.com/@mshanak/solve-nginx-error-signin-oidc-502-bad-gateway-dotnet-core-and-identity-serve-bc27920b42d5)
+    ```
+    kubectl apply -f nginx-configuration.yaml
+    ```
+
 #### Check APIs
 + Catalog API
 
@@ -73,6 +106,7 @@ kubectl apply -f [all files].yaml
 + Basket API
     ```
     GET localhost/api/v1/basket/{product_id}/
+
 
 ### Using Kubernetes on Azure
 ------------------------------
@@ -99,6 +133,11 @@ kubectl apply -f [all files].yaml
         --set controller.service.externalTrafficPolicy=Local \
         --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
         --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+    ```
+
++ Init Config Maps
+    ```
+    ./init.sh
     ```
 
 ### Service Bus

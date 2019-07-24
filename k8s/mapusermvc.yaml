@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: eshop
+    component: mapusermvc
+  name: mapusermvc
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: eshop
+    component: mapusermvc
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mapusermvc
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: mapusermvc
+    spec:
+      containers:
+      - name: mapusermvc
+        image: nhatthai/dotnet-mapusermvc
+        imagePullPolicy: Always
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: ASPNETCORE_URLS
+          value: http://0.0.0.0:80
+        - name: PATH_BASE
+          value: /mapuser-mvc
+        - name: DPConnectionString
+          valueFrom:
+           configMapKeyRef:
+             name: externalcfg
+             key: keystore
+        - name: IsClusterEnv
+          value: 'True'
+        - name: IdentityUrl
+          valueFrom:
+            configMapKeyRef:
+              name: urls
+              key: IdentityUrl
+        - name: CallBackUrl
+          valueFrom:
+            configMapKeyRef:
+              name: urls
+              key: MvcClient
+        ports:
+        - containerPort: 80

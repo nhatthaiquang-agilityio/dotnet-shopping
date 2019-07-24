@@ -12,10 +12,6 @@ spec:
   rules:
   - http:
       paths:
-      - path: /rabbitmq
-        backend:
-          serviceName: rabbitmq
-          servicePort: 15672
       - path: /basket-api
         backend:
           serviceName: basket
@@ -27,4 +23,16 @@ spec:
       - path: /identity
         backend:
           serviceName: identity
+          servicePort: 80
+      - path: /mapuser-mvc
+        backend:
+          serviceName: mapusermvc
+          servicePort: 80
+      - path: /webhooks-client
+        backend:
+          serviceName: webhookclient
+          servicePort: 80
+      - path: /webhooks-api
+        backend:
+          serviceName: webhooksapi
           servicePort: 80

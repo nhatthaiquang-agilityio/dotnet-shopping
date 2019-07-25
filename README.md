@@ -5,7 +5,8 @@ Update item in catalog api service. The message was send from the catalog.api se
 The basket.api service will be saved the message on Redis.
 
 
-### Requirements
+## Requirements
+-----------------
 + Asp Net Core 2.2
 + Docker & Docker Compose
 + Kubernetes
@@ -16,6 +17,7 @@ The basket.api service will be saved the message on Redis.
 + RabbitMQ on local(Service Bus on Azure)
 
 ### Structures: Copy the code from [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers)
+-----------------------------------------------------------------------------------------------------------------
     + src
         - Catalog API
         - Basket API(Swagger using OAuth2)
@@ -110,8 +112,7 @@ kubectl apply -f [all files].yaml
 
 ### Using Kubernetes on Azure
 ------------------------------
-+ Install helm
-+ Intall helm rbac
+#### Install helm & helm rbac
     - Error: no available release name found(https://stackoverflow.com/questions/43499971/helm-error-no-available-release-name-found)
     - Error: could not find tiller
     ```
@@ -124,7 +125,7 @@ kubectl apply -f [all files].yaml
     helm update repo
     ```
 
-+ Create Load Balancer on Azure Helm
+#### Create Load Balancer on Azure Helm
     ```
     helm install stable/nginx-ingress \
         --namespace default --name frontend
@@ -135,19 +136,21 @@ kubectl apply -f [all files].yaml
         --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
     ```
 
-+ Init Config Maps
+#### Init Config Maps
     ```
     ./init.sh
     ```
 
 ### Service Bus
+----------------
 + Create Topic: "eshop_event_bus" (EntityPath: "eshop_event_bus" in Connectionstring)
     ```
     "SubscriptionClientName": "Catalog"
     "SubscriptionClientName": "Basket"
     ```
 
-Notes:
+## Notes
+---------
 + [Create an ingress controller in Azure Kubernetes Server(AKS)](https://docs.microsoft.com/en-us/azure/aks/ingress-basic)
 + Pay attention to Kubernetes Ingress (https://kubernetes.github.io/ingress-nginx/examples/rewrite/)
     ```

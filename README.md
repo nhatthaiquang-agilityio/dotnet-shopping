@@ -18,6 +18,7 @@ The basket.api service will be saved the message on Redis.
 ### Structures: Copy the code from [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers)
 -----------------------------------------------------------------------------------------------------------------
     + src
+        - ApiGateways (Building API gateway Using Ocelot)
         - Catalog API
         - Basket API(Swagger using OAuth2)
         - BuildingBlocks(.NetStandard Library for reusing both catalog and basket services)
@@ -148,6 +149,12 @@ kubectl apply -f [all files].yaml
     "SubscriptionClientName": "Catalog"
     "SubscriptionClientName": "Basket"
     ```
+
+### Reference
+--------------
++ [Building API gateway Using Ocelot](http://www.pogsdotnet.com/2018/08/building-simple-api-gateways-with.html)
++ [Designing and implementing API Gateways with Ocelot in .NET Core containers and microservices architectures](https://devblogs.microsoft.com/cesardelatorre/designing-and-implementing-api-gateways-with-ocelot-in-a-microservices-and-container-based-architecture/)
+
 
 ## Notes
 + [Create an ingress controller in Azure Kubernetes Server(AKS)](https://docs.microsoft.com/en-us/azure/aks/ingress-basic)

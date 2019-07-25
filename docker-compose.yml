@@ -46,6 +46,7 @@ services:
 
   basket.api:
     container_name: basket.api
+    hostname: basket.api
     build:
       context: .
       dockerfile: src/Basket.API/BasketAPI/Dockerfile
@@ -67,6 +68,7 @@ services:
 
   catalog.api:
     container_name: catalog.api
+    hostname: catalog.api
     build:
       context: .
       dockerfile: src/Catalog.API/Dockerfile
@@ -113,7 +115,8 @@ services:
       IdentityUrlExternal: http://localhost:6001
       CallBackUrl: http://localhost:6005
       SelfUrl: http://localhost:6005
-      Token: 6168DB8D-DC58-4094-AF24-483278923590      # Webhooks are registered with this token (any value is valid) but the client won't check it
+      # Webhooks are registered with this token (any value is valid) but the client won't check it
+      Token: 6168DB8D-DC58-4094-AF24-483278923590
       WebhooksUrl: http://webhooks.api
 
   webhooks.api:
@@ -137,6 +140,31 @@ services:
       EventBusUserName: admin
       EventBusPassword: password
 
+  webapigw:
+    container_name: web.apigw
+    build:
+      context: .
+      dockerfile: src/ApiGateways/ApiGw-Base/Dockerfile
+    depends_on:
+      - sql.data
+      - identity.api
+      - rabbitmq
+      - catalog.api
+      - basket.api
+    links:
+      - identity.api
+      - catalog.api
+      - basket.api
+    ports:
+      - "6009:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://0.0.0.0:80
+      # Local: You need to open your local dev-machine firewall at range 5100-5110.
+      IdentityUrl: http://identity.api
+    volumes:
+      - "./src/ApiGateways/apigw-config/configuration.json:/app/configuration.json"
+
   # webmvc:
   #   container_name: webmvc
   #   build:
@@ -149,13 +177,18 @@ services:
   #     - rabbitmq
   #     - identity.api
   #   environment:
+  #     UseCustomizationData: "True"
   #     useLoadTest: "false"
   #     ASPNETCORE_ENVIRONMENT: Development
   #     ASPNETCORE_URLS: http://0.0.0.0:80
-  #     IdentityUrl: http://localhost:6001
+  #     IdentityUrl: http://docker.for.mac.localhost:6001
   #     IdentityUrlExternal: http://localhost:6001
   #     CallBackUrl: http://localhost:6001
   #     PurchaseUrl: http://localhost:6003
+  #     EventBusConnection: rabbitmq
+  #     EventBusUserName: admin
+  #     EventBusPassword: password
 
 volumes:
   datatest1:
+  data:

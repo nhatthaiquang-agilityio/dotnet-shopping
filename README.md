@@ -6,7 +6,6 @@ The basket.api service will be saved the message on Redis.
 
 
 ## Requirements
------------------
 + Asp Net Core 2.2
 + Docker & Docker Compose
 + Kubernetes
@@ -113,7 +112,8 @@ kubectl apply -f [all files].yaml
 ### Using Kubernetes on Azure
 ------------------------------
 #### Install helm & helm rbac
-    - Error: no available release name found(https://stackoverflow.com/questions/43499971/helm-error-no-available-release-name-found)
+    - Error: no available release name found
+        (https://stackoverflow.com/questions/43499971/helm-error-no-available-release-name-found)
     - Error: could not find tiller
     ```
     kubectl apply -f helm-rbac.yaml
@@ -150,7 +150,6 @@ kubectl apply -f [all files].yaml
     ```
 
 ## Notes
----------
 + [Create an ingress controller in Azure Kubernetes Server(AKS)](https://docs.microsoft.com/en-us/azure/aks/ingress-basic)
 + Pay attention to Kubernetes Ingress (https://kubernetes.github.io/ingress-nginx/examples/rewrite/)
     ```

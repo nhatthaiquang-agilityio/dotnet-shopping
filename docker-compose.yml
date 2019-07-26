@@ -41,6 +41,7 @@ services:
       MvcClient: http://localhost:6004
       WebhooksWebClient: http://localhost:6005
       WebhooksApiClient: http://localhost:6006
+      WebShoppingAggClient: http://localhost:6008
     ports:
       - "6001:80"
 
@@ -140,15 +141,30 @@ services:
       EventBusUserName: admin
       EventBusPassword: password
 
+  webshoppingagg:
+    build:
+      context: .
+      dockerfile: src/ApiGateways/Web.Shopping/aggregator/Dockerfile
+    depends_on:
+      - identity.api
+      - catalog.api
+      - basket.api
+    ports:
+      - "6008:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      urls__basket: http://basket.api
+      urls__catalog: http://catalog.api
+      urls__identity: http://identity.api
+      IdentityUrlExternal: http://localhost:6001
+
   webapigw:
     container_name: web.apigw
     build:
       context: .
       dockerfile: src/ApiGateways/ApiGw-Base/Dockerfile
     depends_on:
-      - sql.data
       - identity.api
-      - rabbitmq
       - catalog.api
       - basket.api
     links:

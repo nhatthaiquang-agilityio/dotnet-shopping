@@ -10,10 +10,16 @@ The basket.api service will be saved the message on Redis.
 + Docker & Docker Compose
 + Kubernetes
 + Azure
+    - Store Logging
+    - Application Insight
+    - Service Bus
+    - Redis Server
 + Identity Server 4 (OAuth2, OpenId-Connect)
++ API Gateway(Using Ocelot)
 + SQL Server
-+ Redis
++ Redis (Store Data Protection Key)
 + RabbitMQ on local(Service Bus on Azure)
+
 
 ### Structures: Copy the code from [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers)
 -----------------------------------------------------------------------------------------------------------------
@@ -33,8 +39,7 @@ The basket.api service will be saved the message on Redis.
         - configmaps
         - ingress-controller
         - ocelot (API gateway)
-        - Service files
-
+        - service files
     + docker-compose.yml
 
 #### Notes
@@ -42,6 +47,7 @@ The basket.api service will be saved the message on Redis.
     - All files(exclude heml-rbac.yaml, conf-map-cloud.yaml, ingress-cloud.yaml)
 + Build services on Azure Kubernetes Service(AKS):
     - All files(exclude conf-map-local.yaml)
+
 
 ### Using docker-compose
 -------------------------
@@ -59,16 +65,36 @@ docker-compose up
 + Catalog API
 
     ```
-    GET localhost/api/v1/catalog/items
+    GET localhost:6003/api/v1/catalog/items
     ```
 
     ```
-    PUT localhost/api/v1/catalog/items
+    PUT localhost:6003/api/v1/catalog/items
     ```
 
 + Basket API
     ```
-    GET localhost/api/v1/basket/{product_id}/
+    GET localhost:6002/api/v1/basket/{product_id}/
+    ```
+
++ Identity Server
+    ```
+    http://localhost:6001/
+    ```
+
++ API Gateway
+    ```
+    http://localhost:6009/api/v1/c/catalog/items
+    ```
+
++ Webhook Client
+    ```
+    http://localhost:6005/
+    ```
+
++ Webhooks API
+    ```
+    http://localhost:6006/
     ```
 
 ### Using Kubernetes
@@ -82,14 +108,21 @@ kubectl apply -f [all files].yaml
     ```
     export externalDns=192.168.99.100
     kubectl create configmap urls \
-    "--from-literal=BasketApiClient=http://$externalDns/basket-api" \
-    "--from-literal=MvcClient=http://$externalDns/mapuser-mvc" \
-    "--from-literal=WebhooksWebClient=http://$externalDns/webhooks-client" \
-    "--from-literal=WebhooksApiClient=http://$externalDns/webhooks-api" \
-    "--from-literal=WebShoppingAggClient=http://$externalDns/webshoppingagg" \
-    "--from-literal=IdentityUrlExternal=http://$externalDns/identity" \
-    "--from-literal=IdentityUrl=http://$externalDns/identity"
+        "--from-literal=BasketApiClient=http://$externalDns/basket-api" \
+        "--from-literal=MvcClient=http://$externalDns/mapuser-mvc" \
+        "--from-literal=WebhooksWebClient=http://$externalDns/webhooks-client" \
+        "--from-literal=WebhooksApiClient=http://$externalDns/webhooks-api" \
+        "--from-literal=WebShoppingAggClient=http://$externalDns/webshoppingagg" \
+        "--from-literal=IdentityUrlExternal=http://$externalDns/identity" \
+        "--from-literal=IdentityUrl=http://$externalDns/identity"
     ```
+
++ Init Ocelot(k8s/configmaps/config-map-ocelot.sh)
+    ```
+    kubectl create configmap ocelot --from-file=ws=ocelot/configuration.json
+    ```
+
++ Init Interal Urls
 
 #### Issues On Minikube
 -------------------------
@@ -115,16 +148,47 @@ kubectl apply -f [all files].yaml
 + Catalog API
 
     ```
-    GET localhost/catalog-api/api/v1/catalog/items
+    GET  http://192.168.99.100/catalog-api/api/v1/catalog/items
     ```
 
     ```
-    PUT localhost/catalog-api/api/v1/catalog/items
+    PUT  http://192.168.99.100/catalog-api/api/v1/catalog/items
     ```
 
 + Basket API
     ```
-    GET localhost/api/v1/basket/{product_id}/
+    GET  http://192.168.99.100/api/v1/basket/{product_id}/
+    ```
+
++ Identiy Server
+    ```
+    Get http://192.168.99.100/identity
+    ```
+
++ Map User MVC
+    ```
+    http://192.168.99.100/mapuser-mvc
+    ```
+
++ Webhook Client
+    ```
+    http://192.168.99.100/webhooks-client
+    ```
+
++ Webhooks APIs
+    ```
+    http://192.168.99.100/webhooks-api
+    ```
+
++ API Gateway
+    ```
+    GET  http://192.168.99.100/webshoppingapigw/catalog-api/api/v1/catalog/items
+    ```
+
++ Web shopping Aggregator
+    ```
+    http://192.168.99.100/webshoppingagg/index.html
+    ```
 
 
 ### Using Kubernetes on Azure
@@ -144,6 +208,7 @@ kubectl apply -f [all files].yaml
     ```
 
 #### Create Load Balancer on Azure Helm
+    Note: Wait a few minutes for creating public IP
     ```
     helm install stable/nginx-ingress \
         --namespace default --name frontend
@@ -166,6 +231,7 @@ kubectl apply -f [all files].yaml
     "SubscriptionClientName": "Catalog"
     "SubscriptionClientName": "Basket"
     ```
+
 
 ### Reference
 --------------

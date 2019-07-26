@@ -8,8 +8,8 @@ services:
       ACCEPT_EULA: Y
     ports:
       - "1433:1433"
-    # volumes:
-    #   - datatest1:/var/opt/mssql
+    volumes:
+      - data:/var/opt/mssql
 
   basket.data:
     image: redis:alpine
@@ -206,5 +206,4 @@ services:
   #     EventBusPassword: password
 
 volumes:
-  datatest1:
   data:

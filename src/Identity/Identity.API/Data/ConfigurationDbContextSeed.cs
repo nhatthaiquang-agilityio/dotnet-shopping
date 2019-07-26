@@ -21,6 +21,7 @@ namespace Identity.API.Data
             clientUrls.Add("Mvc", configuration.GetValue<string>("MvcClient"));
             clientUrls.Add("WebhooksWeb", configuration.GetValue<string>("WebhooksWebClient"));
             clientUrls.Add("WebhooksApi", configuration.GetValue<string>("WebhooksApiClient"));
+            clientUrls.Add("WebShoppingAgg", configuration.GetValue<string>("WebShoppingAggClient"));
 
             // Clients
             if (!context.Clients.Any())

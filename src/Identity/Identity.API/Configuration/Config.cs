@@ -13,6 +13,7 @@ namespace Identity.API.Configuration
             {
                 new ApiResource("basket", "Basket API Service"),
                 new ApiResource("webhooks", "Webhooks registration Service"),
+                new ApiResource("webshoppingagg", "Web Shopping Aggregator"),
             };
         }
 
@@ -40,7 +41,7 @@ namespace Identity.API.Configuration
                     AllowAccessTokensViaBrowser = true,
 
                     RedirectUris = { $"{clientsUrl["BasketApi"]}/oauth2-redirect.html" },
-                    //PostLogoutRedirectUris = { $"{clientsUrl["BasketApi"]}/" },
+                    PostLogoutRedirectUris = { $"{clientsUrl["BasketApi"]}/" },
 
                     AllowedScopes =
                     {
@@ -74,7 +75,8 @@ namespace Identity.API.Configuration
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        IdentityServerConstants.StandardScopes.OfflineAccess
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
+                        "webshoppingagg"
                     },
                     AccessTokenLifetime = 60*60*2, // 2 hours
                     IdentityTokenLifetime= 60*60*2 // 2 hours
@@ -127,7 +129,22 @@ namespace Identity.API.Configuration
                     {
                         "webhooks"
                     }
-                }
+                },
+                new Client
+                {
+                    ClientId = "webshoppingaggswaggerui",
+                    ClientName = "Web Shopping Aggregattor Swagger UI",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+
+                    RedirectUris = { $"{clientsUrl["WebShoppingAgg"]}/oauth2-redirect.html" },
+                    PostLogoutRedirectUris = { $"{clientsUrl["WebShoppingAgg"]}/" },
+
+                    AllowedScopes =
+                    {
+                        "webshoppingagg"
+                    }
+                },
             };
         }
     }

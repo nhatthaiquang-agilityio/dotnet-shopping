@@ -19,6 +19,9 @@ The basket.api service will be saved the message on Redis.
 -----------------------------------------------------------------------------------------------------------------
     + src
         - ApiGateways (Building API gateway Using Ocelot)
+            - ApiGw-Base (Ocelot API Gateway)
+            - Web.Shopping aggregator
+            - apigw-config (Ocelot Configuration)
         - Catalog API
         - Basket API(Swagger using OAuth2)
         - BuildingBlocks(.NetStandard Library for reusing both catalog and basket services)
@@ -27,17 +30,30 @@ The basket.api service will be saved the message on Redis.
         - Webhooks API(Swagger using OAuth2)
         - Webhook Client(using OpenId Connect, allow to access scope of Webhooks API)
     + k8s:
-        - Build service On Minikube
-            All files(exclude heml-rbac.yaml, conf_map_cloud.yaml, ingress_cloud.yaml)
-        - Build services on Azure Kubernetes Service(AKS)
-            All files(exclude conf_map_local.yaml)
+        - configmaps
+        - ingress-controller
+        - ocelot (API gateway)
+        - Service files
+
     + docker-compose.yml
+
+#### Notes
++ Build service On Minikube:
+    - All files(exclude heml-rbac.yaml, conf-map-cloud.yaml, ingress-cloud.yaml)
++ Build services on Azure Kubernetes Service(AKS):
+    - All files(exclude conf-map-local.yaml)
 
 ### Using docker-compose
 -------------------------
 ```
 docker-compose up
 ```
+
+#### Issues on Docker Compose
+-------------------------------
++ Got exception IDX20804: Unable to retrieve document from: <path>/.well-known/openid-configuration'. IDX20803: Unable to obtain configuration from: '[PII is hidden]'.
+    - https://www.gitmemory.com/issue/IdentityServer/IdentityServer4/2337/467712399
+    - Fixed: https://github.com/IdentityServer/IdentityServer4/issues/2450 (Using Local Mac in docker)
 
 #### Check APIs
 + Catalog API
@@ -92,7 +108,7 @@ kubectl apply -f [all files].yaml
     - Get logging: 43#43: *5928 upstream sent too big header while reading response header from upstream, client: 192.168.99.1, server: _, request: "POST /mapuser-mvc/signin-oidc HTTP/1.1", upstream: "http://172.17.0.9:80/mapuser-mvc/signin-oidc", host: "192.168.99.100"
     - Fixed: add `proxy-buffer-size: "128k"` (https://medium.com/@mshanak/solve-nginx-error-signin-oidc-502-bad-gateway-dotnet-core-and-identity-serve-bc27920b42d5)
     ```
-    kubectl apply -f nginx-configuration.yaml
+    kubectl apply -f configmaps/nginx-configuration.yaml
     ```
 
 #### Check APIs
@@ -118,7 +134,7 @@ kubectl apply -f [all files].yaml
         (https://stackoverflow.com/questions/43499971/helm-error-no-available-release-name-found)
     - Error: could not find tiller
     ```
-    kubectl apply -f helm-rbac.yaml
+    kubectl apply -f ingress-controller/helm-rbac.yaml
 
     helm init --service-account tiller
 

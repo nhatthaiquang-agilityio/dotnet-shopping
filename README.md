@@ -66,12 +66,13 @@ kubectl apply -f [all files].yaml
     ```
     export externalDns=192.168.99.100
     kubectl create configmap urls \
-        "--from-literal=BasketApiClient=http://$externalDns/basket-api" \
-        "--from-literal=MvcClient=http://$externalDns/mapuser-mvc" \
-        "--from-literal=WebhooksWebClient=http://$externalDns/webhooks-client" \
-        "--from-literal=WebhooksApiClient=http://$externalDns/webhooks-api" \
-        "--from-literal=IdentityUrlExternal=http://$externalDns/identity" \
-        "--from-literal=IdentityUrl=http://$externalDns/identity"
+    "--from-literal=BasketApiClient=http://$externalDns/basket-api" \
+    "--from-literal=MvcClient=http://$externalDns/mapuser-mvc" \
+    "--from-literal=WebhooksWebClient=http://$externalDns/webhooks-client" \
+    "--from-literal=WebhooksApiClient=http://$externalDns/webhooks-api" \
+    "--from-literal=WebShoppingAggClient=http://$externalDns/webshoppingagg" \
+    "--from-literal=IdentityUrlExternal=http://$externalDns/identity" \
+    "--from-literal=IdentityUrl=http://$externalDns/identity"
     ```
 
 #### Issues On Minikube

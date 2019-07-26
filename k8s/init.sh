@@ -23,6 +23,7 @@ kubectl create configmap urls \
     "--from-literal=MvcClient=http://$externalDns/mapuser-mvc" \
     "--from-literal=WebhooksWebClient=http://$externalDns/webhooks-client" \
     "--from-literal=WebhooksApiClient=http://$externalDns/webhooks-api" \
+    "--from-literal=WebShoppingAggClient=http://$externalDns/webshoppingagg" \
     "--from-literal=IdentityUrlExternal=http://$externalDns/identity" \
     "--from-literal=IdentityUrl=http://$externalDns/identity"
 kubectl label configmap urls app=eshop

@@ -66,6 +66,11 @@ spec:
            configMapKeyRef:
               name: urls
               key: WebhooksApiClient
+        - name: WebShoppingAggClient
+          valueFrom:
+           configMapKeyRef:
+              name: urls
+              key: WebShoppingAggClient
         - name: IsRegisterAppInsights
           valueFrom:
             configMapKeyRef:

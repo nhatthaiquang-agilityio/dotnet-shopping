@@ -36,3 +36,11 @@ spec:
         backend:
           serviceName: webhooksapi
           servicePort: 80
+      - path: /webshoppingagg
+        backend:
+          serviceName: webshoppingagg
+          servicePort: 80
+      - path: /webshoppingapigw
+        backend:
+          serviceName: ocelotapigw-ws
+          servicePort: 80

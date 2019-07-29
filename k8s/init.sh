@@ -17,6 +17,8 @@ echo "Using $externalDns as the external DNS/IP of the K8s cluster"
 
 echo "#################### Creating application configuration ####################"
 
+kubectl delete configmap urls || true
+
 # urls configmap
 kubectl create configmap urls \
     "--from-literal=BasketApiClient=http://$externalDns/basket-api" \

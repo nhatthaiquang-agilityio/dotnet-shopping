@@ -100,11 +100,11 @@ docker-compose up
 ### Using Kubernetes
 ---------------------
 ```
-kubectl apply -f [all files].yaml
+kubectl apply -f [service files].yaml
 ```
 
 #### Minikube
-+ Init Config Maps
++ Init Config Maps URLs
     ```
     export externalDns=192.168.99.100
     kubectl create configmap urls \
@@ -123,6 +123,14 @@ kubectl apply -f [all files].yaml
     ```
 
 + Init Interal Urls
+    ```
+    kubectl apply -f configmaps/internalurls.yaml
+    ```
+
++ Init External Config
+    ```
+    kubectl apply -f configmaps/conf-map-local.yaml
+    ```
 
 #### Issues On Minikube
 -------------------------
@@ -222,6 +230,21 @@ kubectl apply -f [all files].yaml
 #### Init Config Maps
     ```
     ./init.sh
+    ```
+
+#### Init Ocelot(k8s/configmaps/config-map-ocelot.sh)
+    ```
+    kubectl create configmap ocelot --from-file=ws=ocelot/configuration.json
+    ```
+
+#### Init Interal Urls
+    ```
+    kubectl apply -f configmaps/internal.yaml
+    ```
+
+#### Init externalcfg
+    ```
+    kubectl apply -f configmaps/conf-map-cloud.yaml
     ```
 
 ### Service Bus

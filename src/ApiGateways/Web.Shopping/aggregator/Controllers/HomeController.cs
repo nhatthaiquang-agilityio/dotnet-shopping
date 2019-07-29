@@ -12,7 +12,7 @@ namespace Web.Shopping.HttpAggregator.Controllers
         [HttpGet()]
         public IActionResult Index()
         {
-            return new RedirectResult("~/swagger");
+            return new RedirectResult("~/");
         }
     }
 }

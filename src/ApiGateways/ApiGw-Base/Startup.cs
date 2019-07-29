@@ -38,7 +38,7 @@ namespace OcelotApiGw
                     x.RequireHttpsMetadata = false;
                     x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
                     {
-                        ValidAudiences = new[] { "webshoppingagg" }
+                        ValidAudiences = new[] { "basket", "webshoppingagg" }
                     };
                     x.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents()
                     {

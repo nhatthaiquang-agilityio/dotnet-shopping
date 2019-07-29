@@ -48,7 +48,7 @@ namespace Identity.API.Configuration
                         "basket"
                     }
                 },
-                // mapusermvc client
+                // web mvc client
                 new Client
                 {
                     ClientId = "mvc",
@@ -70,6 +70,41 @@ namespace Identity.API.Configuration
                     PostLogoutRedirectUris = new List<string>
                     {
                         $"{clientsUrl["Mvc"]}/signout-callback-oidc"
+                    },
+                    AllowedScopes = new List<string>
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
+                        "basket",
+                        "webhooks",
+                        "webshoppingagg"
+                    },
+                    AccessTokenLifetime = 60*60*2, // 2 hours
+                    IdentityTokenLifetime= 60*60*2 // 2 hours
+                },
+                // mapusermvc client
+                new Client
+                {
+                    ClientId = "mapusermvc",
+                    ClientName = "Map User MVC Client",
+                    ClientSecrets = new List<Secret>
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    ClientUri = $"{clientsUrl["MapUserMvc"]}",                             // public uri of the client
+                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    AllowAccessTokensViaBrowser = false,
+                    RequireConsent = false,
+                    AllowOfflineAccess = true,
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    RedirectUris = new List<string>
+                    {
+                        $"{clientsUrl["MapUserMvc"]}/signin-oidc"
+                    },
+                    PostLogoutRedirectUris = new List<string>
+                    {
+                        $"{clientsUrl["MapUserMvc"]}/signout-callback-oidc"
                     },
                     AllowedScopes = new List<string>
                     {

@@ -19,6 +19,7 @@ namespace Identity.API.Data
             var clientUrls = new Dictionary<string, string>();
             clientUrls.Add("BasketApi", configuration.GetValue<string>("BasketApiClient"));
             clientUrls.Add("Mvc", configuration.GetValue<string>("MvcClient"));
+            clientUrls.Add("MapUserMvc", configuration.GetValue<string>("MapUserMvcClient"));
             clientUrls.Add("WebhooksWeb", configuration.GetValue<string>("WebhooksWebClient"));
             clientUrls.Add("WebhooksApi", configuration.GetValue<string>("WebhooksApiClient"));
             clientUrls.Add("WebShoppingAgg", configuration.GetValue<string>("WebShoppingAggClient"));

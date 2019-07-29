@@ -27,7 +27,7 @@ namespace WebMVC.Controllers
             var user = User as ClaimsPrincipal;
             var token = await HttpContext.GetTokenAsync("access_token");
 
-            _logger.LogInformation("----- User {@User} authenticated into {AppName}", user, Program.AppName);
+            //_logger.LogInformation("----- User {@User} authenticated into {AppName}", user, Program.AppName);
 
             if (token != null)
             {
@@ -48,7 +48,7 @@ namespace WebMVC.Controllers
             // https://github.com/aspnet/Mvc/issues/5853
             var homeUrl = Url.Action(nameof(CatalogController.Index), "Catalog");
             return new SignOutResult(OpenIdConnectDefaults.AuthenticationScheme,
-                new AspNetCore.Authentication.AuthenticationProperties { RedirectUri = homeUrl });
+                new Microsoft.AspNetCore.Authentication.AuthenticationProperties { RedirectUri = homeUrl });
         }
     }
 }

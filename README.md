@@ -33,6 +33,8 @@ The basket.api service will be saved the message on Redis.
         - BuildingBlocks(.NetStandard Library for reusing both catalog and basket services)
         - Identity API(Identity Server 4)
         - MapUserMVC(WebMVC using OpenId-Connect)
+        - Web MVC
+        - Ordering API
         - Webhooks API(Swagger using OAuth2)
         - Webhook Client(using OpenId Connect, allow to access scope of Webhooks API)
     + k8s:

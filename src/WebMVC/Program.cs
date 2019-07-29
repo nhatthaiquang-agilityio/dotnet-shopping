@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.IO;
@@ -11,7 +10,7 @@ namespace WebMVC
     public class Program
     {
         public static readonly string Namespace = typeof(Program).Namespace;
-        public static readonly string AppName = Namespace.Substring(Namespace.LastIndexOf('.', Namespace.LastIndexOf('.') - 1) + 1);
+        public static readonly string AppName = Namespace;
 
         public static int Main(string[] args)
         {
@@ -44,22 +43,17 @@ namespace WebMVC
             WebHost.CreateDefaultBuilder(args)
                 .CaptureStartupErrors(false)
                 .UseStartup<Startup>()
-                .UseApplicationInsights()
                 .UseConfiguration(configuration)
                 .UseSerilog()
                 .Build();
 
-         private static Serilog.ILogger CreateSerilogLogger(IConfiguration configuration)
+        private static Serilog.ILogger CreateSerilogLogger(IConfiguration configuration)
         {
-            var seqServerUrl = configuration["Serilog:SeqServerUrl"];
-            var logstashUrl = configuration["Serilog:LogstashgUrl"];
             return new LoggerConfiguration()
                 .MinimumLevel.Verbose()
                 .Enrich.WithProperty("ApplicationContext", AppName)
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
-                .WriteTo.Seq(string.IsNullOrWhiteSpace(seqServerUrl) ? "http://seq" : seqServerUrl)
-                .WriteTo.Http(string.IsNullOrWhiteSpace(logstashUrl) ? "http://logstash:8080" : logstashUrl)
                 .ReadFrom.Configuration(configuration)
                 .CreateLogger();
         }
@@ -68,7 +62,7 @@ namespace WebMVC
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", false, true)
                 .AddEnvironmentVariables();
 
             return builder.Build();

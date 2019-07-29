@@ -1,7 +1,4 @@
-﻿using Devspaces.Support;
-using HealthChecks.UI.Client;
-using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.ApplicationInsights.ServiceFabric;
+﻿using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -14,7 +11,6 @@ using WebMVC.Services;
 using WebMVC.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Extensions.Http;
@@ -24,7 +20,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
 using WebMVC.Infrastructure;
 using WebMVC.Infrastructure.Middlewares;
-using WebMVC.Services;
 
 namespace WebMVC
 {
@@ -40,12 +35,8 @@ namespace WebMVC
         // This method gets called by the runtime. Use this method to add services to the IoC container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAppInsight(Configuration)
-                    .AddHealthChecks(Configuration)
-                    .AddCustomMvc(Configuration)
-                    .AddDevspaces()
+            services.AddCustomMvc(Configuration)
                     .AddHttpClientServices(Configuration)
-                    //.AddHttpClientLogging(Configuration)  //Opt-in HttpClientLogging config
                     .AddCustomAuthentication(Configuration);
         }
 
@@ -54,14 +45,11 @@ namespace WebMVC
         {
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-            //loggerFactory.AddAzureWebAppDiagnostics();
-            //loggerFactory.AddApplicationInsights(app.ApplicationServices, LogLevel.Trace);
-
-            app.UseHealthChecks("/hc", new HealthCheckOptions()
-            {
-                Predicate = _ => true,
-                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            });
+            //app.UseHealthChecks("/hc", new HealthCheckOptions()
+            //{
+            //    Predicate = _ => true,
+            //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            //});
 
             if (env.IsDevelopment())
             {
@@ -80,10 +68,10 @@ namespace WebMVC
                 app.UsePathBase(pathBase);
             }
 
-            app.UseHealthChecks("/liveness", new HealthCheckOptions
-            {
-                Predicate = r => r.Name.Contains("self")
-            });
+            //app.UseHealthChecks("/liveness", new HealthCheckOptions
+            //{
+            //    Predicate = r => r.Name.Contains("self")
+            //});
 
             app.UseSession();
             app.UseStaticFiles();
@@ -114,37 +102,29 @@ namespace WebMVC
     static class ServiceCollectionExtensions
     {
 
-        public static IServiceCollection AddAppInsight(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddApplicationInsightsTelemetry(configuration);
-            var orchestratorType = configuration.GetValue<string>("OrchestratorType");
+        // public static IServiceCollection AddAppInsight(this IServiceCollection services, IConfiguration configuration)
+        // {
+        //     services.AddApplicationInsightsTelemetry(configuration);
+        //     var orchestratorType = configuration.GetValue<string>("OrchestratorType");
 
-            if (orchestratorType?.ToUpper() == "K8S")
-            {
-                // Enable K8s telemetry initializer
-                services.AddApplicationInsightsKubernetesEnricher();
-            }
+        //     if (orchestratorType?.ToUpper() == "K8S")
+        //     {
+        //         // Enable K8s telemetry initializer
+        //         services.AddApplicationInsightsKubernetesEnricher();
+        //     }
+        //     return services;
+        // }
 
-            if (orchestratorType?.ToUpper() == "SF")
-            {
-                // Enable SF telemetry initializer
-                services.AddSingleton<ITelemetryInitializer>((serviceProvider) =>
-                    new FabricTelemetryInitializer());
-            }
+        // public static IServiceCollection AddHealthChecks(this IServiceCollection services, IConfiguration configuration)
+        // {
+        //     services.AddHealthChecks()
+        //         .AddCheck("self", () => HealthCheckResult.Healthy())
+        //         .AddUrlGroup(new Uri(configuration["PurchaseUrlHC"]), name: "purchaseapigw-check", tags: new string[] { "purchaseapigw" })
+        //         .AddUrlGroup(new Uri(configuration["MarketingUrlHC"]), name: "marketingapigw-check", tags: new string[] { "marketingapigw" })
+        //         .AddUrlGroup(new Uri(configuration["IdentityUrlHC"]), name: "identityapi-check", tags: new string[] { "identityapi" });
 
-            return services;
-        }
-
-        public static IServiceCollection AddHealthChecks(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddHealthChecks()
-                .AddCheck("self", () => HealthCheckResult.Healthy())
-                .AddUrlGroup(new Uri(configuration["PurchaseUrlHC"]), name: "purchaseapigw-check", tags: new string[] { "purchaseapigw" })
-                .AddUrlGroup(new Uri(configuration["MarketingUrlHC"]), name: "marketingapigw-check", tags: new string[] { "marketingapigw" })
-                .AddUrlGroup(new Uri(configuration["IdentityUrlHC"]), name: "identityapi-check", tags: new string[] { "identityapi" });
-
-            return services;
-        }
+        //     return services;
+        // }
 
         public static IServiceCollection AddCustomMvc(this IServiceCollection services, IConfiguration configuration)
         {
@@ -177,39 +157,34 @@ namespace WebMVC
             services.AddTransient<HttpClientRequestIdDelegatingHandler>();
 
             //set 5 min as the lifetime for each HttpMessageHandler int the pool
-            services.AddHttpClient("extendedhandlerlifetime").SetHandlerLifetime(TimeSpan.FromMinutes(5)).AddDevspacesSupport();
+            services.AddHttpClient("extendedhandlerlifetime").SetHandlerLifetime(TimeSpan.FromMinutes(5));
 
             //add http client services
             services.AddHttpClient<IBasketService, BasketService>()
                    .SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Sample. Default lifetime is 2 minutes
                    .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                    .AddPolicyHandler(GetRetryPolicy())
-                   .AddPolicyHandler(GetCircuitBreakerPolicy())
-                   .AddDevspacesSupport();
+                   .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             services.AddHttpClient<ICatalogService, CatalogService>()
                    .AddPolicyHandler(GetRetryPolicy())
-                   .AddPolicyHandler(GetCircuitBreakerPolicy())
-                   .AddDevspacesSupport();
+                   .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             services.AddHttpClient<IOrderingService, OrderingService>()
                  .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                  .AddHttpMessageHandler<HttpClientRequestIdDelegatingHandler>()
                  .AddPolicyHandler(GetRetryPolicy())
-                 .AddPolicyHandler(GetCircuitBreakerPolicy())
-                 .AddDevspacesSupport();
+                 .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             services.AddHttpClient<ICampaignService, CampaignService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 .AddPolicyHandler(GetRetryPolicy())
-                .AddPolicyHandler(GetCircuitBreakerPolicy())
-                .AddDevspacesSupport();
+                .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             services.AddHttpClient<ILocationService, LocationService>()
                .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                .AddPolicyHandler(GetRetryPolicy())
-               .AddPolicyHandler(GetCircuitBreakerPolicy())
-               .AddDevspacesSupport();
+               .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             //add custom application services
             services.AddTransient<IIdentityParser<ApplicationUser>, IdentityParser>();
@@ -251,8 +226,8 @@ namespace WebMVC
             .AddOpenIdConnect(options =>
             {
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.Authority = identityUrl.ToString();
-                options.SignedOutRedirectUri = callBackUrl.ToString();
+                options.Authority = identityUrl;
+                options.SignedOutRedirectUri = callBackUrl;
                 options.ClientId = useLoadTest ? "mvctest" : "mvc";
                 options.ClientSecret = "secret";
                 options.ResponseType = useLoadTest ? "code id_token token" : "code id_token";
@@ -261,12 +236,9 @@ namespace WebMVC
                 options.RequireHttpsMetadata = false;
                 options.Scope.Add("openid");
                 options.Scope.Add("profile");
-                options.Scope.Add("orders");
                 options.Scope.Add("basket");
-                options.Scope.Add("marketing");
-                options.Scope.Add("locations");
+                options.Scope.Add("orders");
                 options.Scope.Add("webshoppingagg");
-                options.Scope.Add("orders.signalrhub");
             });
 
             return services;

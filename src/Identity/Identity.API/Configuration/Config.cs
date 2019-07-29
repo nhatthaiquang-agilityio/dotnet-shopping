@@ -11,6 +11,7 @@ namespace Identity.API.Configuration
         {
             return new List<ApiResource>
             {
+                new ApiResource("orders", "Orders Service"),
                 new ApiResource("basket", "Basket API Service"),
                 new ApiResource("webhooks", "Webhooks registration Service"),
                 new ApiResource("webshoppingagg", "Web Shopping Aggregator"),
@@ -48,6 +49,21 @@ namespace Identity.API.Configuration
                         "basket"
                     }
                 },
+                new Client
+                {
+                    ClientId = "orderingswaggerui",
+                    ClientName = "Ordering Swagger UI",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+
+                    RedirectUris = { $"{clientsUrl["OrderingApi"]}/oauth2-redirect.html" },
+                    PostLogoutRedirectUris = { $"{clientsUrl["OrderingApi"]}/" },
+
+                    AllowedScopes =
+                    {
+                        "orders"
+                    }
+                },
                 // web mvc client
                 new Client
                 {
@@ -76,6 +92,7 @@ namespace Identity.API.Configuration
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OfflineAccess,
+                        "orders",
                         "basket",
                         "webhooks",
                         "webshoppingagg"

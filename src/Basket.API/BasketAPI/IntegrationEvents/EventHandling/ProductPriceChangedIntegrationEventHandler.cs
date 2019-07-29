@@ -27,19 +27,11 @@ namespace BasketAPI.IntegrationEvents.EventHandling
 
             var userIds = _repository.GetUsers();
 
-            if (userIds.Count<string>() > 0)
+            foreach (var id in userIds)
             {
-                foreach (var id in userIds)
-                {
-                    var basket = await _repository.GetBasketAsync(id);
+                var basket = await _repository.GetBasketAsync(id);
 
-                    await UpdatePriceInBasketItems(@event.ProductId, @event.NewPrice, @event.OldPrice, basket);
-                }
-            }
-            else
-            {
-                _logger.LogInformation("----- SaveEventBasketAsync");
-                await _repository.SaveEventBasketAsync(@event.ProductId, @event.NewPrice, @event.OldPrice);
+                await UpdatePriceInBasketItems(@event.ProductId, @event.NewPrice, @event.OldPrice, basket);
             }
 
         }
@@ -65,7 +57,7 @@ namespace BasketAPI.IntegrationEvents.EventHandling
                     }
                 }
                 await _repository.UpdateBasketAsync(basket);
-            } 
+            }
         }
     }
 }

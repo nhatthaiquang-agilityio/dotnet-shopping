@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace BuildingBlocks.IntegrationEventLogEF.Services
 {
@@ -13,6 +15,7 @@ namespace BuildingBlocks.IntegrationEventLogEF.Services
     {
         private readonly IntegrationEventLogContext _integrationEventLogContext;
         private readonly DbConnection _dbConnection;
+        private readonly List<Type> _eventTypes;
 
         public IntegrationEventLogService(DbConnection dbConnection)
         {
@@ -22,6 +25,22 @@ namespace BuildingBlocks.IntegrationEventLogEF.Services
                     .UseSqlServer(_dbConnection)
                     .ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.QueryClientEvaluationWarning))
                     .Options);
+
+            _eventTypes = Assembly.Load(Assembly.GetEntryAssembly().FullName)
+                .GetTypes()
+                .Where(t => t.Name.EndsWith(nameof(IntegrationEvent)))
+                .ToList();
+        }
+
+        public async Task<IEnumerable<IntegrationEventLogEntry>> RetrieveEventLogsPendingToPublishAsync(Guid transactionId)
+        {
+            var tid = transactionId.ToString();
+
+            return await _integrationEventLogContext.IntegrationEventLogs
+                .Where(e => e.TransactionId == tid && e.State == EventStateEnum.NotPublished)
+                .OrderBy(o => o.CreationTime)
+                .Select(e => e.DeserializeJsonContent(_eventTypes.Find(t=> t.Name == e.EventTypeShortName)))
+                .ToListAsync();
         }
 
         public Task SaveEventAsync(IntegrationEvent @event, IDbContextTransaction transaction)

@@ -51,11 +51,21 @@ spec:
            configMapKeyRef:
               name: urls
               key: BasketApiClient
+        - name: MapUserMvcClient
+          valueFrom:
+           configMapKeyRef:
+              name: urls
+              key: MapUserMvcClient
         - name: MvcClient
           valueFrom:
            configMapKeyRef:
               name: urls
               key: MvcClient
+        - name: OrderingApiClient
+          valueFrom:
+           configMapKeyRef:
+              name: urls
+              key: OrderingApiClient
         - name: WebhooksWebClient
           valueFrom:
            configMapKeyRef:

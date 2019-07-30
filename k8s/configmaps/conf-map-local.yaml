@@ -9,6 +9,7 @@ data:
   catalog__ConnectionString: Server=sql-data;Initial Catalog=catalogdb;User Id=sa;Password=Your_password123;
   identity__ConnectionString: Server=sql-data;Initial Catalog=IdentityDb;User Id=sa;Password=Your_password123;
   webhooks__ConnectionString: Server=sql-data;Initial Catalog=WebhooksDb;User Id=sa;Password=Your_password123;
+  ordering__ConnectionString: Server=sql-data;Initial Catalog=OrderingDb;User Id=sa;Password=Your_password123;
   all__EventBusConnection: rabbitmq
   all__EventBusUserName: admin
   all__EventBusPassword: password

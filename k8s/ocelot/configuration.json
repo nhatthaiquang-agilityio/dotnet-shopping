@@ -5,7 +5,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "catalog.api",
+          "Host": "catalog",
           "Port": 80
         }
       ],
@@ -18,11 +18,27 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "basket.api",
+          "Host": "basket",
           "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/api/{version}/b/{everything}",
+      "UpstreamHttpMethod": [],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "IdentityApiKey",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/{version}/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "ordering.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/{version}/o/{everything}",
       "UpstreamHttpMethod": [],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "IdentityApiKey",
@@ -45,6 +61,7 @@
         "AllowedScopes": []
       }
     },
+
     {
       "DownstreamPathTemplate": "/{everything}",
       "DownstreamScheme": "http",
@@ -67,6 +84,30 @@
         }
       ],
       "UpstreamPathTemplate": "/catalog-api/{everything}",
+      "UpstreamHttpMethod": []
+    },
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "ordering",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/orders-api/{everything}",
+      "UpstreamHttpMethod": []
+    },
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "ordering.signalrhub",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/hub/{everything}",
       "UpstreamHttpMethod": []
     }
   ],

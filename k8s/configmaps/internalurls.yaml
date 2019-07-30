@@ -9,6 +9,7 @@ data:
   basket: http://basket
   catalog: http://catalog
   identity: http://identity
+  ordering: http://ordering
   # Aggreggators
   webshoppingagg: http://webshoppingagg
   # API GWs

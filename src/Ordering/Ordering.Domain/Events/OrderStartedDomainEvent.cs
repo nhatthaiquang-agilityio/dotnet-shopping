@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Services.Ordering.Domain.AggregatesModel.OrderAggregate;
+using Ordering.Domain.AggregatesModel.OrderAggregate;
 using System;
 using System.Collections.Generic;
 using System.Text;

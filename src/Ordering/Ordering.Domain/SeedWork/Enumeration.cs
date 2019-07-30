@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Services.Ordering.Domain.SeedWork
+namespace Ordering.Domain.SeedWork
 {
     public abstract class Enumeration : IComparable
     {

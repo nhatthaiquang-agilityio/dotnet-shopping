@@ -1,4 +1,4 @@
-﻿namespace .Services.Ordering.API
+﻿namespace Ordering.API
 {
     public class OrderingSettings
     {

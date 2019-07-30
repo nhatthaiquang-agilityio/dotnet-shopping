@@ -1,4 +1,4 @@
-﻿namespace Services.Ordering.Domain.Seedwork
+﻿namespace Ordering.Domain.Seedwork
 {
 
     public interface IAggregateRoot { }

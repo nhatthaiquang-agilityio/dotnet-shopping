@@ -1,11 +1,11 @@
-﻿namespace .Services.Ordering.API.Infrastructure
+﻿namespace Ordering.API.Infrastructure
 {
     using global::Ordering.API.Extensions;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.EntityFrameworkCore;
-    using .Services.Ordering.Domain.AggregatesModel.BuyerAggregate;
-    using .Services.Ordering.Domain.AggregatesModel.OrderAggregate;
-    using .Services.Ordering.Domain.SeedWork;
+    using Ordering.Domain.AggregatesModel.BuyerAggregate;
+    using Ordering.Domain.AggregatesModel.OrderAggregate;
+    using Ordering.Domain.SeedWork;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Ordering.Infrastructure;

@@ -1,19 +1,18 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using .BuildingBlocks.EventBus.Extensions;
-using .Services.Ordering.API.Application.Commands;
-using .Services.Ordering.API.Application.Queries;
-using .Services.Ordering.API.Infrastructure.Services;
-using Microsoft.Extensions.Logging;
-using Ordering.API.Application.Behaviors;
+using BuildingBlocks.EventBus.Extensions;
 using Ordering.API.Application.Commands;
+using Ordering.API.Application.Queries;
+using Ordering.API.Application.Behaviors;
+using Ordering.API.Infrastructure.Services;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace .Services.Ordering.API.Controllers
+namespace Ordering.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [Authorize]

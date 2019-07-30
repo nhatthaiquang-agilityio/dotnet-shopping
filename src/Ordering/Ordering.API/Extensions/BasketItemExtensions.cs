@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static .Services.Ordering.API.Application.Commands.CreateOrderCommand;
+using static Ordering.API.Application.Commands.CreateOrderCommand;
 
 namespace Ordering.API.Application.Models
 {

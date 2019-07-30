@@ -186,7 +186,6 @@ namespace WebMVC
             var sessionCookieLifetime = configuration.GetValue("SessionCookieLifetimeMinutes", 60);
 
             // Add Authentication services
-
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -209,6 +208,7 @@ namespace WebMVC
                 options.Scope.Add("basket");
                 options.Scope.Add("orders");
                 options.Scope.Add("webshoppingagg");
+                options.Scope.Add("orders.signalrhub");
             });
 
             return services;
@@ -224,8 +224,7 @@ namespace WebMVC
         }
         static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
         {
-            return HttpPolicyExtensions
-                .HandleTransientHttpError()
+            return HttpPolicyExtensions.HandleTransientHttpError()
                 .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
         }
     }

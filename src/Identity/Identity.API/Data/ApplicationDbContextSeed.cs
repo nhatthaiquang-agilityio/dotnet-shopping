@@ -155,7 +155,7 @@ namespace Identity.API.Data
                 UserName = "nhatthai@gmail.com",
                 ZipCode = "98052",
                 State = "DN",
-                Street = "15703 NE 61st Ct",
+                Street = "697 Thanh Thuy",
                 SecurityNumber = "535",
                 NormalizedEmail = "NHATTHAI@GMAIL.COM",
                 NormalizedUserName = "NHATTHAI@GMAIL.COM",

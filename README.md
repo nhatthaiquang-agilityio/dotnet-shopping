@@ -111,12 +111,15 @@ kubectl apply -f [service files].yaml
     export externalDns=192.168.99.100
     kubectl create configmap urls \
         "--from-literal=BasketApiClient=http://$externalDns/basket-api" \
-        "--from-literal=MvcClient=http://$externalDns/mapuser-mvc" \
+         "--from-literal=OrderingApiClient=http://$externalDns/orders-api" \
+        "--from-literal=MapUserMvcClient=http://$externalDns/mapuser-mvc" \
+        "--from-literal=MvcClient=http://$externalDns/web-mvc" \
         "--from-literal=WebhooksWebClient=http://$externalDns/webhooks-client" \
         "--from-literal=WebhooksApiClient=http://$externalDns/webhooks-api" \
         "--from-literal=WebShoppingAggClient=http://$externalDns/webshoppingagg" \
         "--from-literal=IdentityUrlExternal=http://$externalDns/identity" \
-        "--from-literal=IdentityUrl=http://$externalDns/identity"
+        "--from-literal=IdentityUrl=http://$externalDns/identity" \
+        "--from-literal=webshoppingapigw_e=http://$($externalDns)/webshoppingapigw"
     ```
 
 + Init Ocelot(k8s/configmaps/config-map-ocelot.sh)

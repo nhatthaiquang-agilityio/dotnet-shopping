@@ -76,11 +76,6 @@ namespace WebMVC
             app.UseSession();
             app.UseStaticFiles();
 
-            if (Configuration.GetValue<bool>("UseLoadTest"))
-            {
-                app.UseMiddleware<ByPassAuthMiddleware>();
-            }
-
             app.UseAuthentication();
 
             WebContextSeed.Seed(app, env, loggerFactory);
@@ -101,30 +96,6 @@ namespace WebMVC
 
     static class ServiceCollectionExtensions
     {
-
-        // public static IServiceCollection AddAppInsight(this IServiceCollection services, IConfiguration configuration)
-        // {
-        //     services.AddApplicationInsightsTelemetry(configuration);
-        //     var orchestratorType = configuration.GetValue<string>("OrchestratorType");
-
-        //     if (orchestratorType?.ToUpper() == "K8S")
-        //     {
-        //         // Enable K8s telemetry initializer
-        //         services.AddApplicationInsightsKubernetesEnricher();
-        //     }
-        //     return services;
-        // }
-
-        // public static IServiceCollection AddHealthChecks(this IServiceCollection services, IConfiguration configuration)
-        // {
-        //     services.AddHealthChecks()
-        //         .AddCheck("self", () => HealthCheckResult.Healthy())
-        //         .AddUrlGroup(new Uri(configuration["PurchaseUrlHC"]), name: "purchaseapigw-check", tags: new string[] { "purchaseapigw" })
-        //         .AddUrlGroup(new Uri(configuration["MarketingUrlHC"]), name: "marketingapigw-check", tags: new string[] { "marketingapigw" })
-        //         .AddUrlGroup(new Uri(configuration["IdentityUrlHC"]), name: "identityapi-check", tags: new string[] { "identityapi" });
-
-        //     return services;
-        // }
 
         public static IServiceCollection AddCustomMvc(this IServiceCollection services, IConfiguration configuration)
         {
@@ -210,7 +181,6 @@ namespace WebMVC
 
         public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            var useLoadTest = configuration.GetValue<bool>("UseLoadTest");
             var identityUrl = configuration.GetValue<string>("IdentityUrl");
             var callBackUrl = configuration.GetValue<string>("CallBackUrl");
             var sessionCookieLifetime = configuration.GetValue("SessionCookieLifetimeMinutes", 60);
@@ -228,9 +198,9 @@ namespace WebMVC
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.Authority = identityUrl;
                 options.SignedOutRedirectUri = callBackUrl;
-                options.ClientId = useLoadTest ? "mvctest" : "mvc";
+                options.ClientId = "mvc";
                 options.ClientSecret = "secret";
-                options.ResponseType = useLoadTest ? "code id_token token" : "code id_token";
+                options.ResponseType = "code id_token";
                 options.SaveTokens = true;
                 options.GetClaimsFromUserInfoEndpoint = true;
                 options.RequireHttpsMetadata = false;

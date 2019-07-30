@@ -228,10 +228,6 @@ services:
       IdentityUrlExternal: http://localhost:6001
       CallBackUrl: http://localhost:6007
       PurchaseUrl: http://webapigw
-      EventBusConnection: rabbitmq
-      EventBusUserName: admin
-      EventBusPassword: password
-      AzureServiceBusEnabled: "False"
       UseLoadTest: "False"
 volumes:
   data:

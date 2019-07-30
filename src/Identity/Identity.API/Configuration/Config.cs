@@ -12,6 +12,7 @@ namespace Identity.API.Configuration
             return new List<ApiResource>
             {
                 new ApiResource("orders", "Orders Service"),
+                new ApiResource("orders.signalrhub", "Ordering Signalr Hub"),
                 new ApiResource("basket", "Basket API Service"),
                 new ApiResource("webhooks", "Webhooks registration Service"),
                 new ApiResource("webshoppingagg", "Web Shopping Aggregator"),
@@ -93,6 +94,7 @@ namespace Identity.API.Configuration
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OfflineAccess,
                         "orders",
+                        "orders.signalrhub",
                         "basket",
                         "webhooks",
                         "webshoppingagg"

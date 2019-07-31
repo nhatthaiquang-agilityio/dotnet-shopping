@@ -1,4 +1,4 @@
-﻿using .Services.Ordering.Domain.AggregatesModel.BuyerAggregate;
+﻿using Ordering.Domain.AggregatesModel.BuyerAggregate;
 using Ordering.Domain.Exceptions;
 using System;
 using Xunit;

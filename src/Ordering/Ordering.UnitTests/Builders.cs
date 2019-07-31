@@ -1,5 +1,5 @@
 ﻿using System;
-using .Services.Ordering.Domain.AggregatesModel.OrderAggregate;
+using Ordering.Domain.AggregatesModel.OrderAggregate;
 
 namespace UnitTest.Ordering
 {

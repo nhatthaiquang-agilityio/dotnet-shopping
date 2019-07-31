@@ -6,13 +6,13 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using Microsoft.Extensions.Configuration;
-using Microsoft.eShopOnContainers.Services.Ordering.Infrastructure;
+using Ordering.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.eShopOnContainers.Services.Ordering.API;
+using Ordering.API;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
-using Microsoft.eShopOnContainers.Services.Ordering.API.Infrastructure;
-using Microsoft.eShopOnContainers.BuildingBlocks.IntegrationEventLogEF;
+using Ordering.API.Infrastructure;
+using BuildingBlocks.IntegrationEventLogEF;
 
 namespace Ordering.FunctionalTests
 {

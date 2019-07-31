@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using .Services.Ordering.API.Application.Commands;
-using .Services.Ordering.API.Application.Queries;
-using .Services.Ordering.API.Controllers;
-using .Services.Ordering.API.Infrastructure.Services;
+using Ordering.API.Application.Commands;
+using Ordering.API.Application.Queries;
+using Ordering.API.Controllers;
+using Ordering.API.Infrastructure.Services;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Ordering.API.Application.Commands;

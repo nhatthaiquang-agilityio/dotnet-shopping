@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using global::Ordering.API.Application.Models;
+using MediatR;
+using Ordering.API.Application.Commands;
+using Ordering.Infrastructure.Idempotency;
+using Microsoft.Extensions.Logging;
+using Moq;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace UnitTest.Ordering.Application
 {
-    using global::Ordering.API.Application.Models;
-    using MediatR;
-    using .Services.Ordering.API.Application.Commands;
-    using .Services.Ordering.Infrastructure.Idempotency;
-    using Microsoft.Extensions.Logging;
-    using Moq;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Xunit;
+
     public class IdentifiedCommandHandlerTest
     {
         private readonly Mock<IRequestManager> _requestManager;

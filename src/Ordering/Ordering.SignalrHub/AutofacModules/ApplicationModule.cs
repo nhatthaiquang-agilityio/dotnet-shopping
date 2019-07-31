@@ -9,10 +9,8 @@ using System.Threading.Tasks;
 
 namespace Ordering.SignalrHub.AutofacModules
 {
-    public class ApplicationModule
-        : Autofac.Module
+    public class ApplicationModule : Autofac.Module
     {
-
         public string QueriesConnectionString { get; }
 
         public ApplicationModule()
@@ -22,7 +20,8 @@ namespace Ordering.SignalrHub.AutofacModules
         protected override void Load(ContainerBuilder builder)
         {
 
-            builder.RegisterAssemblyTypes(typeof(OrderStatusChangedToAwaitingValidationIntegrationEvent).GetTypeInfo().Assembly)
+            builder.RegisterAssemblyTypes(
+                    typeof(OrderStatusChangedToAwaitingValidationIntegrationEvent).GetTypeInfo().Assembly)
                 .AsClosedTypesOf(typeof(IIntegrationEventHandler<>));
 
         }

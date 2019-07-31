@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using BuildingBlocks.EventBus.Abstractions;
+﻿using BuildingBlocks.EventBus.Abstractions;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Serilog.Context;
 using System;

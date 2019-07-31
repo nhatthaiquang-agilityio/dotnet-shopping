@@ -1,4 +1,4 @@
-﻿using .Services.Ordering.Domain.AggregatesModel.OrderAggregate;
+﻿using Ordering.Domain.AggregatesModel.OrderAggregate;
 using Ordering.Domain.Events;
 using Ordering.Domain.Exceptions;
 using System;

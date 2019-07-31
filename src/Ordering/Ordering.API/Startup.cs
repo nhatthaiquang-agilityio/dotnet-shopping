@@ -71,9 +71,6 @@
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
-            //loggerFactory.AddAzureWebAppDiagnostics();
-            //loggerFactory.AddApplicationInsights(app.ApplicationServices, LogLevel.Trace);
-
             var pathBase = Configuration["PATH_BASE"];
             if (!string.IsNullOrEmpty(pathBase))
             {
@@ -101,6 +98,7 @@
             app.UseSwagger()
                .UseSwaggerUI(c =>
                {
+                   c.RoutePrefix = string.Empty;
                    c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/v1/swagger.json", "Ordering.API V1");
                    c.OAuthClientId("orderingswaggerui");
                    c.OAuthAppName("Ordering Swagger UI");

@@ -12,8 +12,8 @@ namespace Ordering.SignalrHub.IntegrationEvents.Events
         public string OrderStatus { get; }
         public string BuyerName { get; }
 
-        public OrderStatusChangedToPaidIntegrationEvent(int orderId,
-            string orderStatus, string buyerName)
+        public OrderStatusChangedToPaidIntegrationEvent(
+            int orderId, string orderStatus, string buyerName)
         {
             OrderId = orderId;
             OrderStatus = orderStatus;

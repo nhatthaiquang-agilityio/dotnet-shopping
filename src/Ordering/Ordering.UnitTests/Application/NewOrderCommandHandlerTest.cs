@@ -1,23 +1,23 @@
-﻿using .Services.Ordering.API.Application.Commands;
-using .Services.Ordering.API.Infrastructure.Services;
-using .Services.Ordering.Domain.AggregatesModel.BuyerAggregate;
-using .Services.Ordering.Domain.AggregatesModel.OrderAggregate;
+﻿using Ordering.API.Application.Commands;
+using Ordering.API.Infrastructure.Services;
+using Ordering.Domain.AggregatesModel.BuyerAggregate;
+using Ordering.Domain.AggregatesModel.OrderAggregate;
 using Moq;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using global::Ordering.API.Application.IntegrationEvents;
+using global::Ordering.API.Application.Models;
+using MediatR;
+using Microsoft.Extensions.Logging;
+using Xunit;
+using static Ordering.API.Application.Commands.CreateOrderCommand;
 
 
 namespace UnitTest.Ordering.Application
 {
-    using global::Ordering.API.Application.IntegrationEvents;
-    using global::Ordering.API.Application.Models;
-    using MediatR;
-    using Microsoft.Extensions.Logging;
-    using System.Collections;
-    using System.Collections.Generic;
-    using Xunit;
-    using static .Services.Ordering.API.Application.Commands.CreateOrderCommand;
 
     public class NewOrderRequestHandlerTest
     {

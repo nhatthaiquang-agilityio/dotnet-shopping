@@ -5,16 +5,10 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build
 WORKDIR /src
 
-COPY scripts scripts/
-
-COPY src/ApiGateways/*/*.csproj /src/csproj-files/
-COPY src/ApiGateways/*/*/*.csproj /src/csproj-files/
 COPY src/BuildingBlocks/*/*/*.csproj /src/csproj-files/
-COPY src/Services/*/*/*.csproj /src/csproj-files/
-COPY src/Web/*/*.csproj /src/csproj-files/
 
 COPY . .
-WORKDIR /src/src/Services/Ordering/Ordering.SignalrHub
+WORKDIR src/Ordering/Ordering.SignalrHub
 RUN dotnet publish -c Release -o /app
 
 FROM build AS publish

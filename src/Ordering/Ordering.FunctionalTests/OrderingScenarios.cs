@@ -8,8 +8,7 @@ using Xunit;
 
 namespace Ordering.FunctionalTests
 {
-    public class OrderingScenarios
-        : OrderingScenarioBase
+    public class OrderingScenarios : OrderingScenarioBase
     {
         [Fact]
         public async Task Get_get_all_stored_orders_and_response_ok_status_code()

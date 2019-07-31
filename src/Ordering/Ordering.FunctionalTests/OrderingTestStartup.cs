@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.eShopOnContainers.Services.Ordering.API;
+using Ordering.API;
 using Microsoft.Extensions.Configuration;
 
 namespace Ordering.FunctionalTests

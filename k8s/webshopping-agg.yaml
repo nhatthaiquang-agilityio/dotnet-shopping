@@ -34,6 +34,11 @@ spec:
           value: Development
         - name: ASPNETCORE_URLS
           value: http://0.0.0.0:80
+        - name: CircuitTimeout
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: all__CircuitTimeout
         - name: urls__basket
           valueFrom:
             configMapKeyRef:
@@ -53,7 +58,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: internalurls
-              key: orders
+              key: ordering
         - name: IdentityUrl
           valueFrom:
             configMapKeyRef:

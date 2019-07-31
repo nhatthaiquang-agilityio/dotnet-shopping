@@ -19,4 +19,5 @@ data:
   all__IsRegisterAppInsights: "False"
   all__AppInsightsInstrumentKey: ""
   all__AzureBlobStorageConnection: ""
+  all__CircuitTimeout: "120"
   keystore: keystore-data

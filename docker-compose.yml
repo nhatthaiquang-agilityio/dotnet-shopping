@@ -159,6 +159,7 @@ services:
       urls__basket: http://basket.api
       urls__catalog: http://catalog.api
       urls__identity: http://identity.api
+      urls__orders: http://ordering.api
       IdentityUrlExternal: http://localhost:6001
 
   webapigw:
@@ -229,5 +230,8 @@ services:
       CallBackUrl: http://localhost:6007
       PurchaseUrl: http://webapigw
       UseLoadTest: "False"
+      EventBusConnection: rabbitmq
+      EventBusUserName: admin
+      EventBusPassword: password
 volumes:
   data:

@@ -22,3 +22,4 @@ data:
   all__UseAzureBlogStorage: "True"
   all__AzureBlobStorageConnection: DefaultEndpointsProtocol=https;AccountName=[your-store-account];AccountKey=[your-key];EndpointSuffix=core.windows.net
   keystore: [your-instance-redis].redis.cache.windows.net:6380,password=[your-pass-word],ssl=True,abortConnect=False
+  all__CircuitTimeout: 120

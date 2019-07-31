@@ -65,5 +65,10 @@ spec:
           value: 'True'
         - name: useLoadTest
           value: 'False'
+        - name: CircuitTimeout
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: all__CircuitTimeout
         ports:
         - containerPort: 80

@@ -49,6 +49,11 @@ spec:
             configMapKeyRef:
               name: internalurls
               key: identity
+        - name: urls__orders
+          valueFrom:
+            configMapKeyRef:
+              name: internalurls
+              key: orders
         - name: IdentityUrl
           valueFrom:
             configMapKeyRef:

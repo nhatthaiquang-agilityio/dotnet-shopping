@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: eshop
+    component: webmvc
+  name: webmvc
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: eshop
+    component: webmvc
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: webmvc
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: webmvc
+    spec:
+      containers:
+      - name: webmvc
+        image: nhatthai/dotnet-webmvc
+        imagePullPolicy: Always
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: ASPNETCORE_URLS
+          value: http://0.0.0.0:80
+        - name: PATH_BASE
+          value: /web-mvc
+        - name: DPConnectionString
+          valueFrom:
+           configMapKeyRef:
+             name: externalcfg
+             key: keystore
+        - name: IsClusterEnv
+          value: 'True'
+        - name: IdentityUrl
+          valueFrom:
+            configMapKeyRef:
+              name: urls
+              key: IdentityUrl
+        - name: CallBackUrl
+          valueFrom:
+            configMapKeyRef:
+              name: urls
+              key: MvcClient
+        - name: PurchaseUrl
+          valueFrom:
+            configMapKeyRef:
+              name: internalurls
+              key: apigwws
+        - name: SignalrHubUrl
+          valueFrom:
+            configMapKeyRef:
+              name: urls
+              key: webshoppingapigw_e
+        - name: UseCustomizationData
+          value: 'True'
+        - name: useLoadTest
+          value: 'False'
+        ports:
+        - containerPort: 80

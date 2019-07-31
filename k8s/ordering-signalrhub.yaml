@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: eshop
+    component: ordering-signalrhub
+  name: ordering-signalrhub
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: eshop
+    component: ordering-signalrhub
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ordering-signalrhub
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: ordering-signalrhub
+    spec:
+      containers:
+      - name: ordering-signalrhub
+        image: nhatthai/dotnet-ordering.signalrhub
+        imagePullPolicy: Always
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: ASPNETCORE_URLS
+          value: http://0.0.0.0:80
+        - name: IdentityUrl
+          valueFrom:
+            configMapKeyRef:
+              name: urls
+              key: IdentityUrl
+        - name: EventBusConnection
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: all__EventBusConnection
+        - name: EventBusUserName
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: all__EventBusUserName
+        - name: EventBusPassword
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: all__EventBusPassword
+        - name: AzureServiceBusEnabled
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: all__UseAzureServiceBus
+        ports:
+        - containerPort: 80

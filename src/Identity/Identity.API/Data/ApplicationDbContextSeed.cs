@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Identity.API.Extensions;
-using Identity.API.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Identity.API.Extensions;
+using Identity.API.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,6 +11,8 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using IdentityModel;
 
 namespace Identity.API.Data
 {
@@ -34,7 +36,6 @@ namespace Identity.API.Data
                     context.Users.AddRange(useCustomizationData
                         ? GetUsersFromFile(contentRootPath, logger)
                         : GetDefaultUser());
-
                     await context.SaveChangesAsync();
                 }
 
@@ -84,12 +85,12 @@ namespace Identity.API.Data
             }
 
             List<ApplicationUser> users = File.ReadAllLines(csvFileUsers)
-                        .Skip(1) // skip header column
-                        .Select(row => Regex.Split(row, ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)") )
-                        .SelectTry(column => CreateApplicationUser(column, csvheaders))
-                        .OnCaughtException(ex => { logger.LogError(ex, "EXCEPTION ERROR: {Message}", ex.Message); return null; })
-                        .Where(x => x != null)
-                        .ToList();
+                .Skip(1) // skip header column
+                .Select(row => Regex.Split(row, ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)") )
+                .SelectTry(column => CreateApplicationUser(column, csvheaders))
+                .OnCaughtException(ex => { logger.LogError(ex, "EXCEPTION ERROR: {Message}", ex.Message); return null; })
+                .Where(x => x != null)
+                .ToList();
 
             return users;
         }
@@ -130,18 +131,23 @@ namespace Identity.API.Data
                 SecurityStamp = Guid.NewGuid().ToString("D"),
                 PasswordHash = column[Array.IndexOf(headers, "password")].Trim('"').Trim(), // Note: This is the password
             };
-
             user.PasswordHash = _passwordHasher.HashPassword(user, user.PasswordHash);
 
             return user;
         }
 
+        //private IEnumerable<IdentityUserClaim> GetDefaultUserClaims()
+        //{
+        //    return new List<IdentityUserClaim> {
+        //        new IdentityUserClaim(JwtClaimTypes.Role, "user")
+        //    };
+        //}
+
         private IEnumerable<ApplicationUser> GetDefaultUser()
         {
-            var user =
-            new ApplicationUser()
+            var user = new ApplicationUser()
             {
-                CardHolderName = "Nhatthai",
+                CardHolderName = "Nhat Thai",
                 CardNumber = "4012888888881881",
                 CardType = 1,
                 City = "Da Nang",
@@ -150,7 +156,7 @@ namespace Identity.API.Data
                 Expiration = "12/20",
                 Id = Guid.NewGuid().ToString(),
                 LastName = "Thai",
-                Name = "Nhatthai",
+                Name = "NhatThai",
                 PhoneNumber = "1234567890",
                 UserName = "nhatthai@gmail.com",
                 ZipCode = "98052",
@@ -164,9 +170,33 @@ namespace Identity.API.Data
 
             user.PasswordHash = _passwordHasher.HashPassword(user, "Pass@word1");
 
+            var admin = new ApplicationUser()
+            {
+                CardHolderName = "Admin",
+                CardNumber = "4012888888881333",
+                CardType = 1,
+                City = "Da Nang",
+                Country = "VN",
+                Email = "admin@gmail.com",
+                Expiration = "12/20",
+                Id = Guid.NewGuid().ToString(),
+                LastName = "Admin",
+                Name = "Admin",
+                PhoneNumber = "1234567890",
+                UserName = "admin@gmail.com",
+                ZipCode = "98052",
+                State = "DN",
+                Street = "69 Hoang Dieu",
+                SecurityNumber = "544",
+                NormalizedEmail = "ADMIN@GMAIL.COM",
+                NormalizedUserName = "ADMIN@GMAIL.COM",
+                SecurityStamp = Guid.NewGuid().ToString("D"),
+            };
+
+            admin.PasswordHash = _passwordHasher.HashPassword(user, "Pass@word1");
             return new List<ApplicationUser>()
             {
-                user
+                user, admin
             };
         }
 
@@ -226,7 +256,7 @@ namespace Identity.API.Data
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "EXCEPTION ERROR: {Message}", ex.Message); ;
+                logger.LogError(ex, "EXCEPTION ERROR: {Message}", ex.Message);
             }
         }
     }

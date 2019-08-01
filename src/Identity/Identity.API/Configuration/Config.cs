@@ -1,6 +1,8 @@
-﻿using IdentityServer4;
+﻿using IdentityModel;
 using IdentityServer4.Models;
 using System.Collections.Generic;
+using System.Security.Claims;
+using static IdentityServer4.IdentityServerConstants;
 
 namespace Identity.API.Configuration
 {
@@ -26,7 +28,17 @@ namespace Identity.API.Configuration
             return new List<IdentityResource>
             {
                 new IdentityResources.OpenId(),
-                new IdentityResources.Profile()
+                new IdentityResources.Profile(),
+                new IdentityResource
+                {
+                    Name = "role",
+                    DisplayName="User Role",
+                    Description="The application can see your role.",
+                    UserClaims = new[]{JwtClaimTypes.Role, ClaimTypes.Role},
+                    ShowInDiscoveryDocument = true,
+                    Required=true,
+                    Emphasize = true
+                }
             };
         }
 
@@ -44,10 +56,11 @@ namespace Identity.API.Configuration
 
                     RedirectUris = { $"{clientsUrl["BasketApi"]}/oauth2-redirect.html" },
                     PostLogoutRedirectUris = { $"{clientsUrl["BasketApi"]}/" },
-
+                    AlwaysSendClientClaims = true,
+                    AlwaysIncludeUserClaimsInIdToken = true,
                     AllowedScopes =
                     {
-                        "basket"
+                        "basket", "role"
                     }
                 },
                 new Client
@@ -90,9 +103,9 @@ namespace Identity.API.Configuration
                     },
                     AllowedScopes = new List<string>
                     {
-                        IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
-                        IdentityServerConstants.StandardScopes.OfflineAccess,
+                        StandardScopes.OpenId,
+                        StandardScopes.Profile,
+                        StandardScopes.OfflineAccess,
                         "orders",
                         "orders.signalrhub",
                         "basket",
@@ -127,9 +140,9 @@ namespace Identity.API.Configuration
                     },
                     AllowedScopes = new List<string>
                     {
-                        IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
-                        IdentityServerConstants.StandardScopes.OfflineAccess,
+                        StandardScopes.OpenId,
+                        StandardScopes.Profile,
+                        StandardScopes.OfflineAccess,
                         "webshoppingagg"
                     },
                     AccessTokenLifetime = 60*60*2, // 2 hours
@@ -160,9 +173,9 @@ namespace Identity.API.Configuration
                     },
                     AllowedScopes = new List<string>
                     {
-                        IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
-                        IdentityServerConstants.StandardScopes.OfflineAccess,
+                        StandardScopes.OpenId,
+                        StandardScopes.Profile,
+                        StandardScopes.OfflineAccess,
                         "webhooks"
                     },
                     AccessTokenLifetime = 60*60*2, // 2 hours
@@ -201,5 +214,16 @@ namespace Identity.API.Configuration
                 },
             };
         }
+
+        internal class Claims
+        {
+            public static List<Claim> Get()
+            {
+                return new List<Claim> {
+                    new Claim(JwtClaimTypes.Role, "admin")
+                };
+            }
+        }
+
     }
 }

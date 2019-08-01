@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace BasketAPI.Controllers
 {
@@ -22,10 +23,8 @@ namespace BasketAPI.Controllers
         private readonly ILogger<BasketController> _logger;
 
         public BasketController(
-            ILogger<BasketController> logger,
-            IBasketRepository repository,
-            IIdentityService identityService,
-            IEventBus eventBus)
+            ILogger<BasketController> logger, IBasketRepository repository,
+            IIdentityService identityService, IEventBus eventBus)
         {
             _logger = logger;
             _repository = repository;
@@ -55,7 +54,8 @@ namespace BasketAPI.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Accepted)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> CheckoutAsync([FromBody]BasketCheckout basketCheckout, [FromHeader(Name = "x-requestid")] string requestId)
+        public async Task<ActionResult> CheckoutAsync(
+            [FromBody]BasketCheckout basketCheckout, [FromHeader(Name = "x-requestid")] string requestId)
         {
             var userId = _identityService.GetUserIdentity();
 
@@ -106,7 +106,15 @@ namespace BasketAPI.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
         public async Task DeleteBasketByIdAsync(string id)
         {
-            await _repository.DeleteBasketAsync(id);
+            var userClaim = HttpContext.User.Claims.ToList();
+
+            // TODO: this is not a good solution, need to use the role
+            if (HttpContext.User.Claims.Any() &&
+                userClaim.FirstOrDefault(c => c.Type == "role" && c.Value == "admin") == null)
+            {
+                _logger.LogInformation("---- Delete Basket by Id");
+                await _repository.DeleteBasketAsync(id);
+            }
         }
     }
 }

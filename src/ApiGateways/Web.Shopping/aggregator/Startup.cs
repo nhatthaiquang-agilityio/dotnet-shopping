@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Web.Shopping.HttpAggregator.Config;
 using Web.Shopping.HttpAggregator.Filters.Basket.API.Infrastructure.Filters;
 using Web.Shopping.HttpAggregator.Infrastructure;
 using Web.Shopping.HttpAggregator.Services;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Extensions.Http;
 using Swashbuckle.AspNetCore.Swagger;
@@ -35,7 +35,7 @@ namespace Web.Shopping.HttpAggregator
         {
             services.AddCustomMvc(Configuration)
                 .AddCustomAuthentication(Configuration)
-                .AddApplicationServices();
+                .AddApplicationServices(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,14 +91,6 @@ namespace Web.Shopping.HttpAggregator
                 options.Audience = "webshoppingagg";
                 options.Events = new JwtBearerEvents()
                 {
-                    OnAuthenticationFailed = async ctx =>
-                    {
-                        int i = 0;
-                    },
-                    OnTokenValidated = async ctx =>
-                    {
-                        int i = 0;
-                    }
                 };
             });
 
@@ -152,27 +144,26 @@ namespace Web.Shopping.HttpAggregator
             return services;
         }
 
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             //register delegating handlers
             services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             //register http services
-
             services.AddHttpClient<IBasketService, BasketService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 .AddPolicyHandler(GetRetryPolicy())
-                .AddPolicyHandler(GetCircuitBreakerPolicy());
+                .AddPolicyHandler(GetCircuitBreakerPolicy(configuration));
 
             services.AddHttpClient<ICatalogService, CatalogService>()
                 .AddPolicyHandler(GetRetryPolicy())
-                .AddPolicyHandler(GetCircuitBreakerPolicy());
+                .AddPolicyHandler(GetCircuitBreakerPolicy(configuration));
 
             services.AddHttpClient<IOrderApiClient, OrderApiClient>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 .AddPolicyHandler(GetRetryPolicy())
-                .AddPolicyHandler(GetCircuitBreakerPolicy());
+                .AddPolicyHandler(GetCircuitBreakerPolicy(configuration));
 
             return services;
         }
@@ -186,11 +177,12 @@ namespace Web.Shopping.HttpAggregator
 
         }
 
-        static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
+        static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy(IConfiguration configuration)
         {
+            var secondTimeout = Int16.Parse(configuration.GetValue<string>("CircuitTimeout", "90"));
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
-                .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
+                .CircuitBreakerAsync(5, TimeSpan.FromSeconds(secondTimeout));
         }
     }
 }

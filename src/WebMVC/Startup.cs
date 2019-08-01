@@ -1,9 +1,7 @@
-﻿using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +17,6 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
 using WebMVC.Infrastructure;
-using WebMVC.Infrastructure.Middlewares;
 
 namespace WebMVC
 {
@@ -135,27 +132,27 @@ namespace WebMVC
                    .SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Sample. Default lifetime is 2 minutes
                    .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                    .AddPolicyHandler(GetRetryPolicy())
-                   .AddPolicyHandler(GetCircuitBreakerPolicy());
+                   .AddPolicyHandler(GetCircuitBreakerPolicy(configuration));
 
             services.AddHttpClient<ICatalogService, CatalogService>()
                    .AddPolicyHandler(GetRetryPolicy())
-                   .AddPolicyHandler(GetCircuitBreakerPolicy());
+                   .AddPolicyHandler(GetCircuitBreakerPolicy(configuration));
 
             services.AddHttpClient<IOrderingService, OrderingService>()
                  .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                  .AddHttpMessageHandler<HttpClientRequestIdDelegatingHandler>()
                  .AddPolicyHandler(GetRetryPolicy())
-                 .AddPolicyHandler(GetCircuitBreakerPolicy());
+                 .AddPolicyHandler(GetCircuitBreakerPolicy(configuration));
 
             services.AddHttpClient<ICampaignService, CampaignService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 .AddPolicyHandler(GetRetryPolicy())
-                .AddPolicyHandler(GetCircuitBreakerPolicy());
+                .AddPolicyHandler(GetCircuitBreakerPolicy(configuration));
 
             services.AddHttpClient<ILocationService, LocationService>()
                .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                .AddPolicyHandler(GetRetryPolicy())
-               .AddPolicyHandler(GetCircuitBreakerPolicy());
+               .AddPolicyHandler(GetCircuitBreakerPolicy(configuration));
 
             //add custom application services
             services.AddTransient<IIdentityParser<ApplicationUser>, IdentityParser>();
@@ -217,15 +214,16 @@ namespace WebMVC
         static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
         {
             return HttpPolicyExtensions
-              .HandleTransientHttpError()
-              .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
-              .WaitAndRetryAsync(6, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+                .HandleTransientHttpError()
+                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                .WaitAndRetryAsync(6, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
         }
-        static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
+        static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy(IConfiguration configuration)
         {
+            var secondTimeout = Int16.Parse(configuration.GetValue<string>("CircuitTimeout", "90"));
             return HttpPolicyExtensions.HandleTransientHttpError()
-                .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
+                .CircuitBreakerAsync(5, TimeSpan.FromSeconds(secondTimeout));
         }
     }
 }

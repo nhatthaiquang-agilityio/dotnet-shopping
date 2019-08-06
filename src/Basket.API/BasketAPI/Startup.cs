@@ -87,7 +87,7 @@ namespace BasketAPI
                 {
                     var logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();
 
-                    var factory = new ConnectionFactory()
+                    var factory = new ConnectionFactory
                     {
                         HostName = Configuration["EventBusConnection"],
                         DispatchConsumersAsync = true
@@ -132,7 +132,7 @@ namespace BasketAPI
                     Flow = "implicit",
                     AuthorizationUrl = $"{Configuration.GetValue<string>("IdentityUrlExternal")}/connect/authorize",
                     TokenUrl = $"{Configuration.GetValue<string>("IdentityUrlExternal")}/connect/token",
-                    Scopes = new Dictionary<string, string>()
+                    Scopes = new Dictionary<string, string>
                     {
                         { "basket", "Basket API" }
                     }
@@ -171,7 +171,7 @@ namespace BasketAPI
                 app.UsePathBase(pathBase);
             }
 
-            app.UseHealthChecks("/hc", new HealthCheckOptions()
+            app.UseHealthChecks("/hc", new HealthCheckOptions
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
@@ -321,7 +321,7 @@ namespace BasketAPI
             hcBuilder
                 .AddRedis(
                     configuration["ConnectionString"],
-                    name: "redis-check",
+                    "redis-check",
                     tags: new string[] { "redis" });
 
             if (configuration.GetValue<bool>("AzureServiceBusEnabled"))
@@ -329,8 +329,8 @@ namespace BasketAPI
                 hcBuilder
                     .AddAzureServiceBusTopic(
                         configuration["EventBusConnection"],
-                        topicName: "eshop_event_bus",
-                        name: "basket-servicebus-check",
+                        "eshop_event_bus",
+                        "basket-servicebus-check",
                         tags: new string[] { "servicebus" });
             }
             else
@@ -338,7 +338,7 @@ namespace BasketAPI
                 hcBuilder
                     .AddRabbitMQ(
                         $"amqp://{configuration["EventBusConnection"]}",
-                        name: "basket-rabbitmqbus-check",
+                        "basket-rabbitmqbus-check",
                         tags: new string[] { "rabbitmqbus" });
             }
             return services;

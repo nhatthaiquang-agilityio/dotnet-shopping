@@ -33,7 +33,7 @@ namespace WebMVC.Services
             var responseString = await _apiClient.GetStringAsync(uri);
 
             return string.IsNullOrEmpty(responseString) ?
-                new Basket() { BuyerId = user.Id } :
+                new Basket{ BuyerId = user.Id } :
                 JsonConvert.DeserializeObject<Basket>(responseString);
         }
 

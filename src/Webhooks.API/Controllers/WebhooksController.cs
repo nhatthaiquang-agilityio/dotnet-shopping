@@ -12,6 +12,7 @@ using Webhooks.API.Services;
 
 namespace Webhooks.API.Controllers
 {
+    [Authorize]
     [Route("api/v1/[controller]")]
     [ApiController]
     public class WebhooksController : ControllerBase
@@ -29,7 +30,6 @@ namespace Webhooks.API.Controllers
             _grantUrlTester = grantUrlTester;
         }
 
-        [Authorize]
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<WebhookSubscription>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ListByUser()
@@ -39,7 +39,6 @@ namespace Webhooks.API.Controllers
             return Ok(data);
         }
 
-        [Authorize]
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(WebhookSubscription), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -55,7 +54,6 @@ namespace Webhooks.API.Controllers
             return NotFound($"Subscriptions {id} not found");
         }
 
-        [Authorize]
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -86,14 +84,9 @@ namespace Webhooks.API.Controllers
             _dbContext.Add(subscription);
             await _dbContext.SaveChangesAsync();
             return CreatedAtAction("GetByUserAndId", new { id = subscription.Id }, subscription);
-            // }
-            // else
-            // {
-            //     return StatusCode(418, "Grant url can't be validated");
-            // }
+
         }
 
-        [Authorize]
         [HttpDelete("{id:int}")]
         [ProducesResponseType((int)HttpStatusCode.Accepted)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

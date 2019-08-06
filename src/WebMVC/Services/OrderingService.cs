@@ -14,14 +14,10 @@ namespace WebMVC.Services
     {
         private HttpClient _httpClient;
         private readonly string _remoteServiceBaseUrl;
-        private readonly IOptions<AppSettings> _settings;
-
 
         public OrderingService(HttpClient httpClient, IOptions<AppSettings> settings)
         {
             _httpClient = httpClient;
-            _settings = settings;
-
             _remoteServiceBaseUrl = $"{settings.Value.PurchaseUrl}/api/v1/o/orders";
         }
 
@@ -51,7 +47,7 @@ namespace WebMVC.Services
 
         async public Task CancelOrder(string orderId)
         {
-            var order = new OrderDTO()
+            var order = new OrderDTO
             {
                 OrderNumber = orderId
             };
@@ -71,7 +67,7 @@ namespace WebMVC.Services
 
         async public Task ShipOrder(string orderId)
         {
-            var order = new OrderDTO()
+            var order = new OrderDTO
             {
                 OrderNumber = orderId
             };
@@ -123,7 +119,7 @@ namespace WebMVC.Services
         {
             order.CardExpirationApiFormat();
 
-            return new BasketDTO()
+            return new BasketDTO
             {
                 City = order.City,
                 Street = order.Street,

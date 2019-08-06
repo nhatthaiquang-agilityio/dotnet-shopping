@@ -24,10 +24,9 @@ namespace WebMVC.ViewModels.Annotations
                 DateTime d = new DateTime(year, month, 1);
 
                 return d > DateTime.UtcNow;
-            } else
-            {
-                return false;
+                
             }
+            return false;
         }
     }
 }

@@ -13,10 +13,7 @@ namespace WebMVC.Infrastructure
         public static void Seed(IApplicationBuilder applicationBuilder, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             var log = loggerFactory.CreateLogger<WebContextSeed>();
-
-            var settings = (AppSettings)applicationBuilder
-                .ApplicationServices.GetRequiredService<IOptions<AppSettings>>().Value;
-
+            var settings = applicationBuilder.ApplicationServices.GetRequiredService<IOptions<AppSettings>>().Value;
             var useCustomizationData = settings.UseCustomizationData;
             var contentRootPath = env.ContentRootPath;
             var webroot = env.WebRootPath;

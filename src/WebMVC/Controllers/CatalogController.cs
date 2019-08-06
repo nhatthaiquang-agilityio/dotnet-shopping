@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using WebMVC.ViewModels.Pagination;
 using WebMVC.Services;
 using WebMVC.ViewModels.CatalogViewModels;
-using Microsoft.AspNetCore.Http;
 
 namespace WebMVC.Controllers
 {
@@ -19,14 +18,14 @@ namespace WebMVC.Controllers
         {
             var itemsPage = 10;
             var catalog = await _catalogSvc.GetCatalogItems(page ?? 0, itemsPage, BrandFilterApplied, TypesFilterApplied);
-            var vm = new IndexViewModel()
+            var vm = new IndexViewModel
             {
                 CatalogItems = catalog.Data,
                 Brands = await _catalogSvc.GetBrands(),
                 Types = await _catalogSvc.GetTypes(),
                 BrandFilterApplied = BrandFilterApplied ?? 0,
                 TypesFilterApplied = TypesFilterApplied ?? 0,
-                PaginationInfo = new PaginationInfo()
+                PaginationInfo = new PaginationInfo
                 {
                     ActualPage = page ?? 0,
                     ItemsPerPage = catalog.Data.Count,

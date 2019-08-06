@@ -71,13 +71,9 @@ namespace WebMVC
             app.UseHttpsRedirection();
             app.UseMvc(routes =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Catalog}/{action=Index}/{id?}");
+                routes.MapRoute("default", "{controller=Catalog}/{action=Index}/{id?}");
 
-                routes.MapRoute(
-                    name: "defaultError",
-                    template: "{controller=Error}/{action=Error}");
+                routes.MapRoute("defaultError", "{controller=Error}/{action=Error}");
             });
         }
     }

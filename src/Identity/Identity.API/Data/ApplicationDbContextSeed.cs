@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
+using IdentityModel;
 using Identity.API.Extensions;
 using Identity.API.Models;
 using System;
@@ -10,9 +12,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
-using IdentityModel;
+
 
 namespace Identity.API.Data
 {
@@ -183,7 +184,7 @@ namespace Identity.API.Data
             };
 
             admin.PasswordHash = _passwordHasher.HashPassword(user, "Pass@word1");
-            return new List<ApplicationUser>()
+            return new List<ApplicationUser>
             {
                 user, admin
             };
@@ -228,7 +229,7 @@ namespace Identity.API.Data
         }
 
         // seed user claims data
-        public void InitUserClaims(IServiceProvider serviceProvider)
+        public async Task InitUserClaims(IServiceProvider serviceProvider)
         {
             using (var scope = serviceProvider.GetService<IServiceScopeFactory>().CreateScope())
             {
@@ -244,15 +245,15 @@ namespace Identity.API.Data
                             // Using in basket service
                             // Apply policy claim and role for Authorize
                             // add claim: admin
-                            userManager.AddClaimsAsync(user, Claims.Get()).Wait();
+                            await userManager.AddClaimsAsync(user, Claims.Get());
 
                             // add role: Admin
-                            userManager.AddToRoleAsync(user, "Admin").Wait();
+                            await userManager.AddToRoleAsync(user, "Admin");
                         }
                         else
                         {
                             // add role: User
-                            userManager.AddToRoleAsync(user, "User").Wait();
+                            await userManager.AddToRoleAsync(user, "User");
                         }
                     }
                 }

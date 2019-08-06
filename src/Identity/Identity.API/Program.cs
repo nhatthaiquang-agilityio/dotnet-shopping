@@ -1,7 +1,7 @@
-﻿using IdentityServer4.EntityFramework.DbContexts;
+﻿using Identity.API.Data;
+using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Identity.API.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -35,17 +35,16 @@ namespace Identity.API
                         var env = services.GetService<IHostingEnvironment>();
                         var logger = services.GetService<ILogger<ApplicationDbContextSeed>>();
                         var settings = services.GetService<IOptions<AppSettings>>();
+                        var serviceProvider = services.GetRequiredService<IServiceProvider>();
+                        var contextSeed = new ApplicationDbContextSeed();
 
-                        new ApplicationDbContextSeed()
-                            .SeedAsync(context, env, logger, settings)
-                            .Wait();
+                        contextSeed.SeedAsync(context, env, logger, settings).Wait();
 
                         // create roles and set role into users
-                        var serviceProvider = services.GetRequiredService<IServiceProvider>();
-                        new ApplicationDbContextSeed().CreateUserRoles(serviceProvider).Wait();
+                        contextSeed.CreateUserRoles(serviceProvider).Wait();
 
                         // Create claims
-                        new ApplicationDbContextSeed().InitUserClaims(serviceProvider);
+                        contextSeed.InitUserClaims(serviceProvider).Wait();
 
                     })
                     .MigrateDbContext<ConfigurationDbContext>((context, services) =>
@@ -96,7 +95,7 @@ namespace Identity.API
         {
             return new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", false, true)
                 .AddEnvironmentVariables().Build();
         }
 

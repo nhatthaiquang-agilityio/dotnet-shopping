@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Claims;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4;
@@ -139,7 +138,7 @@ namespace Identity.API.Controllers
             return new LoginViewModel
             {
                 ReturnUrl = returnUrl,
-                Email = context?.LoginHint,
+                Email = context?.LoginHint
             };
         }
 
@@ -294,7 +293,7 @@ namespace Identity.API.Controllers
                     return Redirect(returnUrl);
                 else
                     if (ModelState.IsValid)
-                    return RedirectToAction("login", "account", new { returnUrl = returnUrl });
+                    return RedirectToAction("login", "account", new { returnUrl });
                 else
                     return View(model);
             }

@@ -33,7 +33,7 @@ namespace WebMVC.Controllers
         {
             var url = "http://apigw/shopping/api/v1/basket/items";
 
-            var payload = new TestPayload()
+            var payload = new TestPayload
             {
                 CatalogItemId = 1,
                 Quantity = 1,
@@ -52,10 +52,7 @@ namespace WebMVC.Controllers
 
                 return Ok(str);
             }
-            else
-            {
-                return Ok(new { response.StatusCode, response.ReasonPhrase });
-            }
+            return Ok(new { response.StatusCode, response.ReasonPhrase });
         }
     }
 }

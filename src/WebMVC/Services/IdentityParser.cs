@@ -36,7 +36,7 @@ namespace WebMVC.Services
                     ZipCode = claims.Claims.FirstOrDefault(x => x.Type == "address_zip_code")?.Value ?? ""
                 };
             }
-            throw new ArgumentException(message: "The principal must be a ClaimsPrincipal", paramName: nameof(principal));
+            throw new ArgumentException("The principal must be a ClaimsPrincipal", nameof(principal));
         }
     }
 }

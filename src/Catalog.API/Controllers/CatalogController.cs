@@ -29,7 +29,8 @@ namespace Catalog.API.Controllers
             ICatalogIntegrationEventService catalogIntegrationEventService, ILogger<CatalogController> logger)
         {
             _catalogContext = context ?? throw new ArgumentNullException(nameof(context));
-            _catalogIntegrationEventService = catalogIntegrationEventService ?? throw new ArgumentNullException(nameof(catalogIntegrationEventService));
+            _catalogIntegrationEventService = catalogIntegrationEventService ??
+                throw new ArgumentNullException(nameof(catalogIntegrationEventService));
             _settings = settings.Value;
             _logger = logger;
 

@@ -15,16 +15,12 @@ namespace WebMVC.Services
     {
         private readonly IOptions<AppSettings> _settings;
         private readonly HttpClient _httpClient;
-        private readonly ILogger<CatalogService> _logger;
-
         private readonly string _remoteServiceBaseUrl;
 
         public CatalogService(HttpClient httpClient, ILogger<CatalogService> logger, IOptions<AppSettings> settings)
         {
             _httpClient = httpClient;
             _settings = settings;
-            _logger = logger;
-
             _remoteServiceBaseUrl = $"{_settings.Value.PurchaseUrl}/api/v1/c/catalog/";
         }
 
@@ -53,7 +49,7 @@ namespace WebMVC.Services
 
             foreach (var brand in brands.Children<JObject>())
             {
-                items.Add(new SelectListItem()
+                items.Add(new SelectListItem
                 {
                     Value = brand.Value<string>("id"),
                     Text = brand.Value<string>("brand")

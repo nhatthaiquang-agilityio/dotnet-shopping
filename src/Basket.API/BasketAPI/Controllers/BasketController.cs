@@ -9,6 +9,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace BasketAPI.Controllers
 {
@@ -42,6 +43,7 @@ namespace BasketAPI.Controllers
             return Ok(basket ?? new CustomerBasket(id));
         }
 
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsUserClaimAccess")]
         [HttpPost]
         [ProducesResponseType(typeof(CustomerBasket), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<CustomerBasket>> UpdateBasketAsync([FromBody]CustomerBasket value)
@@ -102,12 +104,15 @@ namespace BasketAPI.Controllers
         }
 
         // DELETE api/values/5
+        //add policy
+        [Authorize(Policy = "IsAdminClaimAccess")]
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
         public async Task DeleteBasketByIdAsync(string id)
         {
             var userClaim = HttpContext.User.Claims.ToList();
-
+            _logger.LogInformation("---- userClaim");
+            _logger.LogInformation(userClaim.ToString());
             // TODO: this is not a good solution, need to use the role
             if (HttpContext.User.Claims.Any() &&
                 userClaim.FirstOrDefault(c => c.Type == "role" && c.Value == "admin") == null)
@@ -116,5 +121,15 @@ namespace BasketAPI.Controllers
                 await _repository.DeleteBasketAsync(id);
             }
         }
+
+        // [Route("delete")]
+        // //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "api.admin")]
+        // [HttpPost]
+        // [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        // public async Task DeleteBasketByIdPostAsync(string id)
+        // {
+        //     _logger.LogInformation("---- POST Method: Delete Basket by Id");
+        //     await _repository.DeleteBasketAsync(id);
+        // }
     }
 }

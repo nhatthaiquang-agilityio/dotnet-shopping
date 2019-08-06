@@ -29,6 +29,8 @@ using Swashbuckle.AspNetCore.Swagger;
 using System.Collections.Generic;
 using Basket.API.Infrastructure.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BasketAPI
 {
@@ -215,11 +217,28 @@ namespace BasketAPI
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
-            }).AddJwtBearer(options =>
+            })
+            .AddJwtBearer(options =>
             {
                 options.Authority = identityUrl;
                 options.RequireHttpsMetadata = false;
                 options.Audience = "basket";
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = "role",
+                    RoleClaimType = "role"
+                };
+            });
+
+            services.AddAuthorization(options =>
+            {
+               options.AddPolicy("IsAdminClaimAccess", policy =>
+               {
+                   policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                   policy.RequireAuthenticatedUser();
+                   policy.RequireClaim("role", "api.admin");
+               });
             });
 
         }

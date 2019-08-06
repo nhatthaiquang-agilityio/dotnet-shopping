@@ -31,7 +31,7 @@ namespace Identity.API.Services
             if (user == null)
                 throw new ArgumentException("Invalid subject identifier");
 
-            var claims = GetClaimsFromUser(user);
+            var claims = await GetClaimsFromUser(user);
             context.IssuedClaims = claims.ToList();
         }
 
@@ -64,7 +64,7 @@ namespace Identity.API.Services
             }
         }
 
-        private IEnumerable<Claim> GetClaimsFromUser(ApplicationUser user)
+        private async Task<IEnumerable<Claim>> GetClaimsFromUser(ApplicationUser user)
         {
             var claims = new List<Claim>
             {
@@ -123,6 +123,12 @@ namespace Identity.API.Services
                     new Claim(JwtClaimTypes.PhoneNumberVerified, user.PhoneNumberConfirmed ? "true" : "false", ClaimValueTypes.Boolean)
                 });
             }
+
+            // Add claim with role type into the user
+            var userclaims = await _userManager.GetClaimsAsync(user);
+            Console.WriteLine("UserClaims");
+            Console.WriteLine(userclaims.ToList());
+            claims.AddRange(userclaims);
 
             return claims;
         }

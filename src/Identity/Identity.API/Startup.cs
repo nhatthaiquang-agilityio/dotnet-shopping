@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +19,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Logging;
 using StackExchange.Redis;
 using static Identity.API.Configuration.Config;
 
@@ -109,8 +107,6 @@ namespace Identity.API
                 })
                 .Services.AddTransient<IProfileService, ProfileService>();
 
-            IdentityModelEventSource.ShowPII = true;
-
             var container = new ContainerBuilder();
             container.Populate(services);
 
@@ -187,6 +183,7 @@ namespace Identity.API
 
         }
 
+        // seed user claims data
         private static void InitUserClaims(IApplicationBuilder app)
         {
             using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
@@ -199,7 +196,16 @@ namespace Identity.API
                     foreach (var user in userManager.Users)
                     {
                         if (user.UserName.Equals("admin@gmail.com"))
+                        {
+                            // Using in basket service
+                            // Apply policy claim and role for Authorize
+
+                            // add claim: admin
                             userManager.AddClaimsAsync(user, Claims.Get()).Wait();
+
+                            // add role: Administrator
+                            //userManager.AddToRoleAsync(user, "Administrator").Wait();
+                        }
                     }
                 }
             }

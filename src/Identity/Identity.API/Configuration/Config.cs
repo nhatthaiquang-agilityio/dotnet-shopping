@@ -15,9 +15,26 @@ namespace Identity.API.Configuration
             {
                 new ApiResource("orders", "Orders Service"),
                 new ApiResource("orders.signalrhub", "Ordering Signalr Hub"),
-                new ApiResource("basket", "Basket API Service"),
+                //new ApiResource("basket", "Basket API Service"),
                 new ApiResource("webhooks", "Webhooks registration Service"),
                 new ApiResource("webshoppingagg", "Web Shopping Aggregator"),
+
+                new ApiResource("basket")
+                {
+                    ApiSecrets =
+                    {
+                        new Secret("rolesapi".Sha256())
+                    },
+                    Scopes =
+                    {
+                        new Scope
+                        {
+                            Name = "roles"
+                        }
+                    },
+                    UserClaims = { "role", "api.admin", "api.user"}
+                },
+
             };
         }
 
@@ -29,16 +46,17 @@ namespace Identity.API.Configuration
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResource
-                {
-                    Name = "role",
-                    DisplayName="User Role",
-                    Description="The application can see your role.",
-                    UserClaims = new[]{JwtClaimTypes.Role, ClaimTypes.Role},
-                    ShowInDiscoveryDocument = true,
-                    Required=true,
-                    Emphasize = true
-                }
+                new IdentityResource("roles",new []{"role", "api.admin", "api.user"} )
+                //new IdentityResource
+                //{
+                //    Name = "role",
+                //    DisplayName="User Role",
+                //    Description="The application can see your role.",
+                //    UserClaims = new[]{JwtClaimTypes.Role, ClaimTypes.Role},
+                //    ShowInDiscoveryDocument = true,
+                //    Required=true,
+                //    Emphasize = true
+                //}
             };
         }
 
@@ -53,14 +71,14 @@ namespace Identity.API.Configuration
                     ClientName = "Basket Swagger UI",
                     AllowedGrantTypes = GrantTypes.Implicit,
                     AllowAccessTokensViaBrowser = true,
-
                     RedirectUris = { $"{clientsUrl["BasketApi"]}/oauth2-redirect.html" },
                     PostLogoutRedirectUris = { $"{clientsUrl["BasketApi"]}/" },
                     AlwaysSendClientClaims = true,
                     AlwaysIncludeUserClaimsInIdToken = true,
                     AllowedScopes =
                     {
-                        "basket", "role"
+                        "basket",
+                        "roles"
                     }
                 },
                 new Client
@@ -91,6 +109,7 @@ namespace Identity.API.Configuration
                     AllowedGrantTypes = GrantTypes.Hybrid,
                     AllowAccessTokensViaBrowser = false,
                     RequireConsent = false,
+                    AlwaysSendClientClaims = true,
                     AllowOfflineAccess = true,
                     AlwaysIncludeUserClaimsInIdToken = true,
                     RedirectUris = new List<string>
@@ -113,7 +132,7 @@ namespace Identity.API.Configuration
                         "webshoppingagg"
                     },
                     AccessTokenLifetime = 60*60*2, // 2 hours
-                    IdentityTokenLifetime= 60*60*2 // 2 hours
+                    IdentityTokenLifetime = 60*60*2 // 2 hours
                 },
                 // mapusermvc client
                 new Client
@@ -179,7 +198,7 @@ namespace Identity.API.Configuration
                         "webhooks"
                     },
                     AccessTokenLifetime = 60*60*2, // 2 hours
-                    IdentityTokenLifetime= 60*60*2 // 2 hours
+                    IdentityTokenLifetime = 60*60*2 // 2 hours
                 },
                 // webhooks api
                 new Client
@@ -220,7 +239,7 @@ namespace Identity.API.Configuration
             public static List<Claim> Get()
             {
                 return new List<Claim> {
-                    new Claim(JwtClaimTypes.Role, "admin")
+                    new Claim(JwtClaimTypes.Role, "api.admin")
                 };
             }
         }

@@ -11,8 +11,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Security.Claims;
-using IdentityModel;
+
 
 namespace Identity.API.Data
 {
@@ -135,13 +134,6 @@ namespace Identity.API.Data
 
             return user;
         }
-
-        //private IEnumerable<IdentityUserClaim> GetDefaultUserClaims()
-        //{
-        //    return new List<IdentityUserClaim> {
-        //        new IdentityUserClaim(JwtClaimTypes.Role, "user")
-        //    };
-        //}
 
         private IEnumerable<ApplicationUser> GetDefaultUser()
         {

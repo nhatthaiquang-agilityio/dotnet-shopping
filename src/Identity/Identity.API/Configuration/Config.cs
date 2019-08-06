@@ -1,7 +1,5 @@
-﻿using IdentityModel;
-using IdentityServer4.Models;
+﻿using IdentityServer4.Models;
 using System.Collections.Generic;
-using System.Security.Claims;
 using static IdentityServer4.IdentityServerConstants;
 
 namespace Identity.API.Configuration
@@ -15,26 +13,9 @@ namespace Identity.API.Configuration
             {
                 new ApiResource("orders", "Orders Service"),
                 new ApiResource("orders.signalrhub", "Ordering Signalr Hub"),
-                //new ApiResource("basket", "Basket API Service"),
+                new ApiResource("basket", "Basket API Service"),
                 new ApiResource("webhooks", "Webhooks registration Service"),
-                new ApiResource("webshoppingagg", "Web Shopping Aggregator"),
-
-                new ApiResource("basket")
-                {
-                    ApiSecrets =
-                    {
-                        new Secret("rolesapi".Sha256())
-                    },
-                    Scopes =
-                    {
-                        new Scope
-                        {
-                            Name = "roles"
-                        }
-                    },
-                    UserClaims = { "role", "api.admin", "api.user"}
-                },
-
+                new ApiResource("webshoppingagg", "Web Shopping Aggregator")
             };
         }
 
@@ -45,18 +26,8 @@ namespace Identity.API.Configuration
             return new List<IdentityResource>
             {
                 new IdentityResources.OpenId(),
-                new IdentityResources.Profile(),
-                new IdentityResource("roles",new []{"role", "api.admin", "api.user"} )
-                //new IdentityResource
-                //{
-                //    Name = "role",
-                //    DisplayName="User Role",
-                //    Description="The application can see your role.",
-                //    UserClaims = new[]{JwtClaimTypes.Role, ClaimTypes.Role},
-                //    ShowInDiscoveryDocument = true,
-                //    Required=true,
-                //    Emphasize = true
-                //}
+                new IdentityResources.Profile()
+                //new IdentityResource("roles",new []{"role", "api.admin", "api.user"} )
             };
         }
 
@@ -77,8 +48,7 @@ namespace Identity.API.Configuration
                     AlwaysIncludeUserClaimsInIdToken = true,
                     AllowedScopes =
                     {
-                        "basket",
-                        "roles"
+                        "basket"
                     }
                 },
                 new Client
@@ -230,18 +200,8 @@ namespace Identity.API.Configuration
                     {
                         "webshoppingagg"
                     }
-                },
+                }
             };
-        }
-
-        internal class Claims
-        {
-            public static List<Claim> Get()
-            {
-                return new List<Claim> {
-                    new Claim(JwtClaimTypes.Role, "api.admin")
-                };
-            }
         }
 
     }

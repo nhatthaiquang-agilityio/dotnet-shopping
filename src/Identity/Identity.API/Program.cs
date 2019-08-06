@@ -39,6 +39,14 @@ namespace Identity.API
                         new ApplicationDbContextSeed()
                             .SeedAsync(context, env, logger, settings)
                             .Wait();
+
+                        // create roles and set role into users
+                        var serviceProvider = services.GetRequiredService<IServiceProvider>();
+                        new ApplicationDbContextSeed().CreateUserRoles(serviceProvider).Wait();
+
+                        // Create claims
+                        new ApplicationDbContextSeed().InitUserClaims(serviceProvider);
+
                     })
                     .MigrateDbContext<ConfigurationDbContext>((context, services) =>
                     {

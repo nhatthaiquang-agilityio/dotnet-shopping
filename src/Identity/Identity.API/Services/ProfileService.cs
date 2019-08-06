@@ -25,7 +25,7 @@ namespace Identity.API.Services
         {
             var subject = context.Subject ?? throw new ArgumentNullException(nameof(context.Subject));
 
-            var subjectId = subject.Claims.Where(x => x.Type == "sub").FirstOrDefault().Value;
+            var subjectId = subject.Claims.Where(x => x.Type == "sub").SingleOrDefault().Value;
 
             var user = await _userManager.FindByIdAsync(subjectId);
             if (user == null)
@@ -39,7 +39,7 @@ namespace Identity.API.Services
         {
             var subject = context.Subject ?? throw new ArgumentNullException(nameof(context.Subject));
 
-            var subjectId = subject.Claims.Where(x => x.Type == "sub").FirstOrDefault().Value;
+            var subjectId = subject.Claims.Where(x => x.Type == "sub").SingleOrDefault().Value;
             var user = await _userManager.FindByIdAsync(subjectId);
 
             context.IsActive = false;
@@ -126,9 +126,14 @@ namespace Identity.API.Services
 
             // Add claim with role type into the user
             var userclaims = await _userManager.GetClaimsAsync(user);
-            Console.WriteLine("UserClaims");
-            Console.WriteLine(userclaims.ToList());
             claims.AddRange(userclaims);
+
+            // add roles
+            var userRoles = await _userManager.GetRolesAsync(user);
+            foreach (var role in userRoles)
+            {
+                claims.Add(new Claim(JwtClaimTypes.Role, role));
+            }
 
             return claims;
         }

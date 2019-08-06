@@ -1,5 +1,4 @@
-﻿
-using IdentityServer4.Services;
+﻿using IdentityServer4.Services;
 using Microsoft.AspNetCore.Mvc;
 using Identity.API.Models;
 using Identity.API.Services;
@@ -11,13 +10,11 @@ namespace Identity.API.Controllers
     public class HomeController : Controller
     {
         private readonly IIdentityServerInteractionService _interaction;
-        private readonly IOptionsSnapshot<AppSettings> _settings;
         private readonly IRedirectService _redirectSvc;
 
-        public HomeController(IIdentityServerInteractionService interaction, IOptionsSnapshot<AppSettings> settings,IRedirectService redirectSvc)
+        public HomeController(IIdentityServerInteractionService interaction, IOptionsSnapshot<AppSettings> settings, IRedirectService redirectSvc)
         {
             _interaction = interaction;
-            _settings = settings;
             _redirectSvc = redirectSvc;
         }
 
@@ -30,8 +27,7 @@ namespace Identity.API.Controllers
         {
             if (returnUrl != null)
                 return Redirect(_redirectSvc.ExtractRedirectUriFromReturnUrl(returnUrl));
-            else
-                return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home");
         }
 
         /// <summary>

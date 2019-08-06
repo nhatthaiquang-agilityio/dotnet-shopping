@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -20,7 +19,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
-using static Identity.API.Configuration.Config;
 
 namespace Identity.API
 {
@@ -114,7 +112,7 @@ namespace Identity.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
 
             if (env.IsDevelopment())
@@ -135,7 +133,7 @@ namespace Identity.API
                 app.UsePathBase(pathBase);
             }
 
-            app.UseHealthChecks("/hc", new HealthCheckOptions()
+            app.UseHealthChecks("/hc", new HealthCheckOptions
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
@@ -153,15 +151,12 @@ namespace Identity.API
             app.Use(async (context, next) =>
             {
                 context.Response.Headers.Add("Content-Security-Policy", "script-src 'unsafe-inline'");
-                // context.Request.PathBase = new PathString("/identity");
                 await next();
             });
 
             app.UseForwardedHeaders();
             // Adds IdentityServer
             app.UseIdentityServer();
-
-            InitUserClaims(app);
 
             //app.UseHttpsRedirection();
             app.UseMvc(routes =>
@@ -182,33 +177,6 @@ namespace Identity.API
             }
 
         }
-
-        // seed user claims data
-        private static void InitUserClaims(IApplicationBuilder app)
-        {
-            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            {
-                // claim
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
-                if (userManager.Users.Any())
-                {
-                    foreach (var user in userManager.Users)
-                    {
-                        if (user.UserName.Equals("admin@gmail.com"))
-                        {
-                            // Using in basket service
-                            // Apply policy claim and role for Authorize
-
-                            // add claim: admin
-                            userManager.AddClaimsAsync(user, Claims.Get()).Wait();
-
-                            // add role: Administrator
-                            //userManager.AddToRoleAsync(user, "Administrator").Wait();
-                        }
-                    }
-                }
-            }
-        }
+        
     }
 }

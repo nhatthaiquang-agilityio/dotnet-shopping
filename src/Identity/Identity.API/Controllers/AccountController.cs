@@ -100,7 +100,7 @@ namespace Identity.API.Controllers
 
                         props.ExpiresUtc = DateTimeOffset.UtcNow.AddDays(permanentTokenLifetime);
                         props.IsPersistent = true;
-                    };
+                    }
 
                     await _loginService.SignInAsync(user, props);
 
@@ -280,7 +280,7 @@ namespace Identity.API.Controllers
                     SecurityNumber = model.User.SecurityNumber
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Errors.Count() > 0)
+                if (result.Errors.Any())
                 {
                     AddErrors(result);
                     // If we got this far, something failed, redisplay form

@@ -7,11 +7,12 @@ using Identity.API.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-
+using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims;
+using IdentityModel;
 
 namespace Identity.API.Data
 {
@@ -38,10 +39,6 @@ namespace Identity.API.Data
                     await context.SaveChangesAsync();
                 }
 
-                if (useCustomizationData)
-                {
-                    GetPreconfiguredImages(contentRootPath, webroot, logger);
-                }
             }
             catch (Exception ex)
             {
@@ -128,7 +125,7 @@ namespace Identity.API.Data
                 NormalizedEmail = column[Array.IndexOf(headers, "normalizedemail")].Trim('"').Trim(),
                 NormalizedUserName = column[Array.IndexOf(headers, "normalizedusername")].Trim('"').Trim(),
                 SecurityStamp = Guid.NewGuid().ToString("D"),
-                PasswordHash = column[Array.IndexOf(headers, "password")].Trim('"').Trim(), // Note: This is the password
+                PasswordHash = column[Array.IndexOf(headers, "password")].Trim('"').Trim()
             };
             user.PasswordHash = _passwordHasher.HashPassword(user, user.PasswordHash);
 
@@ -137,7 +134,7 @@ namespace Identity.API.Data
 
         private IEnumerable<ApplicationUser> GetDefaultUser()
         {
-            var user = new ApplicationUser()
+            var user = new ApplicationUser
             {
                 CardHolderName = "Nhat Thai",
                 CardNumber = "4012888888881881",
@@ -157,12 +154,12 @@ namespace Identity.API.Data
                 SecurityNumber = "535",
                 NormalizedEmail = "NHATTHAI@GMAIL.COM",
                 NormalizedUserName = "NHATTHAI@GMAIL.COM",
-                SecurityStamp = Guid.NewGuid().ToString("D"),
+                SecurityStamp = Guid.NewGuid().ToString("D")
             };
 
             user.PasswordHash = _passwordHasher.HashPassword(user, "Pass@word1");
 
-            var admin = new ApplicationUser()
+            var admin = new ApplicationUser
             {
                 CardHolderName = "Admin",
                 CardNumber = "4012888888881333",
@@ -182,7 +179,7 @@ namespace Identity.API.Data
                 SecurityNumber = "544",
                 NormalizedEmail = "ADMIN@GMAIL.COM",
                 NormalizedUserName = "ADMIN@GMAIL.COM",
-                SecurityStamp = Guid.NewGuid().ToString("D"),
+                SecurityStamp = Guid.NewGuid().ToString("D")
             };
 
             admin.PasswordHash = _passwordHasher.HashPassword(user, "Pass@word1");
@@ -212,43 +209,70 @@ namespace Identity.API.Data
             return csvheaders;
         }
 
-        static void GetPreconfiguredImages(string contentRootPath, string webroot, ILogger logger)
+        private static class Claims
         {
-            try
+            public static List<Claim> Get()
             {
-                string imagesZipFile = Path.Combine(contentRootPath, "Setup", "images.zip");
-                if (!File.Exists(imagesZipFile))
-                {
-                    logger.LogError("Zip file '{ZipFileName}' does not exists.", imagesZipFile);
-                    return;
-                }
+                return new List<Claim> {
+                    new Claim(JwtClaimTypes.Role, "api.admin")
+                };
+            }
+        }
 
-                string imagePath = Path.Combine(webroot, "images");
-                string[] imageFiles = Directory.GetFiles(imagePath).Select(file => Path.GetFileName(file)).ToArray();
+        private static class Roles
+        {
+            public static List<string> Get()
+            {
+                return new List<string> { "Admin", "Manager", "User" };
+            }
+        }
 
-                using (ZipArchive zip = ZipFile.Open(imagesZipFile, ZipArchiveMode.Read))
+        // seed user claims data
+        public void InitUserClaims(IServiceProvider serviceProvider)
+        {
+            using (var scope = serviceProvider.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                // claim
+                var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+                if (userManager.Users.Any())
                 {
-                    foreach (ZipArchiveEntry entry in zip.Entries)
+                    foreach (var user in userManager.Users)
                     {
-                        if (imageFiles.Contains(entry.Name))
+                        if (user.UserName.Equals("admin@gmail.com"))
                         {
-                            string destinationFilename = Path.Combine(imagePath, entry.Name);
-                            if (File.Exists(destinationFilename))
-                            {
-                                File.Delete(destinationFilename);
-                            }
-                            entry.ExtractToFile(destinationFilename);
+                            // Using in basket service
+                            // Apply policy claim and role for Authorize
+                            // add claim: admin
+                            userManager.AddClaimsAsync(user, Claims.Get()).Wait();
+
+                            // add role: Admin
+                            userManager.AddToRoleAsync(user, "Admin").Wait();
                         }
                         else
                         {
-                            logger.LogWarning("Skipped file '{FileName}' in zipfile '{ZipFileName}'", entry.Name, imagesZipFile);
+                            // add role: User
+                            userManager.AddToRoleAsync(user, "User").Wait();
                         }
                     }
                 }
             }
-            catch (Exception ex)
+        }
+
+        // Create User Roles
+        public async Task CreateUserRoles(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            foreach (var roleName in Roles.Get())
             {
-                logger.LogError(ex, "EXCEPTION ERROR: {Message}", ex.Message);
+                //Adding Addmin Role
+                var roleCheck = await roleManager.RoleExistsAsync(roleName);
+                if (!roleCheck)
+                {
+                    //create the roles and seed them to the database
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                }
             }
         }
     }

@@ -17,6 +17,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
 using WebMVC.Infrastructure;
+using Microsoft.IdentityModel.Tokens;
 
 namespace WebMVC
 {

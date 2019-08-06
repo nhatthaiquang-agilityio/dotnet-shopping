@@ -63,6 +63,7 @@ namespace WebMVC.Controllers
             return View();
         }
 
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> AddToCart(CatalogItem productDetails)
         {
             try

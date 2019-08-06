@@ -42,12 +42,6 @@ namespace WebMVC
         {
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-            //app.UseHealthChecks("/hc", new HealthCheckOptions()
-            //{
-            //    Predicate = _ => true,
-            //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            //});
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -65,10 +59,6 @@ namespace WebMVC
                 app.UsePathBase(pathBase);
             }
 
-            //app.UseHealthChecks("/liveness", new HealthCheckOptions
-            //{
-            //    Predicate = r => r.Name.Contains("self")
-            //});
 
             app.UseSession();
             app.UseStaticFiles();
@@ -206,6 +196,11 @@ namespace WebMVC
                 options.Scope.Add("orders");
                 options.Scope.Add("webshoppingagg");
                 options.Scope.Add("orders.signalrhub");
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = "role",
+                    RoleClaimType = "role"
+                };
             });
 
             return services;

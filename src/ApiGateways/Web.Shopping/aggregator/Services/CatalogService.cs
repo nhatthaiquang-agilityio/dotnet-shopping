@@ -12,13 +12,13 @@ namespace Web.Shopping.HttpAggregator.Services
     public class CatalogService : ICatalogService
     {
         private readonly HttpClient _httpClient;
-        private readonly ILogger<CatalogService> _logger;
+        //private readonly ILogger<CatalogService> _logger;
         private readonly UrlsConfig _urls;
 
         public CatalogService(HttpClient httpClient, ILogger<CatalogService> logger, IOptions<UrlsConfig> config)
         {
             _httpClient = httpClient;
-            _logger = logger;
+            //_logger = logger;
             _urls = config.Value;
         }
 

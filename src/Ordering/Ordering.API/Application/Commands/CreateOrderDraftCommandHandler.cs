@@ -48,7 +48,7 @@
 
         public static OrderDraftDTO FromOrder(Order order)
         {
-            return new OrderDraftDTO()
+            return new OrderDraftDTO
             {
                 OrderItems = order.OrderItems.Select(oi => new OrderItemDTO
                 {

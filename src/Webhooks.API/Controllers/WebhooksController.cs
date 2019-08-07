@@ -19,7 +19,7 @@ namespace Webhooks.API.Controllers
     {
         private readonly WebhooksContext _dbContext;
         private readonly IIdentityService _identityService;
-        private readonly IGrantUrlTesterService _grantUrlTester;
+        //private readonly IGrantUrlTesterService _grantUrlTester;
 
         public WebhooksController(
             WebhooksContext dbContext, IIdentityService identityService,
@@ -27,7 +27,7 @@ namespace Webhooks.API.Controllers
         {
             _dbContext = dbContext;
             _identityService = identityService;
-            _grantUrlTester = grantUrlTester;
+            //_grantUrlTester = grantUrlTester;
         }
 
         [HttpGet]
@@ -72,12 +72,12 @@ namespace Webhooks.API.Controllers
 
             // if (grantOk)
             // {
-            var subscription = new WebhookSubscription()
+            var subscription = new WebhookSubscription
             {
                 Date = DateTime.UtcNow,
                 DestUrl = request.Url,
                 Token = request.Token,
-                Type = Enum.Parse<WebhookType>(request.Event, ignoreCase: true),
+                Type = Enum.Parse<WebhookType>(request.Event, true),
                 UserId = _identityService.GetUserIdentity()
             };
 

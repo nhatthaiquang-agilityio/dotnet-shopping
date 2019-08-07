@@ -48,7 +48,7 @@ namespace Controllers
                     return BadRequest($"Basket refers to a non-existing catalog item ({bitem.ProductId})");
                 }
 
-                basket.Items.Add(new BasketDataItem()
+                basket.Items.Add(new BasketDataItem
                 {
                     Id = bitem.Id,
                     ProductId = catalogItem.Id.ToString(),
@@ -118,7 +118,7 @@ namespace Controllers
             // Step 2: Get current basket status
             var currentBasket = (await _basket.GetByIdAsync(data.BasketId)) ?? new BasketData(data.BasketId);
             // Step 3: Merge current status with new product
-            currentBasket.Items.Add(new BasketDataItem()
+            currentBasket.Items.Add(new BasketDataItem
             {
                 UnitPrice = item.Price,
                 PictureUrl = item.PictureUri,

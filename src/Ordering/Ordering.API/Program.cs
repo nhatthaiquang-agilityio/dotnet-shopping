@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using BuildingBlocks.IntegrationEventLogEF;
+﻿using BuildingBlocks.IntegrationEventLogEF;
 using Ordering.API.Infrastructure;
 using Ordering.Infrastructure;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -22,14 +22,14 @@ namespace Ordering.API
         {
             var configuration = GetConfiguration();
 
-            //Log.Logger = CreateSerilogLogger(configuration);
+            Log.Logger = CreateSerilogLogger(configuration);
 
             try
             {
-                ////Log.Information("Configuring web host ({ApplicationContext})...", AppName);
+                Log.Information("Configuring web host ({ApplicationContext})...", AppName);
                 var host = BuildWebHost(configuration, args);
 
-                //Log.Information("Applying migrations ({ApplicationContext})...", AppName);
+                Log.Information("Applying migrations ({ApplicationContext})...", AppName);
                 host.MigrateDbContext<OrderingContext>((context, services) =>
                 {
                     var env = services.GetService<IHostingEnvironment>();
@@ -42,19 +42,19 @@ namespace Ordering.API
                 })
                 .MigrateDbContext<IntegrationEventLogContext>((_, __) => { });
 
-                //Log.Information("Starting web host ({ApplicationContext})...", AppName);
+                Log.Information("Starting web host ({ApplicationContext})...", AppName);
                 host.Run();
 
                 return 0;
             }
             catch (Exception ex)
             {
-                //Log.Fatal(ex, "Program terminated unexpectedly ({ApplicationContext})!", AppName);
+                Log.Fatal(ex, "Program terminated unexpectedly ({ApplicationContext})!", AppName);
                 return 1;
             }
             finally
             {
-                //Log.CloseAndFlush();
+                Log.CloseAndFlush();
             }
         }
 
@@ -83,7 +83,7 @@ namespace Ordering.API
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", false, true)
                 .AddEnvironmentVariables();
 
             var config = builder.Build();

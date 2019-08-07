@@ -19,7 +19,7 @@ namespace Ordering.API.Application.Models
 
         public static OrderItemDTO ToOrderItemDTO(this BasketItem item)
         {
-            return new OrderItemDTO()
+            return new OrderItemDTO
             {
                 ProductId = int.TryParse(item.ProductId, out int id) ? id : -1,
                 ProductName = item.ProductName,

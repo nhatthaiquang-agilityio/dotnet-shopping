@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Formatting;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Formatting;
+using System.Threading.Tasks;
 using WebhookClient.Models;
 
 namespace WebhookClient.Pages
@@ -55,7 +51,7 @@ namespace WebhookClient.Pages
             var url = $"{selfurl}webhook-received";
             var client = _httpClientFactory.CreateClient("GrantClient");
 
-            var payload = new WebhookSubscriptionRequest()
+            var payload = new WebhookSubscriptionRequest
             {
                 Event = "OrderPaid",
                 GrantUrl = granturl,
@@ -69,15 +65,13 @@ namespace WebhookClient.Pages
             {
                 return RedirectToPage("WebhooksList");
             }
-            else
-            {
-                RequestBodyJson = JsonConvert.SerializeObject(payload);
-                ResponseCode = (int)response.StatusCode;
-                ResponseMessage = response.ReasonPhrase;
-                GrantUrl = granturl;
-                RequestUrl = $"{response.RequestMessage.Method} {response.RequestMessage.RequestUri}";
-            }
-
+            
+            RequestBodyJson = JsonConvert.SerializeObject(payload);
+            ResponseCode = (int)response.StatusCode;
+            ResponseMessage = response.ReasonPhrase;
+            GrantUrl = granturl;
+            RequestUrl = $"{response.RequestMessage.Method} {response.RequestMessage.RequestUri}";
+            
             return Page();
         }
     }

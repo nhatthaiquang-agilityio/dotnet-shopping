@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.IdentityModel.Tokens.Jwt;
-using System.Reflection;
-using System.Threading;
-using Autofac;
+﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using BuildingBlocks.EventBus;
+using BuildingBlocks.EventBus.Abstractions;
+using BuildingBlocks.EventBusRabbitMQ;
+using BuildingBlocks.EventBusServiceBus;
+using BuildingBlocks.IntegrationEventLogEF.Services;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -16,16 +15,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using BuildingBlocks.EventBus;
-using BuildingBlocks.EventBus.Abstractions;
-using BuildingBlocks.EventBusRabbitMQ;
-using BuildingBlocks.EventBusServiceBus;
-using BuildingBlocks.IntegrationEventLogEF.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using System;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
+using System.Threading;
 using Swashbuckle.AspNetCore.Swagger;
 using Webhooks.API.Infrastructure;
 using Webhooks.API.IntegrationEvents;
@@ -78,7 +78,7 @@ namespace Webhooks.API
                 app.UsePathBase(pathBase);
             }
 
-            app.UseHealthChecks("/hc", new HealthCheckOptions()
+            app.UseHealthChecks("/hc", new HealthCheckOptions
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
@@ -166,7 +166,7 @@ namespace Webhooks.API
                 {
                     sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
                     //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency
-                    sqlOptions.EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
+                    sqlOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(30), null);
                 });
 
                 // Changing default behavior when client evaluation occurs to throw.
@@ -197,7 +197,7 @@ namespace Webhooks.API
                     Flow = "implicit",
                     AuthorizationUrl = $"{configuration.GetValue<string>("IdentityUrlExternal")}/connect/authorize",
                     TokenUrl = $"{configuration.GetValue<string>("IdentityUrlExternal")}/connect/token",
-                    Scopes = new Dictionary<string, string>()
+                    Scopes = new Dictionary<string, string>
                     {
                         { "webhooks", "Webhooks API" }
                     }
@@ -299,7 +299,7 @@ namespace Webhooks.API
                 {
                     var logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();
 
-                    var factory = new ConnectionFactory()
+                    var factory = new ConnectionFactory
                     {
                         HostName = configuration["EventBusConnection"],
                         DispatchConsumersAsync = true

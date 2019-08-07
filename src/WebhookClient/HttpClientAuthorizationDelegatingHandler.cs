@@ -27,7 +27,7 @@ namespace WebhookClient
 
             if (!string.IsNullOrEmpty(authorizationHeader))
             {
-                request.Headers.Add("Authorization", new List<string>() { authorizationHeader });
+                request.Headers.Add("Authorization", new List<string> { authorizationHeader });
             }
 
             var token = await GetToken();

@@ -35,7 +35,7 @@ namespace WebhookClient.Controllers
             if (!_settings.ValidateToken || _settings.Token == token)
             {
                 _logger.LogInformation($"Received hook is going to be processed");
-                var newHook = new WebHookReceived()
+                var newHook = new WebHookReceived
                 {
                     Data = hook.Payload,
                     When = hook.When,

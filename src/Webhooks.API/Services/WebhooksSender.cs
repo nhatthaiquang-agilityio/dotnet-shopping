@@ -30,7 +30,7 @@ namespace Webhooks.API.Services
 
         private Task OnSendData(WebhookSubscription subs, string jsonData, HttpClient client)
         {
-            var request = new HttpRequestMessage()
+            var request = new HttpRequestMessage
             {
                 RequestUri = new Uri(subs.DestUrl, UriKind.Absolute),
                 Method = HttpMethod.Post,

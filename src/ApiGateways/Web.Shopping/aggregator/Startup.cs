@@ -89,7 +89,7 @@ namespace Web.Shopping.HttpAggregator
                 options.Authority = identityUrl;
                 options.RequireHttpsMetadata = false;
                 options.Audience = "webshoppingagg";
-                options.Events = new JwtBearerEvents()
+                options.Events = new JwtBearerEvents
                 {
                 };
             });
@@ -122,7 +122,7 @@ namespace Web.Shopping.HttpAggregator
                     Flow = "implicit",
                     AuthorizationUrl = $"{configuration.GetValue<string>("IdentityUrlExternal")}/connect/authorize",
                     TokenUrl = $"{configuration.GetValue<string>("IdentityUrlExternal")}/connect/token",
-                    Scopes = new Dictionary<string, string>()
+                    Scopes = new Dictionary<string, string>
                     {
                         { "webshoppingagg", "Shopping Aggregator for Web Clients" }
                     }

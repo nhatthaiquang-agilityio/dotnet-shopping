@@ -11,13 +11,13 @@ namespace Web.Shopping.HttpAggregator.Services
     public class OrderApiClient : IOrderApiClient
     {
         private readonly HttpClient _apiClient;
-        private readonly ILogger<OrderApiClient> _logger;
+        //private readonly ILogger<OrderApiClient> _logger;
         private readonly UrlsConfig _urls;
 
         public OrderApiClient(HttpClient httpClient, ILogger<OrderApiClient> logger, IOptions<UrlsConfig> config)
         {
             _apiClient = httpClient;
-            _logger = logger;
+            //_logger = logger;
             _urls = config.Value;
         }
 

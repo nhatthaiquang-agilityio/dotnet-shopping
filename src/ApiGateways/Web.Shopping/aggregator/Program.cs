@@ -24,7 +24,7 @@ namespace Web.Shopping.HttpAggregator
                 .ConfigureAppConfiguration(cb =>
                 {
                     var sources = cb.Sources;
-                    sources.Insert(3, new Microsoft.Extensions.Configuration.Json.JsonConfigurationSource()
+                    sources.Insert(3, new Microsoft.Extensions.Configuration.Json.JsonConfigurationSource
                     {
                         Optional = true,
                         Path = "appsettings.localhost.json",

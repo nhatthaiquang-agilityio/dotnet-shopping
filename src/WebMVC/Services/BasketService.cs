@@ -1,5 +1,4 @@
-﻿using WebMVC.ViewModels;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using WebMVC.Infrastructure;
 using WebMVC.Services.ModelDTOs;
+using WebMVC.ViewModels;
 
 namespace WebMVC.Services
 {

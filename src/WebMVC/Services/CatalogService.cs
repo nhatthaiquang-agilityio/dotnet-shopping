@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using WebMVC.ViewModels;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -8,6 +7,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using WebMVC.Infrastructure;
+using WebMVC.ViewModels;
 
 namespace WebMVC.Services
 {
@@ -43,7 +43,7 @@ namespace WebMVC.Services
 
             var items = new List<SelectListItem>();
 
-            items.Add(new SelectListItem() { Value = null, Text = "All", Selected = true });
+            items.Add(new SelectListItem { Value = null, Text = "All", Selected = true });
 
             var brands = JArray.Parse(responseString);
 

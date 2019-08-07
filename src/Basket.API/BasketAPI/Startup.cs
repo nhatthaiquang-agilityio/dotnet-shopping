@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Basket.API.Infrastructure.Filters;
 using BasketAPI.Infrastructure.Repositories;
 using BasketAPI.IntegrationEvents.EventHandling;
 using BasketAPI.IntegrationEvents.Events;
@@ -15,7 +16,10 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Azure.ServiceBus;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -27,10 +31,6 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using Swashbuckle.AspNetCore.Swagger;
 using System.Collections.Generic;
-using Basket.API.Infrastructure.Filters;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.IdentityModel.Tokens;
 
 namespace BasketAPI
 {

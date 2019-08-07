@@ -24,7 +24,7 @@ namespace Webhooks.API.Controllers
                 yield return new ValidationResult("Url is not valid", new[] { nameof(Url) });
             }
 
-            var isOk = Enum.TryParse<WebhookType>(Event, ignoreCase: true, result: out WebhookType whtype);
+            var isOk = Enum.TryParse<WebhookType>(Event, true, out WebhookType whtype);
             if (!isOk)
             {
                 yield return new ValidationResult($"{Event} is invalid event name", new[] { nameof(Event) });

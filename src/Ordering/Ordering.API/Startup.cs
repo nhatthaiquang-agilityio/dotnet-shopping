@@ -85,7 +85,7 @@
                 Predicate = r => r.Name.Contains("self")
             });
 
-            app.UseHealthChecks("/hc", new HealthCheckOptions()
+            app.UseHealthChecks("/hc", new HealthCheckOptions
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
@@ -188,8 +188,7 @@
                 hcBuilder
                     .AddAzureServiceBusTopic(
                         configuration["EventBusConnection"],
-                        topicName: "eshop_event_bus",
-                        name: "ordering-servicebus-check",
+                        "eshop_event_bus", "ordering-servicebus-check",
                         tags: new string[] { "servicebus" });
             }
             else
@@ -197,7 +196,7 @@
                 hcBuilder
                     .AddRabbitMQ(
                         $"amqp://{configuration["EventBusConnection"]}",
-                        name: "ordering-rabbitmqbus-check",
+                        "ordering-rabbitmqbus-check",
                         tags: new string[] { "rabbitmqbus" });
             }
 
@@ -250,7 +249,7 @@
                     Flow = "implicit",
                     AuthorizationUrl = $"{configuration.GetValue<string>("IdentityUrlExternal")}/connect/authorize",
                     TokenUrl = $"{configuration.GetValue<string>("IdentityUrlExternal")}/connect/token",
-                    Scopes = new Dictionary<string, string>()
+                    Scopes = new Dictionary<string, string>
                     {
                         { "orders", "Ordering API" }
                     }
@@ -290,7 +289,7 @@
                     var logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();
 
 
-                    var factory = new ConnectionFactory()
+                    var factory = new ConnectionFactory
                     {
                         HostName = configuration["EventBusConnection"],
                         DispatchConsumersAsync = true

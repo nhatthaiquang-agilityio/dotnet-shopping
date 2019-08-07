@@ -11,13 +11,13 @@ namespace Web.Shopping.HttpAggregator.Services
     public class BasketService : IBasketService
     {
         private readonly HttpClient _apiClient;
-        private readonly ILogger<BasketService> _logger;
+        //private readonly ILogger<BasketService> _logger;
         private readonly UrlsConfig _urls;
 
         public BasketService(HttpClient httpClient,ILogger<BasketService> logger, IOptions<UrlsConfig> config)
         {
             _apiClient = httpClient;
-            _logger = logger;
+            //_logger = logger;
             _urls = config.Value;
         }
 

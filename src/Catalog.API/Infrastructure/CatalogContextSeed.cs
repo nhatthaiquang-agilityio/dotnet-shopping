@@ -98,19 +98,19 @@ namespace Catalog.API.Infrastructure
 
             return new CatalogBrand
             {
-                Brand = brand,
+                Brand = brand
             };
         }
 
         private IEnumerable<CatalogBrand> GetPreconfiguredCatalogBrands()
         {
-            return new List<CatalogBrand>()
+            return new List<CatalogBrand>
             {
-                new CatalogBrand() { Brand = "Azure"},
-                new CatalogBrand() { Brand = ".NET" },
-                new CatalogBrand() { Brand = "Visual Studio" },
-                new CatalogBrand() { Brand = "SQL Server" },
-                new CatalogBrand() { Brand = "Other" }
+                new CatalogBrand { Brand = "Azure"},
+                new CatalogBrand { Brand = ".NET" },
+                new CatalogBrand { Brand = "Visual Studio" },
+                new CatalogBrand { Brand = "SQL Server" },
+                new CatalogBrand { Brand = "Other" }
             };
         }
 
@@ -153,18 +153,18 @@ namespace Catalog.API.Infrastructure
 
             return new CatalogType
             {
-                Type = type,
+                Type = type
             };
         }
 
         private IEnumerable<CatalogType> GetPreconfiguredCatalogTypes()
         {
-            return new List<CatalogType>()
+            return new List<CatalogType>
             {
-                new CatalogType() { Type = "Mug"},
-                new CatalogType() { Type = "T-Shirt" },
-                new CatalogType() { Type = "Sheet" },
-                new CatalogType() { Type = "USB Memory Stick" }
+                new CatalogType { Type = "Mug"},
+                new CatalogType { Type = "T-Shirt" },
+                new CatalogType { Type = "Sheet" },
+                new CatalogType { Type = "USB Memory Stick" }
             };
         }
 
@@ -226,14 +226,14 @@ namespace Catalog.API.Infrastructure
                 throw new Exception($"price={priceString}is not a valid decimal number");
             }
 
-            var catalogItem = new CatalogItem()
+            var catalogItem = new CatalogItem
             {
                 CatalogTypeId = catalogTypeIdLookup[catalogTypeName],
                 CatalogBrandId = catalogBrandIdLookup[catalogBrandName],
                 Description = column[Array.IndexOf(headers, "description")].Trim('"').Trim(),
                 Name = column[Array.IndexOf(headers, "name")].Trim('"').Trim(),
                 Price = price,
-                PictureUri = column[Array.IndexOf(headers, "pictureuri")].Trim('"').Trim(),
+                PictureUri = column[Array.IndexOf(headers, "pictureuri")].Trim('"').Trim()
             };
 
             int availableStockIndex = Array.IndexOf(headers, "availablestock");
@@ -309,7 +309,7 @@ namespace Catalog.API.Infrastructure
 
         private IEnumerable<CatalogItem> GetPreconfiguredItems()
         {
-            return new List<CatalogItem>()
+            return new List<CatalogItem>
             {
                 new CatalogItem { CatalogTypeId = 2, CatalogBrandId = 2, AvailableStock = 100, Description = ".NET Bot Black Hoodie", Name = ".NET Bot Black Hoodie", Price = 19.5M, PictureFileName = "1.png" },
                 new CatalogItem { CatalogTypeId = 1, CatalogBrandId = 2, AvailableStock = 100, Description = ".NET Black & White Mug", Name = ".NET Black & White Mug", Price= 8.50M, PictureFileName = "2.png" },
@@ -322,7 +322,7 @@ namespace Catalog.API.Infrastructure
                 new CatalogItem { CatalogTypeId = 1, CatalogBrandId = 5, AvailableStock = 100, Description = "Cup<T> White Mug", Name = "Cup<T> White Mug", Price = 12, PictureFileName = "9.png" },
                 new CatalogItem { CatalogTypeId = 3, CatalogBrandId = 2, AvailableStock = 100, Description = ".NET Foundation Sheet", Name = ".NET Foundation Sheet", Price = 12, PictureFileName = "10.png" },
                 new CatalogItem { CatalogTypeId = 3, CatalogBrandId = 2, AvailableStock = 100, Description = "Cup<T> Sheet", Name = "Cup<T> Sheet", Price = 8.5M, PictureFileName = "11.png" },
-                new CatalogItem { CatalogTypeId = 2, CatalogBrandId = 5, AvailableStock = 100, Description = "Prism White TShirt", Name = "Prism White TShirt", Price = 12, PictureFileName = "12.png" },
+                new CatalogItem { CatalogTypeId = 2, CatalogBrandId = 5, AvailableStock = 100, Description = "Prism White TShirt", Name = "Prism White TShirt", Price = 12, PictureFileName = "12.png" }
             };
         }
 
@@ -373,9 +373,9 @@ namespace Catalog.API.Infrastructure
         {
             return Policy.Handle<SqlException>().
                 WaitAndRetryAsync(
-                    retryCount: retries,
-                    sleepDurationProvider: retry => TimeSpan.FromSeconds(5),
-                    onRetry: (exception, timeSpan, retry, ctx) =>
+                    retries,
+                    retry => TimeSpan.FromSeconds(5),
+                    (exception, timeSpan, retry, ctx) =>
                     {
                         logger.LogWarning(exception, "[{prefix}] Exception {ExceptionType} with message {Message} detected on attempt {retry} of {retries}", prefix, exception.GetType().Name, exception.Message, retry, retries);
                     }

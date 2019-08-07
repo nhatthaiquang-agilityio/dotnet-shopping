@@ -81,7 +81,7 @@ namespace WebMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var location = new LocationDTO()
+                var location = new LocationDTO
                 {
                     Longitude = model.Lon,
                     Latitude = model.Lat

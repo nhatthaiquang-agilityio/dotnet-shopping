@@ -66,12 +66,12 @@ namespace WebMVC.Services
             var responseString = await _httpClient.GetStringAsync(uri);
 
             var items = new List<SelectListItem>();
-            items.Add(new SelectListItem() { Value = null, Text = "All", Selected = true });
+            items.Add(new SelectListItem { Value = null, Text = "All", Selected = true });
 
             var brands = JArray.Parse(responseString);
             foreach (var brand in brands.Children<JObject>())
             {
-                items.Add(new SelectListItem()
+                items.Add(new SelectListItem
                 {
                     Value = brand.Value<string>("id"),
                     Text = brand.Value<string>("type")

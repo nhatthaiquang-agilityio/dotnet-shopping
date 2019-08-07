@@ -10,7 +10,7 @@ namespace Catalog.API.IntegrationEvents.EventHandling
     public class OrderStatusChangedToAwaitingValidationIntegrationEventHandler :
         IIntegrationEventHandler<OrderStatusChangedToAwaitingValidationIntegrationEvent>
     {
-        private readonly CatalogContext _catalogContext;
+        //private readonly CatalogContext _catalogContext;
         private readonly ICatalogIntegrationEventService _catalogIntegrationEventService;
         private readonly ILogger<OrderStatusChangedToAwaitingValidationIntegrationEventHandler> _logger;
 
@@ -19,7 +19,7 @@ namespace Catalog.API.IntegrationEvents.EventHandling
             ICatalogIntegrationEventService catalogIntegrationEventService,
             ILogger<OrderStatusChangedToAwaitingValidationIntegrationEventHandler> logger)
         {
-            _catalogContext = catalogContext;
+            //_catalogContext = catalogContext;
             _catalogIntegrationEventService = catalogIntegrationEventService;
             _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
         }

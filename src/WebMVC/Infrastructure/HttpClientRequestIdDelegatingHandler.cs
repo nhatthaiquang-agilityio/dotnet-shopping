@@ -9,10 +9,6 @@ namespace WebMVC.Infrastructure
        : DelegatingHandler
     {
 
-        public HttpClientRequestIdDelegatingHandler()
-        {
-        }
-
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (request.Method == HttpMethod.Post || request.Method == HttpMethod.Put)

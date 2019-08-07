@@ -62,7 +62,7 @@ namespace Catalog.API
                 app.UsePathBase(pathBase);
             }
 
-            app.UseHealthChecks("/hc", new HealthCheckOptions()
+            app.UseHealthChecks("/hc", new HealthCheckOptions
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
@@ -140,8 +140,7 @@ namespace Catalog.API
                 hcBuilder
                     .AddAzureServiceBusTopic(
                         configuration["EventBusConnection"],
-                        topicName: "eshop_event_bus",
-                        name: "catalog-servicebus-check",
+                        "eshop_event_bus", "catalog-servicebus-check",
                         tags: new string[] { "servicebus" });
             }
             else
@@ -149,7 +148,7 @@ namespace Catalog.API
                 hcBuilder
                     .AddRabbitMQ(
                         $"amqp://{configuration["EventBusConnection"]}",
-                        name: "catalog-rabbitmqbus-check",
+                        "catalog-rabbitmqbus-check",
                         tags: new string[] { "rabbitmqbus" });
             }
 
@@ -210,7 +209,7 @@ namespace Catalog.API
                 {
                     var logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();
 
-                    var factory = new ConnectionFactory()
+                    var factory = new ConnectionFactory
                     {
                         HostName = configuration["EventBusConnection"],
                         DispatchConsumersAsync = true

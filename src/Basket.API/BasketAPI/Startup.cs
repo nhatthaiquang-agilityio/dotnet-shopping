@@ -233,12 +233,12 @@ namespace BasketAPI
 
             services.AddAuthorization(options =>
             {
-               options.AddPolicy("IsAdminClaimAccess", policy =>
-               {
-                   policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
-                   policy.RequireAuthenticatedUser();
-                   policy.RequireClaim("role", "api.admin");
-               });
+                options.AddPolicy("IsAdminClaimAccess", policy =>
+                {
+                    policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("role", "api.admin");
+                });
             });
 
         }

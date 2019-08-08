@@ -54,9 +54,7 @@ namespace BuildingBlocks.EventBusRabbitMQ
 
             using (var channel = _persistentConnection.CreateModel())
             {
-                channel.QueueUnbind(queue: _queueName,
-                    exchange: BROKER_NAME,
-                    routingKey: eventName);
+                channel.QueueUnbind(_queueName, BROKER_NAME, eventName);
 
                 if (_subsManager.IsEmpty)
                 {
@@ -91,7 +89,7 @@ namespace BuildingBlocks.EventBusRabbitMQ
 
                 _logger.LogTrace("Declaring RabbitMQ exchange to publish event: {EventId}", @event.Id);
 
-                channel.ExchangeDeclare(exchange: BROKER_NAME, type: "direct");
+                channel.ExchangeDeclare(BROKER_NAME, "direct");
 
                 var message = JsonConvert.SerializeObject(@event);
                 var body = Encoding.UTF8.GetBytes(message);
@@ -103,12 +101,7 @@ namespace BuildingBlocks.EventBusRabbitMQ
 
                     _logger.LogTrace("Publishing event to RabbitMQ: {EventId}", @event.Id);
 
-                    channel.BasicPublish(
-                        exchange: BROKER_NAME,
-                        routingKey: eventName,
-                        mandatory: true,
-                        basicProperties: properties,
-                        body: body);
+                    channel.BasicPublish(BROKER_NAME, eventName, true,properties, body);
                 });
             }
         }
@@ -148,9 +141,7 @@ namespace BuildingBlocks.EventBusRabbitMQ
 
                 using (var channel = _persistentConnection.CreateModel())
                 {
-                    channel.QueueBind(queue: _queueName,
-                                      exchange: BROKER_NAME,
-                                      routingKey: eventName);
+                    channel.QueueBind(_queueName, BROKER_NAME, eventName);
                 }
             }
         }
@@ -192,10 +183,7 @@ namespace BuildingBlocks.EventBusRabbitMQ
 
                 consumer.Received += Consumer_Received;
 
-                _consumerChannel.BasicConsume(
-                    queue: _queueName,
-                    autoAck: false,
-                    consumer: consumer);
+                _consumerChannel.BasicConsume(_queueName, false, consumer);
             }
             else
             {
@@ -225,7 +213,7 @@ namespace BuildingBlocks.EventBusRabbitMQ
             // Even on exception we take the message off the queue.
             // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX).
             // For more information see: https://www.rabbitmq.com/dlx.html
-            _consumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
+            _consumerChannel.BasicAck(eventArgs.DeliveryTag, false);
         }
 
         private IModel CreateConsumerChannel()
@@ -239,11 +227,9 @@ namespace BuildingBlocks.EventBusRabbitMQ
 
             var channel = _persistentConnection.CreateModel();
 
-            channel.ExchangeDeclare(exchange: BROKER_NAME, type: "direct");
+            channel.ExchangeDeclare(BROKER_NAME, "direct");
 
-            channel.QueueDeclare(
-                queue: _queueName, durable: true,exclusive: false,
-                autoDelete: false, arguments: null);
+            channel.QueueDeclare(_queueName,  true, false, false, null);
 
             channel.CallbackException += (sender, ea) =>
             {

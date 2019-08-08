@@ -125,11 +125,11 @@ namespace Catalog.API.Controllers
         public async Task<ActionResult<PaginatedItemsViewModel<CatalogItem>>> ItemsWithNameAsync(string name, [FromQuery]int pageSize = 10, [FromQuery]int pageIndex = 0)
         {
             var totalItems = await _catalogContext.CatalogItems
-                .Where(c => c.Name.StartsWith(name))
+                .Where(c => c.Name.StartsWith(name, StringComparison.Ordinal))
                 .LongCountAsync();
 
             var itemsOnPage = await _catalogContext.CatalogItems
-                .Where(c => c.Name.StartsWith(name))
+                .Where(c => c.Name.StartsWith(name, StringComparison.Ordinal))
                 .Skip(pageSize * pageIndex)
                 .Take(pageSize)
                 .ToListAsync();

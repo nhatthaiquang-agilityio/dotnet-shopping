@@ -25,7 +25,7 @@ namespace BuildingBlocks.EventBus
         public void AddDynamicSubscription<TH>(string eventName)
             where TH : IDynamicIntegrationEventHandler
         {
-            DoAddSubscription(typeof(TH), eventName, isDynamic: true);
+            DoAddSubscription(typeof(TH), eventName, true);
         }
 
         public void AddSubscription<T, TH>()
@@ -34,7 +34,7 @@ namespace BuildingBlocks.EventBus
         {
             var eventName = GetEventKey<T>();
 
-            DoAddSubscription(typeof(TH), eventName, isDynamic: false);
+            DoAddSubscription(typeof(TH), eventName, false);
 
             if (!_eventTypes.Contains(typeof(T)))
             {

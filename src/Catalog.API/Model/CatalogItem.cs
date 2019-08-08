@@ -40,9 +40,6 @@ namespace Catalog.API.Model
         /// </summary>
         public bool OnReorder { get; set; }
 
-        public CatalogItem() { }
-
-
         /// <summary>
         /// Decrements the quantity of a particular item in inventory and ensures the restockThreshold hasn't
         /// been breached. If so, a RestockRequest is generated in CheckThreshold. 

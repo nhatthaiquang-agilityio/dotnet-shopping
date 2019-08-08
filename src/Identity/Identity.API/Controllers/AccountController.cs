@@ -291,11 +291,11 @@ namespace Identity.API.Controllers
             {
                 if (HttpContext.User.Identity.IsAuthenticated)
                     return Redirect(returnUrl);
-                else
-                    if (ModelState.IsValid)
+
+                if (ModelState.IsValid)
                     return RedirectToAction("login", "account", new { returnUrl });
-                else
-                    return View(model);
+
+                return View(model);
             }
 
             return RedirectToAction("index", "home");

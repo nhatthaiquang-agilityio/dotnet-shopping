@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Ordering.Domain.AggregatesModel.BuyerAggregate;
 using Ordering.Domain.AggregatesModel.OrderAggregate;
 using Ordering.Domain.Seedwork;
-using Ordering.Infrastructure;
 using Ordering.Infrastructure.EntityConfigurations;
 using System;
 using System.Data;

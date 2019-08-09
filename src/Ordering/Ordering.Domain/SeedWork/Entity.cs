@@ -59,8 +59,7 @@
 
             if (item.IsTransient() || this.IsTransient())
                 return false;
-            else
-                return item.Id == this.Id;
+            return item.Id == this.Id;
         }
 
         public override int GetHashCode()
@@ -72,16 +71,13 @@
 
                 return _requestedHashCode.Value;
             }
-            else
-                return base.GetHashCode();
-
+            return base.GetHashCode();
         }
         public static bool operator ==(Entity left, Entity right)
         {
             if (Object.Equals(left, null))
                 return (Object.Equals(right, null)) ? true : false;
-            else
-                return left.Equals(right);
+            return left.Equals(right);
         }
 
         public static bool operator !=(Entity left, Entity right)

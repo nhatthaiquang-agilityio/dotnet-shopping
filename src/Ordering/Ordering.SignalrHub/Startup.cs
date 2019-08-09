@@ -1,12 +1,15 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Azure.ServiceBus;
 using BuildingBlocks.EventBus;
 using BuildingBlocks.EventBus.Abstractions;
 using BuildingBlocks.EventBusRabbitMQ;
 using BuildingBlocks.EventBusServiceBus;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Azure.ServiceBus;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -17,9 +20,7 @@ using Ordering.SignalrHub.IntegrationEvents.Events;
 using RabbitMQ.Client;
 using System;
 using System.IdentityModel.Tokens.Jwt;
-using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+
 
 namespace Ordering.SignalrHub
 {
@@ -78,7 +79,7 @@ namespace Ordering.SignalrHub
                     var logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();
 
 
-                    var factory = new ConnectionFactory()
+                    var factory = new ConnectionFactory
                     {
                         HostName = Configuration["EventBusConnection"],
                         DispatchConsumersAsync = true
@@ -128,7 +129,7 @@ namespace Ordering.SignalrHub
                 app.UsePathBase(pathBase);
             }
 
-            app.UseHealthChecks("/hc", new HealthCheckOptions()
+            app.UseHealthChecks("/hc", new HealthCheckOptions
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
@@ -237,8 +238,8 @@ namespace Ordering.SignalrHub
                 hcBuilder
                     .AddAzureServiceBusTopic(
                         configuration["EventBusConnection"],
-                        topicName: "eshop_event_bus",
-                        name: "signalr-servicebus-check",
+                        "eshop_event_bus",
+                        "signalr-servicebus-check",
                         tags: new string[] { "servicebus" });
             }
             else
@@ -246,7 +247,7 @@ namespace Ordering.SignalrHub
                 hcBuilder
                     .AddRabbitMQ(
                         $"amqp://{configuration["EventBusConnection"]}",
-                        name: "signalr-rabbitmqbus-check",
+                        "signalr-rabbitmqbus-check",
                         tags: new string[] { "rabbitmqbus" });
             }
 

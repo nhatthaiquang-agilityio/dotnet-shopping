@@ -1,11 +1,7 @@
 ﻿using Autofac;
 using BuildingBlocks.EventBus.Abstractions;
 using Ordering.SignalrHub.IntegrationEvents;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Ordering.SignalrHub.AutofacModules
 {

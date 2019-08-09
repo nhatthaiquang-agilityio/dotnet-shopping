@@ -28,7 +28,7 @@ namespace Ordering.Infrastructure.Idempotency
 
             var request = exists ?
                 throw new OrderingDomainException($"Request with {id} already exists") :
-                new ClientRequest()
+                new ClientRequest
                 {
                     Id = id,
                     Name = typeof(T).Name,

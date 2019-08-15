@@ -142,7 +142,7 @@
 
         private IEnumerable<OrderStatus> GetPredefinedOrderStatus()
         {
-            return new List<OrderStatus>()
+            return new List<OrderStatus>
             {
                 OrderStatus.Submitted,
                 OrderStatus.AwaitingValidation,

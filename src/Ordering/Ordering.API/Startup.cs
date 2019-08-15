@@ -1,29 +1,32 @@
 ﻿namespace Ordering.API
 {
-    using Microsoft.AspNetCore.Http;
     using Autofac;
     using Autofac.Extensions.DependencyInjection;
     using global::Ordering.API.Application.IntegrationEvents;
     using global::Ordering.API.Application.IntegrationEvents.Events;
     using global::Ordering.API.Infrastructure.Filters;
     using global::Ordering.API.Infrastructure.Middlewares;
-    using Infrastructure.AutofacModules;
-    using Infrastructure.Services;
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Azure.ServiceBus;
-    using Microsoft.EntityFrameworkCore;
     using BuildingBlocks.EventBus;
     using BuildingBlocks.EventBus.Abstractions;
     using BuildingBlocks.EventBusRabbitMQ;
     using BuildingBlocks.EventBusServiceBus;
     using BuildingBlocks.IntegrationEventLogEF;
     using BuildingBlocks.IntegrationEventLogEF.Services;
+    using HealthChecks.UI.Client;
+    using Infrastructure.AutofacModules;
+    using Infrastructure.Services;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Azure.ServiceBus;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+    using Microsoft.Extensions.Diagnostics.HealthChecks;
     using Ordering.Infrastructure;
     using RabbitMQ.Client;
     using Swashbuckle.AspNetCore.Swagger;
@@ -32,9 +35,6 @@
     using System.Data.Common;
     using System.IdentityModel.Tokens.Jwt;
     using System.Reflection;
-    using HealthChecks.UI.Client;
-    using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-    using Microsoft.Extensions.Diagnostics.HealthChecks;
 
     public class Startup
     {

@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace Ordering.SignalrHub.IntegrationEvents
 {
-    public class OrderStatusChangedToAwaitingValidationIntegrationEventHandler : IIntegrationEventHandler<OrderStatusChangedToAwaitingValidationIntegrationEvent>
+    public class OrderStatusChangedToAwaitingValidationIntegrationEventHandler :
+        IIntegrationEventHandler<OrderStatusChangedToAwaitingValidationIntegrationEvent>
     {
         private readonly IHubContext<NotificationsHub> _hubContext;
         private readonly ILogger<OrderStatusChangedToAwaitingValidationIntegrationEventHandler> _logger;
@@ -27,7 +28,9 @@ namespace Ordering.SignalrHub.IntegrationEvents
         {
             using (LogContext.PushProperty("IntegrationEventContext", $"{@event.Id}-{Program.AppName}"))
             {
-                _logger.LogInformation("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
+                _logger.LogInformation(
+                    "----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})",
+                    @event.Id, Program.AppName, @event);
 
                 await _hubContext.Clients
                     .Group(@event.BuyerName)

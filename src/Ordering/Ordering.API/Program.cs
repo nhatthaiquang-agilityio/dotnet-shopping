@@ -22,7 +22,7 @@ namespace Ordering.API
         {
             var configuration = GetConfiguration();
 
-            Log.Logger = CreateSerilogLogger(configuration);
+            //Log.Logger = CreateSerilogLogger(configuration);
 
             try
             {
@@ -68,16 +68,16 @@ namespace Ordering.API
                 .UseSerilog()
                 .Build();
 
-         private static Serilog.ILogger CreateSerilogLogger(IConfiguration configuration)
-         {
-             return new LoggerConfiguration()
-                 .MinimumLevel.Verbose()
-                 .Enrich.WithProperty("ApplicationContext", AppName)
-                 .Enrich.FromLogContext()
-                 .WriteTo.Console()
-                 .ReadFrom.Configuration(configuration)
-                 .CreateLogger();
-        }
+        //private static Serilog.ILogger CreateSerilogLogger(IConfiguration configuration)
+        //{
+        //    return new LoggerConfiguration()
+        //        .MinimumLevel.Verbose()
+        //        .Enrich.WithProperty("ApplicationContext", AppName)
+        //        .Enrich.FromLogContext()
+        //        .WriteTo.Console()
+        //        .ReadFrom.Configuration(configuration)
+        //        .CreateLogger();
+        //}
 
         private static IConfiguration GetConfiguration()
         {

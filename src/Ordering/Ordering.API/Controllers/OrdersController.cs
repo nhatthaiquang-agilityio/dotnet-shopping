@@ -1,11 +1,10 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using BuildingBlocks.EventBus.Extensions;
 using Ordering.API.Application.Commands;
 using Ordering.API.Application.Queries;
-using Ordering.API.Application.Behaviors;
 using Ordering.API.Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -40,7 +39,8 @@ namespace Ordering.API.Controllers
         [HttpPut]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CancelOrderAsync([FromBody]CancelOrderCommand command, [FromHeader(Name = "x-requestid")] string requestId)
+        public async Task<IActionResult> CancelOrderAsync(
+            [FromBody]CancelOrderCommand command, [FromHeader(Name = "x-requestid")] string requestId)
         {
             bool commandResult = false;
 
@@ -70,7 +70,8 @@ namespace Ordering.API.Controllers
         [HttpPut]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> ShipOrderAsync([FromBody]ShipOrderCommand command, [FromHeader(Name = "x-requestid")] string requestId)
+        public async Task<IActionResult> ShipOrderAsync(
+            [FromBody]ShipOrderCommand command, [FromHeader(Name = "x-requestid")] string requestId)
         {
             bool commandResult = false;
 
@@ -138,7 +139,8 @@ namespace Ordering.API.Controllers
 
         [Route("draft")]
         [HttpPost]
-        public async Task<ActionResult<OrderDraftDTO>> CreateOrderDraftFromBasketDataAsync([FromBody] CreateOrderDraftCommand createOrderDraftCommand)
+        public async Task<ActionResult<OrderDraftDTO>> CreateOrderDraftFromBasketDataAsync(
+            [FromBody] CreateOrderDraftCommand createOrderDraftCommand)
         {
             _logger.LogInformation(
                 "----- Sending command: {CommandName} - {IdProperty}: {CommandId} ({@Command})",

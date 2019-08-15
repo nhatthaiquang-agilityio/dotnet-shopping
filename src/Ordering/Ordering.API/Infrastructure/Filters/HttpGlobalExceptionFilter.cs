@@ -28,14 +28,14 @@
 
             if (context.Exception.GetType() == typeof(OrderingDomainException))
             {
-                var problemDetails = new ValidationProblemDetails()
+                var problemDetails = new ValidationProblemDetails
                 {
                     Instance = context.HttpContext.Request.Path,
                     Status = StatusCodes.Status400BadRequest,
                     Detail = "Please refer to the errors property for additional details."
                 };
 
-                problemDetails.Errors.Add("DomainValidations", new string[] { context.Exception.Message.ToString() });
+                problemDetails.Errors.Add("DomainValidations", new string[] { context.Exception.Message });
 
                 context.Result = new BadRequestObjectResult(problemDetails);
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;

@@ -217,7 +217,9 @@ namespace Ordering.SignalrHub
                         retryCount = int.Parse(Configuration["EventBusRetryCount"]);
                     }
 
-                    return new EventBusRabbitMQ(rabbitMQPersistentConnection, logger, iLifetimeScope, eventBusSubcriptionsManager, subscriptionClientName, retryCount);
+                    return new EventBusRabbitMQ(
+                        rabbitMQPersistentConnection, logger, iLifetimeScope, eventBusSubcriptionsManager,
+                        subscriptionClientName, retryCount);
                 });
             }
 

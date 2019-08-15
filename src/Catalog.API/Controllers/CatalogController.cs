@@ -6,12 +6,13 @@ using Catalog.API.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+
 
 namespace Catalog.API.Controllers
 {
@@ -88,7 +89,8 @@ namespace Catalog.API.Controllers
             var idsToSelect = numIds
                 .Select(id => id.Value);
 
-            var items = await _catalogContext.CatalogItems.Where(ci => idsToSelect.Contains(ci.Id)).ToListAsync();
+            var items = await _catalogContext.CatalogItems
+                .Where(ci => idsToSelect.Contains(ci.Id)).ToListAsync();
 
             return items;
         }

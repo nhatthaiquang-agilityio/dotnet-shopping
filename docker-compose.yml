@@ -209,6 +209,7 @@ services:
       EventBusConnection: rabbitmq
       EventBusUserName: admin
       EventBusPassword: password
+      SignalrHubUrl: http://localhost:6009
 
   ordering.api:
     container_name: ordering.api
@@ -230,6 +231,28 @@ services:
       CallBackUrl: http://localhost:6007
       PurchaseUrl: http://webapigw
       UseLoadTest: "False"
+      EventBusConnection: rabbitmq
+      EventBusUserName: admin
+      EventBusPassword: password
+
+  ordering.signalrhub:
+    container_name: ordering.signalhub
+    build:
+      context: .
+      dockerfile: src/Ordering/Ordering.SignalrHub/Dockerfile
+    ports:
+      - "6012:80"
+    depends_on:
+      - basket.data
+      - rabbitmq
+      - identity.api
+      - ordering.api
+    environment:
+      IsClusterEnv: "False"
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://0.0.0.0:80
+      IdentityUrl: http://docker.for.mac.localhost:6001
+      IdentityUrlExternal: http://localhost:6001
       EventBusConnection: rabbitmq
       EventBusUserName: admin
       EventBusPassword: password

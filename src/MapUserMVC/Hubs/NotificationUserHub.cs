@@ -30,7 +30,7 @@ namespace MapUserMVC.Hubs
             //get the connectionId
             var connectionId = Context.ConnectionId;
             _userConnectionManager.RemoveUserConnection(connectionId);
-            var value = await Task.FromResult(0);
+            await Task.FromResult(0);
         }
 
         public async Task SendToUser(string connectionId, string message)

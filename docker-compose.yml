@@ -248,7 +248,6 @@ services:
       - identity.api
       - ordering.api
     environment:
-      IsClusterEnv: "False"
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://0.0.0.0:80
       IdentityUrl: http://docker.for.mac.localhost:6001
@@ -256,5 +255,7 @@ services:
       EventBusConnection: rabbitmq
       EventBusUserName: admin
       EventBusPassword: password
+      IsClusterEnv: "True"
+      SignalrStoreConnectionString: basket.data
 volumes:
   data:

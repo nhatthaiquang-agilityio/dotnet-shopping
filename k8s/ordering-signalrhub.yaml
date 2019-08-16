@@ -32,6 +32,13 @@ spec:
           value: Development
         - name: ASPNETCORE_URLS
           value: http://0.0.0.0:80
+        - name: IsClusterEnv
+          value: "True"
+        - name: SignalrStoreConnectionString
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: keystore
         - name: IdentityUrl
           valueFrom:
             configMapKeyRef:

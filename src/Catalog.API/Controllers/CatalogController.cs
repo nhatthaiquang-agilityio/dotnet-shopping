@@ -109,7 +109,6 @@ namespace Catalog.API.Controllers
 
             var item = await _catalogContext.CatalogItems.SingleOrDefaultAsync(ci => ci.Id == id);
 
-            var baseUri = _settings.PicBaseUrl;
             var azureStorageEnabled = _settings.AzureStorageEnabled;
 
             if (item != null)

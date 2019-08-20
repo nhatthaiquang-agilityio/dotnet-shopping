@@ -14,11 +14,6 @@ namespace IdentityUsers.Data
             this.Database.EnsureCreated();
         }
 
-        // protected override void OnModelCreating(ModelBuilder builder)
-        // {
-        //     base.OnModelCreating(builder);
-        // }
-
         public virtual DbSet<Contact> Contacts { get; set; }
         public virtual DbSet<UserConnection> UserConnections { get; set; }
 

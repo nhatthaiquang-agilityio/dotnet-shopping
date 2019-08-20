@@ -174,7 +174,7 @@ namespace IdentityUsers
                 });
         }
 
-        internal class Claims
+        internal static class Claims
         {
             public static List<Claim> Get()
             {
@@ -186,7 +186,7 @@ namespace IdentityUsers
 
         private static IEnumerable<ApplicationUser> GetDefaultUser()
         {
-            var user = new ApplicationUser()
+            var user = new ApplicationUser
             {
 
                 Email = "nhatthai@gmail.com",
@@ -196,12 +196,12 @@ namespace IdentityUsers
                 UserName = "nhatthai@gmail.com",
                 NormalizedEmail = "NHATTHAI@GMAIL.COM",
                 NormalizedUserName = "NHATTHAI@GMAIL.COM",
-                SecurityStamp = Guid.NewGuid().ToString("D"),
+                SecurityStamp = Guid.NewGuid().ToString("D")
             };
 
             user.PasswordHash = _passwordHasher.HashPassword(user, "Pass@word1");
 
-            var admin = new ApplicationUser()
+            var admin = new ApplicationUser
             {
                 Email = "admin@gmail.com",
                 Id = Guid.NewGuid().ToString(),
@@ -210,11 +210,11 @@ namespace IdentityUsers
                 UserName = "admin@gmail.com",
                 NormalizedEmail = "ADMIN@GMAIL.COM",
                 NormalizedUserName = "ADMIN@GMAIL.COM",
-                SecurityStamp = Guid.NewGuid().ToString("D"),
+                SecurityStamp = Guid.NewGuid().ToString("D")
             };
 
             admin.PasswordHash = _passwordHasher.HashPassword(user, "Pass@word1");
-            return new List<ApplicationUser>()
+            return new List<ApplicationUser>
             {
                 user, admin
             };

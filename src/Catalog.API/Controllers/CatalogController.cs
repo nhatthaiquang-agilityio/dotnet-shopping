@@ -223,13 +223,12 @@ namespace Catalog.API.Controllers
             }
 
             var oldPrice = catalogItem.Price;
-            var raiseProductPriceChangedEvent = oldPrice != productToUpdate.Price;
 
             // Update current product
             catalogItem = productToUpdate;
             _catalogContext.CatalogItems.Update(catalogItem);
 
-            if (raiseProductPriceChangedEvent) // Save product's data and publish integration event through the Event Bus if price has changed
+            if (oldPrice != productToUpdate.Price) // Save product's data and publish integration event through the Event Bus if price has changed
             {
                 //Create Integration Event to be published through the Event Bus
                 var priceChangedEvent = new ProductPriceChangedIntegrationEvent(catalogItem.Id, productToUpdate.Price, oldPrice);

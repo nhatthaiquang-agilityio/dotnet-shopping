@@ -10,8 +10,6 @@ namespace dotnet_express_mapper
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args).Build().Run();
-            Mapper.Register<Book, BookViewModel>();
-            Mapper.Register<Author, AuthorDTO>();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,7 +26,6 @@ namespace dotnet_express_mapper.Data
                 //Random random = new Random();
                 foreach (var product in context.Products.ToList<Product>())
                 {
-                    Console.WriteLine("Add Sizes");
                     await context.Sizes.AddRangeAsync(new List<Size>
                     {
                         new Size { Name = "S", Code = "S", Product = product },
@@ -57,18 +55,6 @@ namespace dotnet_express_mapper.Data
                 new ProductBrand { Brand = "Other" }
             };
         }
-
-        //private IEnumerable<Size> GetPreconfiguredSize()
-        //{
-        //    return new List<Size>
-        //    {
-        //        new Size { Name = "S", Code = "S"},
-        //        new Size { Name = "L", Code = "L"},
-        //        new Size { Name = "M", Code = "M"},
-        //        new Size { Name = "XL", Code = "XL"},
-        //        new Size { Name = "XXL", Code = "XXL"}
-        //    };
-        //}
 
         private IEnumerable<ProductType> GetPreconfiguredProductTypes()
         {

@@ -64,7 +64,7 @@ namespace dotnet_express_mapper.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("BookCategory");
+                    b.ToTable("BookCategories");
                 });
 
             modelBuilder.Entity("dotnet_express_mapper.Models.Category", b =>

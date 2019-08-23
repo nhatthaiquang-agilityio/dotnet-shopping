@@ -50,8 +50,7 @@ namespace dotnet_express_mapper.Controllers
         public async Task<ActionResult<Book>> Post([FromBody] BookViewModel bookViewModel)
         {
             // express mapper
-            Book book = Mapper.Map<BookViewModel, Book>(bookViewModel);
-            await _bookService.Create(book);
+            Book book = await _bookService.Create(bookViewModel);
             return new OkObjectResult(book);
         }
 
@@ -59,18 +58,15 @@ namespace dotnet_express_mapper.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Book>> Put(int id, [FromBody] BookViewModel bookViewModel)
         {
-            var bookFromDb = await _bookService.GetBook(id);
-
-            if (bookFromDb == null)
-                return new NotFoundResult();
-
-            // express mapper
-            Book book = Mapper.Map<BookViewModel, Book>(bookViewModel);
-            book.Id = bookFromDb.Id;
-
-            await _bookService.Update(book);
-
+            Book book = await _bookService.Update(id, bookViewModel);
             return new OkObjectResult(book);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<bool> Delete(int id)
+        {
+            await _bookService.Delete(id);
+            return true;
         }
     }
 }

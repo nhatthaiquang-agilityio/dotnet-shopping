@@ -71,6 +71,13 @@ namespace dotnet_express_mapper.Controllers
 
             return new OkObjectResult(product);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<bool> Delete(int id)
+        {
+            await _productService.DeleteProductAsync(id);
+            return true;
+        }
     }
 
 

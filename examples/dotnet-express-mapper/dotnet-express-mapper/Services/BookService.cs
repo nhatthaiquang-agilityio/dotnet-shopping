@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using dotnet_express_mapper.Data;
 using dotnet_express_mapper.Models;
@@ -31,10 +32,37 @@ namespace dotnet_express_mapper.Services
                 .SingleAsync(b => b.Id == id);
         }
 
-        public async Task Create(Book book)
+        public async Task<Book> Create(BookViewModel bookViewModel)
         {
+            Book book = new Book
+            {
+                BookName = bookViewModel.BookName,
+                Price = bookViewModel.Price,
+                AuthorId = bookViewModel.AuthorId
+            };
+
+            // has Categories
+            if (bookViewModel.BookCategories != null)
+            {
+                // update bookcategory
+                List<Category> categories = await _appDBContext.Categories
+                    .Where(c => bookViewModel.BookCategories.Contains(c.CategoryName)).ToListAsync();
+
+                book.BookCategories = new List<BookCategory>();
+                // and then add new bookcategory
+                foreach (Category category in categories)
+                {
+                    book.BookCategories.Add(new BookCategory
+                    {
+                        CategoryId = category.CategoryId,
+                        BookId = book.Id
+                    });
+                }
+            }
+
             await _appDBContext.Books.AddAsync(book);
             await _appDBContext.SaveChangesAsync();
+            return book;
         }
 
         public async Task<bool> Delete(int id)
@@ -45,11 +73,44 @@ namespace dotnet_express_mapper.Services
             return true;
         }
 
-        public async Task<bool> Update(Book bookIn)
+        public async Task<Book> Update(int id, BookViewModel bookViewModel)
         {
-            _appDBContext.Books.Update(bookIn);
+            Book bookFromDb = await GetBook(id);
+
+            if (bookFromDb == null)
+                return null;
+
+            // update book
+            bookFromDb.BookName = bookViewModel.BookName;
+            bookFromDb.Price = bookViewModel.Price;
+            bookFromDb.AuthorId = bookViewModel.AuthorId;
+
+            // has Categories
+            if (bookViewModel.BookCategories != null)
+            {
+                // update bookcategory
+                List<Category> categories = await _appDBContext.Categories
+                    .Where(c => bookViewModel.BookCategories.Contains(c.CategoryName)).ToListAsync();
+
+                // remove old bookcategory
+                List<BookCategory> bookCategories = await _appDBContext.BookCategories
+                    .Where(b => b.BookId == bookViewModel.Id).ToListAsync();
+                _appDBContext.BookCategories.RemoveRange(bookCategories);
+
+                // and then add new bookcategory
+                foreach (var category in categories)
+                {
+                    bookFromDb.BookCategories.Add(new BookCategory
+                    {
+                        Category = category,
+                        BookId = bookFromDb.Id
+                    });
+                }
+            }
+            _appDBContext.Books.Update(bookFromDb);
+
             await _appDBContext.SaveChangesAsync();
-            return true;
+            return bookFromDb;
         }
     }
 }

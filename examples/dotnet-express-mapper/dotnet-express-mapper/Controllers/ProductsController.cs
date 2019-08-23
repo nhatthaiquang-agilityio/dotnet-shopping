@@ -54,8 +54,7 @@ namespace dotnet_express_mapper.Controllers
         [HttpPost]
         public async Task<ActionResult<Product>> Post([FromBody] ProductViewModel productViewModel)
         {
-            Product product = Mapper.Map<ProductViewModel, Product>(productViewModel);
-            await _productService.Create(product);
+            Product product = await _productService.Create(productViewModel);
             return new OkObjectResult(product);
         }
 
@@ -68,8 +67,7 @@ namespace dotnet_express_mapper.Controllers
             if (productFromDb == null)
                 return new NotFoundResult();
 
-            Product product = Mapper.Map<ProductViewModel, Product>(productViewModel);
-            await _productService.UpdateProductAsync(product);
+            Product product = await _productService.UpdateProductAsync(productViewModel);
 
             return new OkObjectResult(product);
         }

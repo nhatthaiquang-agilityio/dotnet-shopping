@@ -9,7 +9,7 @@ namespace dotnet_express_mapper.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BooksController
+    public class BooksController : ControllerBase
     {
         private readonly BookService _bookService;
 
@@ -20,26 +20,36 @@ namespace dotnet_express_mapper.Controllers
 
         // GET api/Books
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Book>>> Get()
+        public async Task<ActionResult<IEnumerable<BookViewModel>>> Get()
         {
-            object books = await _bookService.GetBooks();
-            return new ObjectResult(books);
+            IEnumerable<Book> books = await _bookService.GetBooks();
+
+            // express mapper
+            IEnumerable<BookViewModel> bookViewModels = Mapper.Map<IEnumerable<Book>, IEnumerable<BookViewModel>>(books);
+
+            return new ObjectResult(bookViewModels);
         }
 
         // GET api/Books/1
         [HttpGet("{id}")]
-        public async Task<ActionResult<Book>> Get(string id)
+        public async Task<ActionResult<BookViewModel>> Get(int id)
         {
-            object book = await _bookService.GetBook(id);
+            Book book = await _bookService.GetBook(id);
+
             if (book == null)
                 return new NotFoundResult();
-            return new OkObjectResult(book);
+
+            // express mapper
+            BookViewModel bookViewModel = Mapper.Map<Book, BookViewModel>(book);
+
+            return new OkObjectResult(bookViewModel);
         }
 
         // POST api/Books
         [HttpPost]
         public async Task<ActionResult<Book>> Post([FromBody] BookViewModel bookViewModel)
         {
+            // express mapper
             Book book = Mapper.Map<BookViewModel, Book>(bookViewModel);
             await _bookService.Create(book);
             return new OkObjectResult(book);
@@ -47,15 +57,17 @@ namespace dotnet_express_mapper.Controllers
 
         // PUT api/Books/1
         [HttpPut("{id}")]
-        public async Task<ActionResult<Book>> Put(string id, [FromBody] BookViewModel bookViewModel)
+        public async Task<ActionResult<Book>> Put(int id, [FromBody] BookViewModel bookViewModel)
         {
             var bookFromDb = await _bookService.GetBook(id);
 
             if (bookFromDb == null)
                 return new NotFoundResult();
 
+            // express mapper
             Book book = Mapper.Map<BookViewModel, Book>(bookViewModel);
             book.Id = bookFromDb.Id;
+
             await _bookService.Update(book);
 
             return new OkObjectResult(book);

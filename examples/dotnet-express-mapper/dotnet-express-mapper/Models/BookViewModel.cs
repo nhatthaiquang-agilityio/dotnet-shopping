@@ -1,11 +1,13 @@
-﻿namespace dotnet_express_mapper.Models
+﻿using System.Collections.Generic;
+
+namespace dotnet_express_mapper.Models
 {
     public class BookViewModel
     {
-        public string Id;
+        public int Id;
         public string BookName { get; set; }
         public decimal Price { get; set; }
-        public string Category { get; set; }
+        public List<string> BookCategories { get; set; }
         public string Author { get; set; }
     }
 }

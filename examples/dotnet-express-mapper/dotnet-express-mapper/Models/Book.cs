@@ -1,24 +1,16 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using System.Collections.Generic;
 
 namespace dotnet_express_mapper.Models
 {
     public class Book
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
-
-        [BsonElement("Name")]
+        public int Id { get; set; }
         public string BookName { get; set; }
-
-        [BsonElement("Price")]
         public decimal Price { get; set; }
 
-        [BsonElement("Category")]
-        public string Category { get; set; }
+        public ICollection<BookCategory> BookCategories { get; set; }
 
-        [BsonElement("Author")]
-        public string Author { get; set; }
+        public int AuthorId {get; set;}
+        public Author Author { get; set; }
     }
 }

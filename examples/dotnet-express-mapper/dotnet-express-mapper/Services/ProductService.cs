@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-using ExpressMapper;
 
 namespace dotnet_express_mapper.Services
 {
@@ -30,8 +29,10 @@ namespace dotnet_express_mapper.Services
 
         public async Task<Product> GetProduct(int id)
         {
-            return await _appDBContext.Products.Include(p => p.Sizes).Include(a => a.ProductType)
-                .Include(a => a.ProductBrand).AsNoTracking().SingleOrDefaultAsync(p => p.Id == id);
+            return await _appDBContext.Products.Include(p => p.Sizes)
+                .Include(a => a.ProductType)
+                .Include(a => a.ProductBrand).AsNoTracking()
+                .SingleOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<IEnumerable<Size>> GetSizeOfProduct(int id)
@@ -70,6 +71,9 @@ namespace dotnet_express_mapper.Services
         public async Task<Product> UpdateProductAsync(ProductViewModel productViewModel)
         {
             Product productItem = await _appDBContext.Products.SingleOrDefaultAsync(i => i.Id == productViewModel.Id);
+
+            if ( productItem == null)
+                return null;
 
             // set values
             productItem.ProductBrandId = productViewModel.ProductBrandId;
@@ -116,7 +120,7 @@ namespace dotnet_express_mapper.Services
 
         public async Task<ActionResult<List<ProductBrand>>> ProductBrandsAsync()
         {
-            return await _appDBContext.ProductBrands.ToListAsync();
+            return await _appDBContext.ProductBrands.AsNoTracking().ToListAsync();
         }
     }
 }

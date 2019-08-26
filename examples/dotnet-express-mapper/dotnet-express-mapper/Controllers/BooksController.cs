@@ -49,7 +49,6 @@ namespace dotnet_express_mapper.Controllers
         [HttpPost]
         public async Task<ActionResult<Book>> Post([FromBody] BookViewModel bookViewModel)
         {
-            // express mapper
             Book book = await _bookService.Create(bookViewModel);
             return new OkObjectResult(book);
         }
@@ -65,8 +64,7 @@ namespace dotnet_express_mapper.Controllers
         [HttpDelete("{id}")]
         public async Task<bool> Delete(int id)
         {
-            await _bookService.Delete(id);
-            return true;
+            return await _bookService.Delete(id);
         }
     }
 }

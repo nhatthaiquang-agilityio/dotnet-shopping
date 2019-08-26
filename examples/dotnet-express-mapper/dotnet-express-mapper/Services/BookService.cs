@@ -49,6 +49,7 @@ namespace dotnet_express_mapper.Services
                     .Where(c => bookViewModel.BookCategories.Contains(c.CategoryName)).ToListAsync();
 
                 book.BookCategories = new List<BookCategory>();
+
                 // and then add new bookcategory
                 foreach (Category category in categories)
                 {
@@ -68,6 +69,11 @@ namespace dotnet_express_mapper.Services
         public async Task<bool> Delete(int id)
         {
             Book book = await _appDBContext.Books.SingleAsync(b => b.Id == id);
+            if (book == null)
+            {
+                return false;
+            }
+
             _appDBContext.Books.Remove(book);
             await _appDBContext.SaveChangesAsync();
             return true;

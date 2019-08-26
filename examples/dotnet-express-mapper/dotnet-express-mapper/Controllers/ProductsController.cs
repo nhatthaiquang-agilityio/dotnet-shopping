@@ -45,8 +45,10 @@ namespace dotnet_express_mapper.Controllers
         public async Task<ActionResult<IEnumerable<Size>>> GetSizesOfProduct(int id)
         {
             object sizes = await _productService.GetSizeOfProduct(id);
+
             if (sizes == null)
                 return new NotFoundResult();
+
             return new OkObjectResult(sizes);
         }
 
@@ -62,12 +64,10 @@ namespace dotnet_express_mapper.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Product>> Put(int id, [FromBody] ProductViewModel productViewModel)
         {
-            var productFromDb = await _productService.GetProduct(id);
-
-            if (productFromDb == null)
-                return new NotFoundResult();
-
             Product product = await _productService.UpdateProductAsync(productViewModel);
+
+            if (product == null)
+                return new NotFoundResult();
 
             return new OkObjectResult(product);
         }

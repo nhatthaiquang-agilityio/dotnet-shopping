@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -59,7 +58,7 @@ namespace Testing
 
             Assert.Equal(43.45, (double)book.Price);
             Assert.Equal("Advance C#", book.BookName);
-            Assert.NotNull(book.Id);
+            Assert.True(book.Id > 0);
         }
 
         [Fact]

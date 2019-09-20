@@ -8,6 +8,8 @@ namespace dotnet_express_mapper.Models
         public string BookName { get; set; }
         public decimal Price { get; set; }
         public List<string> BookCategories { get; set; }
+
+        public int AuthorId { get; set; }
         public string Author { get; set; }
     }
 }

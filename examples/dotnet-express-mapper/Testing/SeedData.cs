@@ -50,7 +50,6 @@ namespace Testing
 
             //Now add this book, with all its relationships, to the database
             await context.Books.AddRangeAsync(new List<Book> { book });
-			//await context.BookCategories.AddRangeAsync(book.BookCategories);
 			await context.SaveChangesAsync();
 
         }

@@ -7,6 +7,7 @@ using Identity.API.Data;
 using Identity.API.Models;
 using Identity.API.Services;
 using IdentityServer4.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -74,6 +75,16 @@ namespace Identity.API
 
             services.AddTransient<ILoginService<ApplicationUser>, EFLoginService>();
             services.AddTransient<IRedirectService, RedirectService>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("IsAdminClaimAccess", policy =>
+                {
+                    policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("role", "api.admin");
+                });
+            });
 
 
             // Adds IdentityServer

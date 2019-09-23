@@ -26,7 +26,7 @@ namespace Identity.API
             try
             {
                 Log.Information("Configuring web host ({ApplicationContext})...", AppName);
-                var host = BuildWebHost(configuration, args);
+                var host = CreateWebHostBuilder(args).Build();
 
                 Log.Information("Applying migrations ({ApplicationContext})...", AppName);
                 host.MigrateDbContext<PersistedGrantDbContext>((_, __) => { })
@@ -70,15 +70,14 @@ namespace Identity.API
             }
         }
 
-        private static IWebHost BuildWebHost(IConfiguration configuration, string[] args) =>
+        // Always define the function, using for CustomWebApplicationFactory
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .CaptureStartupErrors(false)
                 .UseStartup<Startup>()
                 .UseApplicationInsights()
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseConfiguration(configuration)
-                .UseSerilog()
-                .Build();
+                .UseSerilog();
 
         private static Serilog.ILogger CreateSerilogLogger(IConfiguration configuration)
         {

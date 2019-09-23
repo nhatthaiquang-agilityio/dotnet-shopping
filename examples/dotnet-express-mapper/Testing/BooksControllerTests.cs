@@ -13,6 +13,7 @@ namespace Testing
     public class BooksControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly HttpClient _client;
+        private readonly string API = "http://localhost/api/books/";
 
         public BooksControllerTests(CustomWebApplicationFactory<Startup> factory)
         {
@@ -22,7 +23,7 @@ namespace Testing
         [Fact]
         public async Task TestGetListBooks()
         {
-            var httpResponse = await _client.GetAsync("http://localhost/api/books");
+            var httpResponse = await _client.GetAsync(API);
 
             // Must be successful.
             httpResponse.EnsureSuccessStatusCode();
@@ -48,7 +49,7 @@ namespace Testing
             HttpContent content = new StringContent(
                 JsonConvert.SerializeObject(bookModel),
                 Encoding.UTF8, "application/json");
-            var httpResponse = await _client.PostAsync("http://localhost/api/books", content);
+            var httpResponse = await _client.PostAsync(API, content);
 
             httpResponse.EnsureSuccessStatusCode();
 
@@ -64,7 +65,7 @@ namespace Testing
         [Fact]
         public async Task TestGetBook()
         {
-            var httpResponse = await _client.GetAsync("http://localhost/api/books/1");
+            var httpResponse = await _client.GetAsync(API + "1");
 
             // Must be successful.
             httpResponse.EnsureSuccessStatusCode();

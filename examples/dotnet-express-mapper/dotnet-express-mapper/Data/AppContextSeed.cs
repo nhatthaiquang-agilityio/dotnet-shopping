@@ -9,7 +9,6 @@ namespace dotnet_express_mapper.Data
     {
         public async Task SeedAsync(AppDbContext context)
         {
-            //await context.Sizes.AddRangeAsync(GetPreconfiguredSize());
             if (!context.ProductTypes.Any())
                 await context.ProductTypes.AddRangeAsync(GetPreconfiguredProductTypes());
 
@@ -23,7 +22,6 @@ namespace dotnet_express_mapper.Data
                 await context.Products.AddRangeAsync(GetPreconfiguredProducts());
                 await context.SaveChangesAsync();
 
-                //Random random = new Random();
                 foreach (var product in context.Products.ToList<Product>())
                 {
                     await context.Sizes.AddRangeAsync(new List<Size>

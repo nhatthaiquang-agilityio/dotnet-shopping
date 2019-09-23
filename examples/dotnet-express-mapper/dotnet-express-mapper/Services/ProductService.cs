@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 
+
 namespace dotnet_express_mapper.Services
 {
     public class ProductService
@@ -20,18 +21,15 @@ namespace dotnet_express_mapper.Services
 
         public async Task<IEnumerable<Product>> GetProducts()
         {
-            return await _appDBContext.Products
-                .Include(p => p.Sizes)
-                .Include(p => p.ProductType)
-                .Include(p => p.ProductBrand)
+            return await _appDBContext.Products.Include(p => p.Sizes)
+                .Include(p => p.ProductType).Include(p => p.ProductBrand)
                 .AsNoTracking().ToListAsync();
         }
 
         public async Task<Product> GetProduct(int id)
         {
             return await _appDBContext.Products.Include(p => p.Sizes)
-                .Include(a => a.ProductType)
-                .Include(a => a.ProductBrand).AsNoTracking()
+                .Include(a => a.ProductType).Include(a => a.ProductBrand).AsNoTracking()
                 .SingleOrDefaultAsync(p => p.Id == id);
         }
 
@@ -72,7 +70,7 @@ namespace dotnet_express_mapper.Services
         {
             Product productItem = await _appDBContext.Products.SingleOrDefaultAsync(i => i.Id == productViewModel.Id);
 
-            if ( productItem == null)
+            if (productItem == null)
                 return null;
 
             // set values

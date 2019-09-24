@@ -4,14 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.API.Controllers
 {
-    
+
     [ApiController]
     public class IdentityController : ControllerBase
     {
         // GET api/v1/[controller]
         [HttpGet]
         [Route("api/identity")]
-        [Authorize(Policy = "IsAdminClaimAccess")]
+        [Authorize]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> HasIdentity()
         {
             return Ok();

@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.Infrastructure", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.SignalrHub", "Ordering\Ordering.SignalrHub\Ordering.SignalrHub.csproj", "{5C865EC8-906D-40A1-98D1-6F5D4A46F4AE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityTesting", "Identity\IdentityTesting\IdentityTesting.csproj", "{B153B9C7-9E2E-41EA-A4BD-78D4CBE47974}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,5 +117,9 @@ Global
 		{5C865EC8-906D-40A1-98D1-6F5D4A46F4AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C865EC8-906D-40A1-98D1-6F5D4A46F4AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C865EC8-906D-40A1-98D1-6F5D4A46F4AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B153B9C7-9E2E-41EA-A4BD-78D4CBE47974}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B153B9C7-9E2E-41EA-A4BD-78D4CBE47974}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B153B9C7-9E2E-41EA-A4BD-78D4CBE47974}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B153B9C7-9E2E-41EA-A4BD-78D4CBE47974}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

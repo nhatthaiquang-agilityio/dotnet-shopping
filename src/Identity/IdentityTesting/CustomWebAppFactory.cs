@@ -37,23 +37,23 @@ namespace IdentityTesting
                 {
                     var scopedServices = scope.ServiceProvider;
                     var context = scopedServices.GetRequiredService<ApplicationDbContext>();
-					var env = scopedServices.GetService<IHostingEnvironment>();
-					var logger = scopedServices.GetService<ILogger<ApplicationDbContextSeed>>();
-					var settings = scopedServices.GetService<IOptions<Identity.API.AppSettings>>();
-					var contextSeed = new ApplicationDbContextSeed();
+                    var env = scopedServices.GetService<IHostingEnvironment>();
+                    var logger = scopedServices.GetService<ILogger<ApplicationDbContextSeed>>();
+                    var settings = scopedServices.GetService<IOptions<Identity.API.AppSettings>>();
+                    var contextSeed = new ApplicationDbContextSeed();
 
-					context.Database.EnsureCreated();
+                    context.Database.EnsureCreated();
 
                     try
                     {
-						contextSeed.SeedAsync(context, env, logger, settings).Wait();
+                        contextSeed.SeedAsync(context, env, logger, settings).Wait();
 
-						// create roles and set role into users
-						contextSeed.CreateUserRoles(serviceProvider).Wait();
+                        // create roles and set role into users
+                        contextSeed.CreateUserRoles(serviceProvider).Wait();
 
-						// Create claims
-						contextSeed.InitUserClaims(serviceProvider).Wait();
-					}
+                        // Create claims
+                        contextSeed.InitUserClaims(serviceProvider).Wait();
+                    }
                     catch (Exception ex)
                     {
                         logger.LogError(ex, "An error occurred seeding the " +

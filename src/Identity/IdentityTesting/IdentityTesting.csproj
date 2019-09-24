@@ -15,18 +15,19 @@
     <PackageReference Include="Moq" Version="4.8.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.6" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="2.2.0" />
-
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0" />
+
+    <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="2.7.0" />
+    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.1.0" />
+    <!-- <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.2.0"/> -->
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Identity.API\Identity.API.csproj" />
   </ItemGroup>
+
   <ItemGroup>
     <Reference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="TestStartup.cs" />
-    <Compile Remove="TestFixture.cs" />
-  </ItemGroup>
+
 </Project>

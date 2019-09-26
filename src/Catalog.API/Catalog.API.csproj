@@ -23,6 +23,7 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="3.0.3" />
     <PackageReference Include="Serilog.Sinks.AzureBlobStorage" Version="1.4.0" />
+    <PackageReference Include="HangFire" Version="1.7.6" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,15 +40,9 @@
     <Folder Include="Extensions\" />
     <Folder Include="Model\" />
     <Folder Include="Setup\" />
+    <Folder Include="Tasks\" />
     <Folder Include="ViewModel\" />
     <Folder Include="Infrastructure\Exceptions\" />
     <Folder Include="Infrastructure\IntegrationEventMigrations\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Controllers\PicController.cs" />
-    <Compile Remove="Infrastructure\IntegrationEventMigrations\IntegrationEventLogContextModelSnapshot.cs" />
-    <Compile Remove="Infrastructure\IntegrationEventMigrations\20190711033724_EventLog.cs" />
-    <Compile Remove="Infrastructure\IntegrationEventMigrations\20190711033724_EventLog.Designer.cs" />
-    <Compile Remove="Infrastructure\IntegrationEventLogContextSeed.cs" />
   </ItemGroup>
 </Project>

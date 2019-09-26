@@ -14,6 +14,8 @@ using Catalog.API.IntegrationEvents;
 using Catalog.API.IntegrationEvents.EventHandling;
 using Catalog.API.IntegrationEvents.Events;
 using HealthChecks.UI.Client;
+using Hangfire;
+using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +28,8 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.ServiceBus;
 using RabbitMQ.Client;
+using Catalog.API.Tasks;
+
 
 namespace Catalog.API
 {
@@ -45,7 +49,8 @@ namespace Catalog.API
                 .AddCustomDbContext(Configuration)
                 .AddIntegrationServices(Configuration)
                 .AddEventBus(Configuration)
-                .AddCustomHealthCheck(Configuration);
+                .AddCustomHealthCheck(Configuration)
+                .AddHangfire(Configuration);
 
             var container = new ContainerBuilder();
             container.Populate(services);
@@ -76,6 +81,9 @@ namespace Catalog.API
             app.UseCors("CorsPolicy");
 
             app.UseMvcWithDefaultRoute();
+
+            //app.UseHangfireDashboard();
+            app.UseHangfireServer();
 
             ConfigureEventBus(app);
         }
@@ -279,6 +287,14 @@ namespace Catalog.API
             services.AddTransient<OrderStatusChangedToAwaitingValidationIntegrationEventHandler>();
             services.AddTransient<OrderStatusChangedToPaidIntegrationEventHandler>();
 
+            return services;
+        }
+
+        public static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHangfire(x => x.UseSqlServerStorage(configuration["ConnectionString"]));
+            services.AddHangfireServer();
+            services.AddHostedService<RecurringJobsService>();
             return services;
         }
     }

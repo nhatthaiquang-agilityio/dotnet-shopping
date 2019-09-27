@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Reflection;
 using dotnet_express_mapper.Data;
 using dotnet_express_mapper.Models;
+using dotnet_express_mapper.Queries;
 using dotnet_express_mapper.Services;
 using ExpressMapper;
+using GraphiQl;
+using GraphQL;
+using GraphQL.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,6 +21,8 @@ namespace dotnet_express_mapper
 {
     public class Startup
     {
+        public const string GraphQlPath = "/graphql";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -51,6 +57,8 @@ namespace dotnet_express_mapper
 
             InitData(services);
 
+            var sp = services.BuildServiceProvider();
+            services.AddSingleton<ISchema>(new BookSchema(new FuncDependencyResolver(type => sp.GetService(type))));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -72,6 +80,7 @@ namespace dotnet_express_mapper
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
+            app.UseGraphiQl(GraphQlPath);
             app.UseMvc();
         }
 

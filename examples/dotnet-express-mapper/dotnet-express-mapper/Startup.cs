@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using dotnet_express_mapper.Data;
+using dotnet_express_mapper.GraphQL;
 using dotnet_express_mapper.Models;
 using dotnet_express_mapper.Queries;
 using dotnet_express_mapper.Services;
@@ -57,8 +58,20 @@ namespace dotnet_express_mapper
 
             InitData(services);
 
+            // using for graphql schema and mutation
+            services.AddSingleton<ProductInputType>();
+            services.AddSingleton<BookType>();
+            services.AddSingleton<AuthorType>();
+            services.AddSingleton<CategoryType>();
+            services.AddSingleton<BookCategoriesType>();
+            services.AddSingleton<GraphQL.ProductType>();
+            services.AddSingleton<SizeType>();
+            services.AddSingleton<APIServiceQuery>();
+            services.AddSingleton<ProductMutation>();
+
             var sp = services.BuildServiceProvider();
-            services.AddSingleton<ISchema>(new BookSchema(new FuncDependencyResolver(type => sp.GetService(type))));
+            services.AddSingleton<ISchema>(new GraphQLSchema(new FuncDependencyResolver(sp.GetService)));
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

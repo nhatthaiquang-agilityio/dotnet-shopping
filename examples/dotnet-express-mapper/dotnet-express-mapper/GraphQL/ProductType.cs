@@ -15,9 +15,6 @@ namespace dotnet_express_mapper.GraphQL
             Field(x => x.Sizes, type: typeof(ListGraphType<SizeType>)).Description("Sizes");
 
             Field(x => x.ProductTypeId).Description("ProductTypeId of Book");
-            //Field(x => x.ProductType).Description("Product Type");
-
-            //Field(x => x.ProductBrand).Description("ProductBrand of Book");
             Field(x => x.ProductBrandId).Description("Product Brand Id");
         }
     }

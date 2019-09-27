@@ -20,7 +20,7 @@ namespace dotnet_express_mapper.Services
         {
             return await _appDBContext.Books.Include(a => a.Author)
                 .Include(b => b.BookCategories)
-                    .ThenInclude(c => c.Category)
+                    .ThenInclude(c => c.Category).AsNoTracking()
                 .ToListAsync();
         }
 
@@ -28,7 +28,7 @@ namespace dotnet_express_mapper.Services
         {
             return await _appDBContext.Books.Include(a => a.Author)
                 .Include(c => c.BookCategories)
-                    .ThenInclude(c => c.Category)
+                    .ThenInclude(c => c.Category).AsNoTracking()
                 .SingleAsync(b => b.Id == id);
         }
 

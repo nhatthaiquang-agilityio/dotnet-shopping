@@ -13,154 +13,253 @@
 + Sql Server
 + Docker & Docker Compose
 
+### Issue
++ Error with Complex Input Types "Unable to parse input as a type. Did you provide a List or Scalar value accidentally?
+    - Fixed: https://github.com/graphql-dotnet/graphql-dotnet/issues/816
+
 
 ### Usage
 
-+ GraphQL
++ GraphQL(http://localhost:5000/graphql)
     + Check GraphQL schema
-    ```
-    {
-        __schema {
-            types {
-                name
+        ```
+        {
+            __schema {
+                types {
+                    name
+                }
             }
         }
-    }
-    ```
+        ```
 
     + Query Book by Id
-    ```
-    http://localhost:5000/graphql
+        GraphQL
 
-    query BookQuery($id: Int) {
-        book(id: $id) {
-            id
-            bookName
-            price
-            author {
+        ```
+        query BookQuery($id: Int) {
+            book(id: $id) {
                 id
-                firstName
-            }
-
-            bookCategories {
-                bookId
-                categoryId
-
-                category {
+                bookName
+                price
+                author {
+                    id
+                    firstName
+                }
+                bookCategories {
+                    bookId
                     categoryId
-                    categoryName
+                    category {
+                        categoryId
+                        categoryName
+                    }
                 }
             }
         }
-    }
 
 
-    Query variable
-    {
-        "id": 1
-    }
-    ```
+        Query variable
+        {
+            "id": 1
+        }
+        ```
 
-    Output
-    ```
-    {
-        "data": {
-            "book": {
-            "id": 1,
-            "bookName": "Quantum Networking",
-            "price": 220,
-            "author": {
-                "id": 1,
-                "firstName": "Nick"
-            },
-            "bookCategories": [
-                {
-                "bookId": 1,
-                "categoryId": 1,
-                "category": {
-                    "categoryId": 1,
-                    "categoryName": "Network"
+        Output
+        ```
+        {
+            "data": {
+                "book": {
+                    "id": 1,
+                    "bookName": "Quantum Networking",
+                    "price": 220,
+                    "author": {
+                        "id": 1,
+                        "firstName": "Nick"
+                    },
+                    "bookCategories": [
+                        {
+                            "bookId": 1,
+                            "categoryId": 1,
+                                "category": {
+                                    "categoryId": 1,
+                                    "categoryName": "Network"
+                                }
+                        }
+                    ]
                 }
-                }
-            ]
             }
         }
-    }
-    ```
+        ```
 
     + Query All Books
-    ```
-    query BookQuery {
-        books {
-            id
-            bookName
-            price
-
-            author {
+        GraphQL
+        ```
+        query BookQuery {
+            books {
                 id
-                firstName
-            }
-
-            bookCategories {
-                bookId
-                categoryId
-
-                category {
+                bookName
+                price
+                author {
+                    id
+                    firstName
+                }
+                bookCategories {
+                    bookId
                     categoryId
-                    categoryName
+                    category {
+                        categoryId
+                        categoryName
+                    }
                 }
             }
         }
-    }
-    ```
+        ```
 
-    Output
-    ```
-    {
-        "data": {
-            "books": [
-            {
-                "id": 1,
-                "bookName": "Quantum Networking",
-                "price": 220,
-                "author": {
-                "id": 1,
-                "firstName": "Nick"
-                },
-                "bookCategories": [
+        Output
+        ```
+        {
+            "data": {
+                "books": [
                 {
-                    "bookId": 1,
-                    "categoryId": 1,
-                    "category": {
-                    "categoryId": 1,
-                    "categoryName": "Network"
-                    }
-                }
-                ]
-            },
-            {
-                "id": 2,
-                "bookName": "Advance C#",
-                "price": 110,
-                "author": {
-                "id": 2,
-                "firstName": "David"
+                    "id": 1,
+                    "bookName": "Quantum Networking",
+                    "price": 220,
+                    "author": {
+                        "id": 1,
+                        "firstName": "Nick"
+                    },
+                    "bookCategories": [
+                        {
+                            "bookId": 1,
+                            "categoryId": 1,
+                            "category": {
+                                "categoryId": 1,
+                                "categoryName": "Network"
+                            }
+                        }
+                    ]
                 },
-                "bookCategories": [
                 {
-                    "bookId": 2,
-                    "categoryId": 2,
-                    "category": {
-                    "categoryId": 2,
-                    "categoryName": "Programming"
-                    }
+                    "id": 2,
+                    "bookName": "Advance C#",
+                    "price": 110,
+                    "author": {
+                        "id": 2,
+                        "firstName": "David"
+                    },
+                    "bookCategories": [
+                        {
+                            "bookId": 2,
+                            "categoryId": 2,
+                            "category": {
+                                "categoryId": 2,
+                                "categoryName": "Programming"
+                            }
+                        }
+                    ]
                 }
                 ]
             }
-            ]
         }
-    }
-    ```
+        ```
+
+    + Create Product
+        Graphql
+        ```
+        mutation ($product: ProductInput!) {
+            createProduct(product: $product) {
+                name
+                description
+                availableStock
+                price
+            }
+        }
+        ```
+
+        Query Vairable
+        ```
+        {
+            "product": {
+                "name": "Product 1",
+                "description": "description product 1",
+                "availableStock": 100,
+                "price": 11.8,
+                "productTypeId": 1,
+                "productBrandId": 1
+            }
+        }
+        ```
+
+        Output
+        ```
+        {
+            "data": {
+                "createProduct": {
+                    "name": "Product 1",
+                    "description": "description product 1",
+                    "availableStock": 100,
+                    "price": 11.8
+                }
+            }
+        }
+        ```
+
+    + Create Product with Sizes
+        GraphQL
+        ```
+        mutation ($product: ProductInput!) {
+            createProduct(product: $product) {
+                name
+                description
+                availableStock
+                price
+                sizes {
+                    name
+                    code
+                }
+            }
+        }
+        ```
+
+        Query Vairable
+        ```
+        {
+            "product": {
+
+                "name": "Product TShirt sport",
+                "description": "description TShirt sport",
+                "availableStock": 100,
+                "price": 18.8,
+                "productTypeId": 1,
+                "productBrandId": 1,
+                "sizes": [ "X", "XL"]
+            }
+        }
+        ```
+
+        Output
+        ```
+        {
+            "data": {
+                "createProduct": {
+                    "name": "Product TShirt sport",
+                    "description": "description TShirt sport",
+                    "availableStock": 100,
+                    "price": 18.8,
+                    "sizes": [
+                        {
+                            "name": "X",
+                            "code": "X"
+                        },
+                        {
+                            "name": "XL",
+                            "code": "XL"
+                        }
+                    ]
+                }
+            }
+        }
+        ```
+
 ### Reference
 + [Express Mapper](http://expressmapper.org/)
 + [Configuring Many To Many Relationships in Entity Framework Core](https://www.learnentityframeworkcore.com/configuration/many-to-many-relationship-configuration)

@@ -55,6 +55,7 @@ namespace dotnet_express_mapper
 
             services.AddScoped<BookService>();
             services.AddScoped<ProductService>();
+            services.AddScoped<AuthorService>();
 
             InitData(services);
 

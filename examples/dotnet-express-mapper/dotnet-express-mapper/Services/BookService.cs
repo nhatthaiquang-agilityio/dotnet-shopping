@@ -118,5 +118,16 @@ namespace dotnet_express_mapper.Services
             await _appDBContext.SaveChangesAsync();
             return bookFromDb;
         }
+
+        public async Task<BookCategory> GetBookCategory(int bookId)
+        {
+            return await _appDBContext.BookCategories
+                .Include(a => a.Category).FirstOrDefaultAsync(i => i.BookId == bookId);
+        }
+
+        public async Task<Category> GetCategory(int categoryId)
+        {
+            return await _appDBContext.Categories.FirstOrDefaultAsync(i => i.CategoryId == categoryId);
+        }
     }
 }

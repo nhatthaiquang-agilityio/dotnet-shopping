@@ -1,6 +1,4 @@
-﻿using dotnet_express_mapper.Models;
-using ExpressMapper;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace dotnet_express_mapper

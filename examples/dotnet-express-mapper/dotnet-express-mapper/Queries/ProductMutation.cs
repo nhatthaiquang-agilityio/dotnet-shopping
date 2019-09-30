@@ -12,9 +12,9 @@ namespace dotnet_express_mapper.Queries
             Name = "Mutation";
 
             Field<GraphQL.ProductType>(
-                  "createProduct",
-                  arguments: new QueryArguments(
-                  new QueryArgument<NonNullGraphType<ProductInputType>> { Name = "product" }
+                "createProduct",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<ProductInputType>> { Name = "product" }
             ),
             resolve: context =>
             {
@@ -23,9 +23,9 @@ namespace dotnet_express_mapper.Queries
             });
 
             Field<GraphQL.ProductType>(
-                  "updateProduct",
-                  arguments: new QueryArguments(
-                  new QueryArgument<NonNullGraphType<ProductInputType>> { Name = "product" }
+                "updateProduct",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<ProductInputType>> { Name = "product" }
             ),
             resolve: context =>
             {

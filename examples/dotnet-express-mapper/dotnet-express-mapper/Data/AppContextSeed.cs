@@ -58,7 +58,7 @@ namespace dotnet_express_mapper.Data
         {
             return new List<ProductType>
             {
-                new ProductType { Type = "Shoes " },
+                new ProductType { Type = "Shoes" },
                 new ProductType { Type = "T-Shirt" },
                 new ProductType { Type = "Paint M" }
             };
@@ -76,10 +76,10 @@ namespace dotnet_express_mapper.Data
                     Name = "Black & White Shoes", Price= 8.50M },
                 new Product {
                     ProductTypeId = 2, ProductBrandId = 5, AvailableStock = 100, Description = "Prism White T-Shirt",
-                Name = "Prism White T-Shirt", Price = 12 },
+                    Name = "Prism White T-Shirt", Price = 12 },
                 new Product {
                     ProductTypeId = 2, ProductBrandId = 3, AvailableStock = 100, Description = "Foundation T-shirt",
-                    Name = ".Foundation T-shirt", Price = 12 },
+                    Name = "Foundation T-shirt", Price = 12 },
                 new Product {
                     ProductTypeId = 3, ProductBrandId = 4, AvailableStock = 100, Description = "Roslyn Red trousers pants",
                     Name = "Roslyn Red trousers pants", Price = 8.5M},

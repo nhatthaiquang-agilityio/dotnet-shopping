@@ -36,7 +36,7 @@
         GraphQL
 
         ```
-        query BookQuery($id: Int) {
+        query APIServiceQuery($id: Int) {
             book(id: $id) {
                 id
                 bookName
@@ -93,7 +93,7 @@
     + Query All Books
         GraphQL
         ```
-        query BookQuery {
+        query APIServiceQuery {
             books {
                 id
                 bookName

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RootNamespace>service_proto</RootNamespace>
+  </PropertyGroup>
+
+   <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.9.2" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.23.2" />
+    <PackageReference Include="Grpc.Tools" Version="2.23.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="GreetService.proto" GrpcServices="Both" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="greet.proto" />
+  </ItemGroup>
+</Project>

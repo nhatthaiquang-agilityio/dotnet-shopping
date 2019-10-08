@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <RootNamespace>dotnet_gRPC</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore.Server" Version="2.23.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\service-proto\service-proto.csproj" />
+  </ItemGroup>
+
+</Project>

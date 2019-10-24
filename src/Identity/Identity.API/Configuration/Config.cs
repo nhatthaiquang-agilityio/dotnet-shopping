@@ -40,11 +40,19 @@ namespace Identity.API.Configuration
                 {
                     ClientId = "basketswaggerui",
                     ClientName = "Basket Swagger UI",
-                    AllowedGrantTypes = GrantTypes.Implicit,
+                    ClientSecrets = new List<Secret>
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
+                    AccessTokenType = AccessTokenType.Jwt,
+                    AccessTokenLifetime = 3600, //86400,
+                    IdentityTokenLifetime = 3600, //86400,
+                    // AllowedGrantTypes = GrantTypes.Implicit,
                     AllowAccessTokensViaBrowser = true,
-                    RedirectUris = { $"{clientsUrl["BasketApi"]}/oauth2-redirect.html" },
-                    PostLogoutRedirectUris = { $"{clientsUrl["BasketApi"]}/" },
-                    AlwaysSendClientClaims = true,
+                    // RedirectUris = { $"{clientsUrl["BasketApi"]}/oauth2-redirect.html" },
+                    // PostLogoutRedirectUris = { $"{clientsUrl["BasketApi"]}/" },
+                    // AlwaysSendClientClaims = true,
                     AlwaysIncludeUserClaimsInIdToken = true,
                     AllowedScopes =
                     {

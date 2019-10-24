@@ -116,6 +116,15 @@ namespace Identity.API
                 })
                 .Services.AddTransient<IProfileService, ProfileService>();
 
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = Configuration.GetValue<string>("IdentityUrlExternal");
+                    // options.Authority = "http://localhost:6001"; //This is the identity server url where we are getting accesstoken.
+                    options.RequireHttpsMetadata = false;
+                    options.ApiName = "openid";
+                });
+
             var container = new ContainerBuilder();
             container.Populate(services);
 
@@ -188,6 +197,6 @@ namespace Identity.API
             }
 
         }
-        
+
     }
 }
